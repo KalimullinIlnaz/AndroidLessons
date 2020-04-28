@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="Text">Контакты</string>
-    <string name="telephoneNumber">Телефон</string>
-    <string name="name">Имя</string>
+    <string name="telephoneNumber">number</string>
+    <string name="name">name</string>
+    <string name="telephoneNumber1">53535353</string>
+    <string name="name1">Вова</string>
     <string name="contact_details">Детали контакта</string>
     <string name="description">Описание</string>
     <string name="second_email">email 2</string>
     <string name="firstEmail">email</string>
     <string name="second_telephone_number">Телефон 2</string>
     <string name="text">...</string>
+    <string name="name2">Паша</string>
+    <string name="telephonenumber2">342423423234</string>
 </resources>

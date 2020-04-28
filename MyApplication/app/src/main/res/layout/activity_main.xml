@@ -14,11 +14,11 @@
        android:elevation="4dp">
    </androidx.appcompat.widget.Toolbar>
 
-   <RelativeLayout
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:id="@+id/container"
-       android:orientation="vertical">
-   </RelativeLayout>
-
+   <fragment
+       android:id="@+id/fragmentContactList"
+       android:name="com.a65apps.kalimullinilnazrafilovich.myapplication.ContactListFragment"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       tools:layout="@layout/fragment_contact_list">
+   </fragment>
 </LinearLayout>

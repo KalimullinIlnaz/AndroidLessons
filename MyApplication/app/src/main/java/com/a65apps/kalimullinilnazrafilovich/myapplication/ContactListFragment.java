@@ -2,45 +2,67 @@ package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import android.view.LayoutInflater;
+import androidx.fragment.app.ListFragment;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-public class ContactListFragment extends Fragment {
 
-    private ContactDetailsFragment contactDetailsFragment;
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-    private LinearLayout linearLayout;
+public class ContactListFragment extends ListFragment {
+    private static Contact vova = new Contact("Вова","111111111","vvvvvvvvv");
+    private static Contact pasha = new Contact("Паша","222222222","pppppppppp");
+    private static Contact dima = new Contact("Дима","33333333","dddddddddd");
+    public static Contact[] contacts = {vova,pasha,dima};
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Лист контактов");
 
-        linearLayout = (LinearLayout)view.findViewById(R.id.person);
-
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        ArrayAdapter<Contact> contactArrayAdapter = new ArrayAdapter<Contact>(getActivity(),
+                0, contacts){
             @Override
-            public void onClick(View v) {
-                contactDetailsFragment = new ContactDetailsFragment();
-                fragmentManager = getFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container,contactDetailsFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View listItem = convertView;
+                if(listItem == null)
+                    listItem = getLayoutInflater().inflate(R.layout.fragment_contact_list, null, false);
+
+                Contact currentContact = contacts[position];
+
+                TextView name = (TextView)listItem.findViewById(R.id.namePerson);
+                name.setText(currentContact.getName());
+
+                TextView telephoneNumber = (TextView)listItem.findViewById(R.id.telephoneNumberPerson);
+                telephoneNumber.setText(currentContact.getTelephoneNumber());
+
+                return listItem;
             }
-        });
+        };
 
-        return view;
+        setListAdapter(contactArrayAdapter);
+
     }
-}
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        showDetails(position);
+    }
+
+    private void showDetails(int position) {
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(position);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContactList,contactDetailsFragment).addToBackStack(null).commit();
+    }
+
+}
