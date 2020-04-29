@@ -27,12 +27,15 @@ public class ContactListFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Список контактов");
+
         ArrayAdapter<Contact> contactArrayAdapter = new ArrayAdapter<Contact>(getActivity(),
                 0, contacts) {
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View listItem = convertView;
+
                 if (listItem == null)
                     listItem = getLayoutInflater().inflate(R.layout.fragment_contact_list, null, false);
 
@@ -47,6 +50,7 @@ public class ContactListFragment extends ListFragment {
                 return listItem;
             }
         };
+
         setListAdapter(contactArrayAdapter);
     }
 
@@ -59,6 +63,7 @@ public class ContactListFragment extends ListFragment {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(position);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContactList, contactDetailsFragment).addToBackStack(null).commit();
+        fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
     }
+
 }
