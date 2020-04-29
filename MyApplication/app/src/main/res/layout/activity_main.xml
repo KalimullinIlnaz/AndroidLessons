@@ -6,14 +6,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-   <androidx.appcompat.widget.Toolbar
-       android:id="@+id/toolbar"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:background="@color/colorPrimary"
-       android:elevation="4dp">
-   </androidx.appcompat.widget.Toolbar>
-
    <fragment
        android:id="@+id/fragmentContactList"
        android:name="com.a65apps.kalimullinilnazrafilovich.myapplication.ContactListFragment"

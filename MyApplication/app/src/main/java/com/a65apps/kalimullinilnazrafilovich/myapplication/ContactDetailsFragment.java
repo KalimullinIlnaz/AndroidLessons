@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class ContactDetailsFragment extends Fragment {
 
-    public static ContactDetailsFragment newInstance(int id) {
+    static ContactDetailsFragment newInstance(int id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
         Bundle args = new Bundle();
         args.putInt("id",id);
@@ -26,8 +26,7 @@ public class ContactDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_details, container, false);
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Детали контакта");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Детали контакта");
 
         int id = this.getArguments().getInt("id",0);
 
@@ -37,10 +36,19 @@ public class ContactDetailsFragment extends Fragment {
         TextView telephoneNumber = (TextView)view.findViewById(R.id.firstTelephoneNumber);
         telephoneNumber.setText(ContactListFragment.contacts[id].getTelephoneNumber());
 
+        TextView telephoneNumber2 = (TextView)view.findViewById(R.id.secondTelephoneNumber);
+        telephoneNumber2.setText(ContactListFragment.contacts[id].getTelephoneNumber2());
 
         TextView email = (TextView)view.findViewById(R.id.firstEmail);
         email.setText(ContactListFragment.contacts[id].getEmail());
 
+        TextView email2 = (TextView)view.findViewById(R.id.secondEmail);
+        email2.setText(ContactListFragment.contacts[id].getEmail2());
+
+        TextView description = (TextView)view.findViewById(R.id.description);
+        description.setText(ContactListFragment.contacts[id].getDescription());
+
         return view;
     }
+
 }
