@@ -8,6 +8,7 @@ public class Contact {
     private final  String email2;
     private final  String description;
 
+
     Contact(String name, String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
         this.name = name;
         this.telephoneNumber = telephoneNumber;
@@ -15,6 +16,15 @@ public class Contact {
         this.telephoneNumber2 = telephoneNumber2;
         this.email2 = email2;
         this.description = description;
+    }
+
+    Contact(){
+        name = "";
+        telephoneNumber = "" ;
+        telephoneNumber2 = "";
+        email = "";
+        email2 = "";
+        description = "";
     }
 
     public String getName() {
