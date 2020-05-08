@@ -8,8 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 import androidx.annotation.Nullable;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.lang.ref.WeakReference;
 
 
 public class ContactService extends Service {
@@ -18,9 +17,11 @@ public class ContactService extends Service {
     }
 
     private  String TAG_LOG = "SERVICE";
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private IBinder binder = new LocalService();
-    private Contact[] contacts = new Contact[3];
+    Contact vova = new Contact("Вова", "111111111", "12222222", "vvvvvvv", "v2222222", "description");
+    Contact pasha = new Contact("Паша", "222222222", "2222222222", "ppppp", "p2222222", "description");
+    Contact dima = new Contact("Дима", "33333333", "2333333333", "ddddd", "d2222222", "description");
+    private Contact[] contacts = {vova,pasha,dima};
 
     @Override
     public void onCreate() {
@@ -40,22 +41,34 @@ public class ContactService extends Service {
         return binder;
     }
 
-    void loadContacts(){
+    public Contact getDetailContact(ContactDetailsFragment.GetContact callback, int idContact){
+        final WeakReference<ContactDetailsFragment.GetContact> ref = new WeakReference<>(callback);
+        final int id = idContact;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                contacts[0] = new Contact("Вова", "111111111", "12222222", "vvvvvvv", "v2222222", "description");
-                contacts[1] = new Contact("Паша", "222222222", "2222222222", "ppppp", "p2222222", "description");
-                contacts[2] = new Contact("Дима", "33333333", "2333333333", "ddddd", "d2222222", "description");
+                Contact result = contacts[id];
+                ContactDetailsFragment.GetContact local = ref.get();
+                if (local != null){
+                    local.getDetailsContact(result);
+                }
             }
         }).start();
-    }
-
-    Contact getDetailContact(int id){
         return contacts[id];
     }
 
-    Contact[] getListContacts(){
+    public Contact[] getListContacts(ContactListFragment.GetContact callback){
+        final WeakReference<ContactListFragment.GetContact> ref = new WeakReference<>(callback);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Contact[] result = contacts;
+                ContactListFragment.GetContact local = ref.get();
+                if (local != null){
+                    local.getContactList(result);
+                }
+            }
+        }).start();
         return contacts;
     }
 

@@ -16,13 +16,14 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
     ContactService contactService;
     private boolean isBound = false;
     final String TAG = "SERVICE";
+    private boolean firstCreateMainActivity = false;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             contactService = ((ContactService.LocalService)service).getService();
             isBound = true;
-            addFragmentListContact();
+            if (firstCreateMainActivity) addFragmentListContact();
             Log.d(TAG, "Connected");
         }
         @Override
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) firstCreateMainActivity = true;
 
         Intent intent = new Intent(this,ContactService.class);
         bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);

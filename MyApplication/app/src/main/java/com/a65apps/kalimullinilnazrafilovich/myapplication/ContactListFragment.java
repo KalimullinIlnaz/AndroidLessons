@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-
-
-public class ContactListFragment extends ListFragment {
+public class ContactListFragment extends ListFragment{
     private ContactService contactService;
     private Contact[] contacts;
     private  String TAG_LOG = "list";
+    private View view;
+
+    interface GetContact{
+        void getContactList(Contact[] result);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -30,43 +34,20 @@ public class ContactListFragment extends ListFragment {
         if (context instanceof ContactService.IContactService){
             contactService = ((ContactService.IContactService)context).getService();
         }
-        contactService.loadContacts();
-        contacts = contactService.getListContacts();
     }
+
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = super.onCreateView(inflater, container, savedInstanceState);
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Список контактов");
 
-        ArrayAdapter<Contact> contactArrayAdapter = new ArrayAdapter<Contact>(getActivity(),
-                0, contacts) {
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View listItem = convertView;
+        contactService.getListContacts(callback);
 
-                if (listItem == null)
-                    listItem = getLayoutInflater().inflate(R.layout.fragment_contact_list, null, false);
-
-                Contact currentContact = contacts[position];
-
-                TextView name = (TextView) listItem.findViewById(R.id.namePerson);
-                name.setText(currentContact.getName());
-
-                TextView telephoneNumber = (TextView) listItem.findViewById(R.id.telephoneNumberPerson);
-                telephoneNumber.setText(currentContact.getTelephoneNumber());
-
-                return listItem;
-            }
-        };
-
-        setListAdapter(contactArrayAdapter);
-
-
-
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
@@ -80,5 +61,41 @@ public class ContactListFragment extends ListFragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
     }
+
+   private GetContact callback = new GetContact() {
+       @Override
+       public void getContactList(Contact[] result) {
+           final Contact[] contacts = result;
+           view.post(new Runnable() {
+               @Override
+               public void run() {
+
+                   ArrayAdapter<Contact> contactArrayAdapter = new ArrayAdapter<Contact>(getActivity(),
+                           0, contacts) {
+                       @Override
+                       public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                           View listItem = convertView;
+
+                           if (listItem == null)
+                               listItem = getLayoutInflater().inflate(R.layout.fragment_contact_list, null, false);
+
+                           Contact currentContact = contacts[position];
+
+                           TextView name = (TextView) listItem.findViewById(R.id.namePerson);
+                           name.setText(currentContact.getName());
+
+                           TextView telephoneNumber = (TextView) listItem.findViewById(R.id.telephoneNumberPerson);
+                           telephoneNumber.setText(currentContact.getTelephoneNumber());
+
+                           return listItem;
+                       }
+                   };
+
+                   setListAdapter(contactArrayAdapter);
+               }
+           });
+       }
+   };
+
 
 }
