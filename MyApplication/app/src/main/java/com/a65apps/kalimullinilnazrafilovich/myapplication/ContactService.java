@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+
 public class ContactService extends Service {
+    public interface IContactService{
+        ContactService getService();
+    }
+
     private  String TAG_LOG = "SERVICE";
-
-    private Contact vova = new Contact("Вова", "111111111", "12222222", "vvvvvvv", "v2222222", "description");
-    private Contact pasha = new Contact("Паша", "222222222", "2222222222", "ppppp", "p2222222", "description");
-    private Contact dima = new Contact("Дима", "33333333", "2333333333", "ddddd", "d2222222", "description");
-    public Contact[] contacts = {vova,pasha,dima};
-
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private IBinder binder = new LocalService();
+    private Contact[] contacts = new Contact[3];
 
     @Override
     public void onCreate() {
@@ -37,16 +40,23 @@ public class ContactService extends Service {
         return binder;
     }
 
-    public Contact[]getListContacts(){
-        return contacts;
+    void loadContacts(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                contacts[0] = new Contact("Вова", "111111111", "12222222", "vvvvvvv", "v2222222", "description");
+                contacts[1] = new Contact("Паша", "222222222", "2222222222", "ppppp", "p2222222", "description");
+                contacts[2] = new Contact("Дима", "33333333", "2333333333", "ddddd", "d2222222", "description");
+            }
+        }).start();
     }
 
-    public Contact getContactDetails(int id){
+    Contact getDetailContact(int id){
         return contacts[id];
     }
 
-    public IBinder getBinder() {
-        return binder;
+    Contact[] getListContacts(){
+        return contacts;
     }
 
     class LocalService extends Binder{
