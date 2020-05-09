@@ -27,6 +27,7 @@ public class ContactService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG_LOG, "ContactService.onCreate");
+
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ContactService extends Service {
         return binder;
     }
 
-    public Contact getDetailContact(ContactDetailsFragment.GetContact callback, int idContact){
+    public void getDetailContact(ContactDetailsFragment.GetContact callback, int idContact){
         final WeakReference<ContactDetailsFragment.GetContact> ref = new WeakReference<>(callback);
         final int id = idContact;
         new Thread(new Runnable() {
@@ -54,10 +55,10 @@ public class ContactService extends Service {
                 }
             }
         }).start();
-        return contacts[id];
+
     }
 
-    public Contact[] getListContacts(ContactListFragment.GetContact callback){
+    public void getListContacts(ContactListFragment.GetContact callback){
         final WeakReference<ContactListFragment.GetContact> ref = new WeakReference<>(callback);
         new Thread(new Runnable() {
             @Override
@@ -69,7 +70,6 @@ public class ContactService extends Service {
                 }
             }
         }).start();
-        return contacts;
     }
 
     class LocalService extends Binder{

@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
     ContactService contactService;
     private boolean isBound = false;
     final String TAG = "SERVICE";
-    private boolean firstCreateMainActivity = false;
+    private boolean firstCreateMainActivity;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) firstCreateMainActivity = true;
+        firstCreateMainActivity = savedInstanceState == null;
 
         Intent intent = new Intent(this,ContactService.class);
         bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
