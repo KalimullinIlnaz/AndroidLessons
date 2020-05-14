@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,16 +15,28 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity implements ContactService.IContactService {
     ContactService contactService;
+
     private boolean isBound = false;
+
     final String TAG = "SERVICE";
+
     private boolean firstCreateMainActivity;
+
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             contactService = ((ContactService.LocalService)service).getService();
             isBound = true;
+
+            String details = getIntent().getStringExtra("contactDetail");
+            int id = getIntent().getIntExtra("id",0);
+
             if (firstCreateMainActivity) addFragmentListContact();
+            if (details != null){
+                    addFragmentListContact();
+                    addFragmentContactDetail(id);
+            }
             Log.d(TAG, "Connected");
         }
         @Override
@@ -57,6 +70,14 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content,contactListFragment).commit();
     }
+
+    private void addFragmentContactDetail(int id){
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(id);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
+    }
+
 
     @Override
     public ContactService getService() {
