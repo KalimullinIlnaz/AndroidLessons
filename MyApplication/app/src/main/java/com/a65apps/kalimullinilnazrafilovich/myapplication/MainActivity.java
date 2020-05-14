@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
 
             if (firstCreateMainActivity) addFragmentListContact();
             if (details != null){
-                    addFragmentListContact();
                     addFragmentContactDetail(id);
             }
             Log.d(TAG, "Connected");

@@ -1,6 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
-import android.app.Notification;
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,9 +12,10 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
-import java.util.NavigableSet;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 
 public class BroadReceiver extends BroadcastReceiver {
     private final String TAG_LOG = "BroadCast";
@@ -48,7 +49,7 @@ public class BroadReceiver extends BroadcastReceiver {
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context,CHANNEL_ID)
                         .setSmallIcon(android.R.drawable.ic_dialog_email)
-                        .setContentTitle("Напоминание")
+                        .setContentTitle(context.getString(R.string.title_notification))
                         .setContentText(text)
                         .setChannelId(CHANNEL_ID)
                         .setContentIntent(resultPendingIntent)
@@ -66,6 +67,24 @@ public class BroadReceiver extends BroadcastReceiver {
         }
 
         notificationManager.notify(1,  notification.build());
+
+
+
+        repeatAlarm(context,id,text);
+    }
+
+    private void repeatAlarm(Context context,int id,String text) {
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(ContactDetailsFragment.BROAD_ACTION);
+        intent.putExtra("id",id);
+        intent.putExtra("textReminder", text);
+
+        Calendar birthOfDay = new GregorianCalendar();
+        birthOfDay.add(Calendar.YEAR,1);
+
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context,0,intent,0);
+        alarmManager.set(AlarmManager.RTC, birthOfDay.getTimeInMillis(),alarmIntent);
     }
 
 }

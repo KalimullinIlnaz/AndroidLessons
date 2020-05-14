@@ -15,4 +15,6 @@
     <string name="dayOfBirth">DayOfBirth</string>
     <string name="birthdayReminderOn">Выключить напоминание</string>
     <string name="birthdayReminderOff">Включить напоминание</string>
+    <string name="title_notification">Напоминание о дне рождения</string>
+    <string name="text_notification">сегодня празднует день рождения</string>
 </resources>

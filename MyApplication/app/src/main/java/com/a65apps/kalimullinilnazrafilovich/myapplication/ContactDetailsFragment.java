@@ -2,7 +2,6 @@ package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -89,7 +88,18 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
         id = getArguments().getInt("id");
 
         toggleButton = viewContactDetails.findViewById(R.id.btnBirthdayReminder);
-        toggleButton.setOnCheckedChangeListener(this);
+
+        if (PendingIntent.getBroadcast(getActivity(), 0,
+                new Intent(BROAD_ACTION),
+                PendingIntent.FLAG_NO_CREATE) != null){
+            toggleButton.setChecked(false);
+            toggleButton.setOnCheckedChangeListener(this);
+        }else {
+            toggleButton.setChecked(true);
+            toggleButton.setOnCheckedChangeListener(this);
+        }
+
+
 
         contactService.getDetailContact(callback,id);
 
@@ -140,12 +150,12 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
 
         Intent intent = new Intent(BROAD_ACTION);
         intent.putExtra("id",id);
-        intent.putExtra("textReminder","Сегодня день рождения у " + contactDetails.getName());
+        intent.putExtra("textReminder", contactDetails.getName() + " " + getActivity().getString(R.string.text_notification));
 
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getActivity(),0,intent,0);
-
         if (isChecked){
             Log.d(TAG_LOG, "Alarm on");
+
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 
             calendar.set(Calendar.DATE,contactDetails.getDateOfBirth().get(Calendar.DATE));
@@ -159,9 +169,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
                 calendar.add(Calendar.YEAR,1);
             }
 
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY * 365, alarmIntent);
-
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),alarmIntent);
         }else {
             Log.d(TAG_LOG, "Alarm off");
             alarmManager.cancel(alarmIntent);
