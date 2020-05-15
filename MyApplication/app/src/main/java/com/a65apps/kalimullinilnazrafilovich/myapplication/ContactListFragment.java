@@ -25,8 +25,8 @@ public class ContactListFragment extends ListFragment{
     private View view;
 
 
-    TextView name;
-    TextView telephoneNumber;
+    private TextView name;
+    private TextView telephoneNumber;
 
     interface GetContact{
         void getContactList(Contact[] result);
@@ -50,6 +50,14 @@ public class ContactListFragment extends ListFragment{
         contactService.getListContacts(callback);
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+        name = null;
+        telephoneNumber = null;
     }
 
     @Override
@@ -100,14 +108,5 @@ public class ContactListFragment extends ListFragment{
            }
        }
    };
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
-        name = null;
-        telephoneNumber = null;
-    }
 
 }

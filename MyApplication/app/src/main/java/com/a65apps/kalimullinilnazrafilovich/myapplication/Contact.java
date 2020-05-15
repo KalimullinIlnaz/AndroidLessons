@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
+import java.util.GregorianCalendar;
+
 public class Contact {
     private final String name;
     private final String telephoneNumber;
@@ -7,10 +9,13 @@ public class Contact {
     private final  String email;
     private final  String email2;
     private final  String description;
+    private final GregorianCalendar dateOfBirth;
 
 
-    Contact(String name, String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
+
+    Contact(String name, GregorianCalendar dateOfBirth,  String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
         this.name = name;
+        this.dateOfBirth = dateOfBirth;
         this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.telephoneNumber2 = telephoneNumber2;
@@ -18,17 +23,12 @@ public class Contact {
         this.description = description;
     }
 
-    Contact(){
-        name = "";
-        telephoneNumber = "" ;
-        telephoneNumber2 = "";
-        email = "";
-        email2 = "";
-        description = "";
-    }
-
     public String getName() {
         return name;
+    }
+
+    public GregorianCalendar getDateOfBirth() {
+        return dateOfBirth;
     }
 
     public String getTelephoneNumber() {

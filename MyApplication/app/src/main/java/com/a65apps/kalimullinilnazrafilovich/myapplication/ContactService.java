@@ -9,6 +9,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 public class ContactService extends Service {
@@ -18,9 +20,9 @@ public class ContactService extends Service {
 
     private  String TAG_LOG = "SERVICE";
     private IBinder binder = new LocalService();
-    Contact vova = new Contact("Вова", "111111111", "12222222", "vvvvvvv", "v2222222", "description");
-    Contact pasha = new Contact("Паша", "222222222", "2222222222", "ppppp", "p2222222", "description");
-    Contact dima = new Contact("Дима", "33333333", "2333333333", "ddddd", "d2222222", "description");
+    private Contact vova = new Contact("Вова", new GregorianCalendar(1999, Calendar.SEPTEMBER,23), "111111111", "12222222", "vvvvvvv", "v2222222", "description");
+    private Contact pasha = new Contact("Паша", new GregorianCalendar(1999, Calendar.MAY,13), "222222222", "2222222222", "ppppp", "p2222222", "description");
+    private Contact dima = new Contact("Дима", new GregorianCalendar(1999, Calendar.MAY,15),"33333333", "2333333333", "ddddd", "d2222222", "description");
     private Contact[] contacts = {vova,pasha,dima};
 
     @Override
