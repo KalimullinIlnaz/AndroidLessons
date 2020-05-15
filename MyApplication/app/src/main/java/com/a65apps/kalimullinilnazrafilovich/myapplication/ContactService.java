@@ -2,13 +2,16 @@ package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
 
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Binder;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 import android.util.Log;
 import androidx.annotation.Nullable;
-
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -18,16 +21,16 @@ public class ContactService extends Service {
         ContactService getService();
     }
 
-    private  String TAG_LOG = "SERVICE";
+    private String TAG_LOG = "Service";
+
     private IBinder binder = new LocalService();
-    private Contact vova = new Contact("Вова", new GregorianCalendar(1999, Calendar.SEPTEMBER,23), "111111111", "12222222", "vvvvvvv", "v2222222", "description");
-    private Contact pasha = new Contact("Паша", new GregorianCalendar(1999, Calendar.MAY,13), "222222222", "2222222222", "ppppp", "p2222222", "description");
-    private Contact dima = new Contact("Дима", new GregorianCalendar(1999, Calendar.MAY,15),"33333333", "2333333333", "ddddd", "d2222222", "description");
-    private Contact[] contacts = {vova,pasha,dima};
+
+    private ArrayList<Contact> contacts;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        loadContacts();
         Log.d(TAG_LOG, "ContactService.onCreate");
 
     }
@@ -50,7 +53,7 @@ public class ContactService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Contact result = contacts[id];
+                Contact result = contacts.get(id);
                 ContactDetailsFragment.GetContact local = ref.get();
                 if (local != null){
                     local.getDetailsContact(result);
@@ -65,13 +68,62 @@ public class ContactService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Contact[] result = contacts;
+                ArrayList<Contact> result = contacts;
                 ContactListFragment.GetContact local = ref.get();
                 if (local != null){
                     local.getContactList(result);
                 }
             }
         }).start();
+    }
+
+    public void loadContacts(){
+        contacts = new ArrayList<Contact>();
+        ContentResolver contentResolver = getContentResolver();
+        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
+
+        if (cursor != null){
+            while (cursor.moveToNext()){
+                String id = "";
+                String name = "";
+                String telephoneNumber = "";
+                String email = "";
+
+                id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+
+                name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                Log.d(TAG_LOG, "name " + name);
+
+                Cursor pCur = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                        new String[]{id}, null);
+
+                while (pCur.moveToNext()) {
+                    telephoneNumber = pCur.getString(
+                            pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    Log.d(TAG_LOG, "telephoneNumber " + telephoneNumber);
+                }
+                pCur.close();
+
+
+                Cursor emailCur = contentResolver.query(
+                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                        new String[]{id}, null);
+                while (emailCur.moveToNext()) {
+                    email = emailCur.getString(
+                            emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    Log.d(TAG_LOG, "email " + email);
+                }
+                emailCur.close();
+
+                Contact currentContact = new Contact(name,new GregorianCalendar(1999, Calendar.MAY,15),telephoneNumber,"",email,"","");
+
+                contacts.add(currentContact);
+            }
+        }
+
     }
 
     class LocalService extends Binder{
