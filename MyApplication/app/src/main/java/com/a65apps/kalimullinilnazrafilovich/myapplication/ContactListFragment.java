@@ -17,10 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class ContactListFragment extends ListFragment{
     private ContactService contactService;
-    private Contact[] contacts;
+    private ArrayList<Contact> contacts;
     private  String TAG_LOG = "list";
     private View view;
 
@@ -29,7 +31,7 @@ public class ContactListFragment extends ListFragment{
     private TextView telephoneNumber;
 
     interface GetContact{
-        void getContactList(Contact[] result);
+        void getContactList(ArrayList<Contact> result);
     }
 
     @Override
@@ -74,8 +76,8 @@ public class ContactListFragment extends ListFragment{
 
    private GetContact callback = new GetContact() {
        @Override
-       public void getContactList(Contact[] result) {
-           final Contact[] contacts = result;
+       public void getContactList(ArrayList<Contact> result) {
+           final ArrayList<Contact> contacts = result;
            if (view != null){
                view.post(new Runnable() {
                    @Override
@@ -89,7 +91,7 @@ public class ContactListFragment extends ListFragment{
                                if (listItem == null)
                                    listItem = getLayoutInflater().inflate(R.layout.fragment_contact_list, null, false);
 
-                               Contact currentContact = contacts[position];
+                               Contact currentContact = contacts.get(position);
 
                                name = (TextView) listItem.findViewById(R.id.namePerson);
                                telephoneNumber = (TextView) listItem.findViewById(R.id.telephoneNumberPerson);

@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -17,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
 
     private boolean isBound = false;
 
-    final String TAG = "SERVICE";
+    final String TAG = "MainActivity";
 
     private boolean firstCreateMainActivity;
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements ContactService.IC
 
         Intent intent = new Intent(this,ContactService.class);
         bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
 
