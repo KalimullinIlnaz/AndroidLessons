@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
 
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +20,13 @@ import java.util.ArrayList;
 
 
 public class ContactListFragment extends ListFragment{
+    private  String TAG_LOG = "ContactListFragment";
+
     private ContactService contactService;
+
     private ArrayList<Contact> contacts;
-    private  String TAG_LOG = "list";
+
     private View view;
-
-
     private TextView name;
     private TextView telephoneNumber;
 
@@ -37,8 +37,8 @@ public class ContactListFragment extends ListFragment{
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof ContactService.IContactService){
-            contactService = ((ContactService.IContactService)context).getService();
+        if (context instanceof ContactService.ContactServiceInterface){
+            contactService = ((ContactService.ContactServiceInterface)context).getService();
         }
     }
 
@@ -68,8 +68,9 @@ public class ContactListFragment extends ListFragment{
     }
 
     private void showDetails(int position) {
-        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(position);
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contacts.get(position).getId());
         FragmentManager fragmentManager = getFragmentManager();
+        assert fragmentManager != null;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
     }
@@ -77,7 +78,7 @@ public class ContactListFragment extends ListFragment{
    private GetContact callback = new GetContact() {
        @Override
        public void getContactList(ArrayList<Contact> result) {
-           final ArrayList<Contact> contacts = result;
+           contacts = result;
            if (view != null){
                view.post(new Runnable() {
                    @Override

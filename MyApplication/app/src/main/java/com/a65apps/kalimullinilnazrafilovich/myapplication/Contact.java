@@ -1,19 +1,31 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class Contact {
+    private final String id;
     private final String name;
     private final String telephoneNumber;
     private final  String telephoneNumber2;
     private final  String email;
     private final  String email2;
     private final  String description;
-    private final GregorianCalendar dateOfBirth;
+    private final String dateOfBirth;
 
+    Contact(String id,String name,String telephoneNumber){
+        this.id = id;
+        this.name = name;
+        this.telephoneNumber = telephoneNumber;
+        this.email = " ";
+        this.telephoneNumber2  = " ";
+        this.email2 = " ";
+        this.description = " ";
+        this.dateOfBirth = " ";
+    }
 
-
-    Contact(String name, GregorianCalendar dateOfBirth,  String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
+    Contact(String id,String name, String dateOfBirth,  String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
+        this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.telephoneNumber = telephoneNumber;
@@ -23,11 +35,15 @@ public class Contact {
         this.description = description;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public GregorianCalendar getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 

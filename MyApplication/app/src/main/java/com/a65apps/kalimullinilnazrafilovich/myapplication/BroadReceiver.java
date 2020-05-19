@@ -66,9 +66,8 @@ public class BroadReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
 
+        assert notificationManager != null;
         notificationManager.notify(1,  notification.build());
-
-
 
         repeatAlarm(context,id,text);
     }
@@ -76,7 +75,7 @@ public class BroadReceiver extends BroadcastReceiver {
     private void repeatAlarm(Context context,int id,String text) {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-        Intent intent = new Intent(ContactDetailsFragment.BROAD_ACTION);
+        Intent intent = new Intent(Constants.BROAD_ACTION);
         intent.putExtra("id",id);
         intent.putExtra("textReminder", text);
 

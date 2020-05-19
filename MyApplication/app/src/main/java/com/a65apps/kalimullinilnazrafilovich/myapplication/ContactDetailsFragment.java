@@ -18,7 +18,11 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -27,8 +31,8 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
     private ContactService contactService;
     private View viewContactDetails;
 
-    Contact contactDetails;
-    private int id;
+    private Contact contactDetails;
+    private String id;
 
     private TextView telephoneNumber;
     private TextView name;
@@ -38,21 +42,19 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
     private TextView description;
     private TextView dataOfBirth;
 
-    private ToggleButton toggleButton;
 
-    public static final String BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplication";
-    private  String TAG_LOG = "ContactDetailsFragment";
+    private final String TAG_LOG = "ContactDetailsFragment";
 
-    AlarmManager alarmManager;
+    private AlarmManager alarmManager;
 
     interface GetContact{
         void getDetailsContact(Contact result);
     }
 
-    static ContactDetailsFragment newInstance(int id) {
+    static ContactDetailsFragment newInstance(String id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
         Bundle args = new Bundle();
-        args.putInt("id",id);
+        args.putString("id",id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,8 +62,8 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof ContactService.IContactService){
-            contactService = ((ContactService.IContactService)context).getService();
+        if (context instanceof ContactService.ContactServiceInterface){
+            contactService = ((ContactService.ContactServiceInterface)context).getService();
         }
     }
 
@@ -75,7 +77,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
                              Bundle savedInstanceState) {
         viewContactDetails = inflater.inflate(R.layout.fragment_contact_details, container, false);
 
-        name= viewContactDetails.findViewById(R.id.name);
+        name = viewContactDetails.findViewById(R.id.name);
         dataOfBirth = viewContactDetails.findViewById(R.id.DayOfBirth);
         telephoneNumber = viewContactDetails.findViewById(R.id.firstTelephoneNumber);
         telephoneNumber2 = viewContactDetails.findViewById(R.id.secondTelephoneNumber);
@@ -85,12 +87,12 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
 
         getActivity().setTitle("Детали контактов");
 
-        id = getArguments().getInt("id");
+        id = getArguments().getString("id");
 
-        toggleButton = viewContactDetails.findViewById(R.id.btnBirthdayReminder);
+        ToggleButton toggleButton = viewContactDetails.findViewById(R.id.btnBirthdayReminder);
 
         if (PendingIntent.getBroadcast(getActivity(), 0,
-                new Intent(BROAD_ACTION),
+                new Intent(Constants.BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null){
             toggleButton.setChecked(false);
             toggleButton.setOnCheckedChangeListener(this);
@@ -100,8 +102,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
         }
 
 
-
-        contactService.getDetailContact(callback,id);
+        contactService.getDetailsContact(callback,id);
 
         return viewContactDetails;
     }
@@ -128,11 +129,17 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
                     @Override
                     public void run() {
                         if (name == null) return;
+                        Date calendar;
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+                        simpleDateFormat.applyPattern("yyyy.MM.dd");
+                        try {
+                            calendar = simpleDateFormat.parse(contactDetails.getDateOfBirth());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
 
                         name.setText(contactDetails.getName());
-                        dataOfBirth.setText(contactDetails.getDateOfBirth().get(Calendar.DATE) + "." +
-                                contactDetails.getDateOfBirth().get(Calendar.MONTH) + "." +
-                                contactDetails.getDateOfBirth().get(Calendar.YEAR));
+                        dataOfBirth.setText(contactDetails.getDateOfBirth());
                         telephoneNumber.setText(contactDetails.getTelephoneNumber());
                         telephoneNumber2.setText(contactDetails.getTelephoneNumber2());
                         email.setText(contactDetails.getEmail());
@@ -148,7 +155,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 
-        Intent intent = new Intent(BROAD_ACTION);
+        Intent intent = new Intent(Constants.BROAD_ACTION);
         intent.putExtra("id",id);
         intent.putExtra("textReminder", contactDetails.getName() + " " + getActivity().getString(R.string.text_notification));
 
@@ -158,9 +165,17 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
 
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 
-            calendar.set(Calendar.DATE,contactDetails.getDateOfBirth().get(Calendar.DATE));
-            calendar.set(Calendar.MONTH,contactDetails.getDateOfBirth().get(Calendar.MONTH));
-            calendar.set(Calendar.YEAR,Calendar.getInstance().get(Calendar.YEAR));
+            DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+            Calendar cal  = Calendar.getInstance();
+            try {
+                cal.setTime(df.parse(contactDetails.getDateOfBirth()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            calendar.set(Calendar.DATE,cal.get(Calendar.DAY_OF_MONTH));
+            calendar.set(Calendar.MONTH,cal.get(Calendar.MONTH));
+            calendar.set(Calendar.YEAR,cal.get(Calendar.YEAR));
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
@@ -175,6 +190,4 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
             alarmManager.cancel(alarmIntent);
         }
     }
-
-
 }
