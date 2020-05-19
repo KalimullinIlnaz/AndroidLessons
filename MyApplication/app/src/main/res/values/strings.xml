@@ -17,4 +17,5 @@
     <string name="birthdayReminderOff">Включить напоминание</string>
     <string name="title_notification">Напоминание о дне рождения</string>
     <string name="text_notification">сегодня празднует день рождения</string>
+    <string name="deny_permission_message">Пожалуйста предоставте разрешение на чтение контактов</string>
 </resources>
