@@ -1,13 +1,16 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -22,7 +25,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -101,8 +103,14 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
             toggleButton.setOnCheckedChangeListener(this);
         }
 
+        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+        }else {
+            contactService.getDetailsContact(callback,id);
+        }
 
-        contactService.getDetailsContact(callback,id);
 
         return viewContactDetails;
     }
@@ -179,6 +187,20 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
         }else {
             Log.d(TAG_LOG, "Alarm off");
             alarmManager.cancel(alarmIntent);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        switch (requestCode){
+            case Constants.PERMISSIONS_REQUEST_READ_CONTACTS:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    contactService.getDetailsContact(callback,id);
+                }else {
+
+                }
         }
     }
 }

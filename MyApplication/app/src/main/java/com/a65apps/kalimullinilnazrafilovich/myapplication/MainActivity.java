@@ -54,13 +54,6 @@ public class MainActivity extends AppCompatActivity implements ContactService.Co
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-
-        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS},
-                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
-        }
-
         firstCreateMainActivity = savedInstanceState == null;
 
         Intent intent = new Intent(this,ContactService.class);

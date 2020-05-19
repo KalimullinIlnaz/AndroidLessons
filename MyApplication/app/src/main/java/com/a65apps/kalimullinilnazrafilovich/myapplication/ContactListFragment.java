@@ -1,10 +1,13 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
@@ -49,7 +52,14 @@ public class ContactListFragment extends ListFragment{
 
         getActivity().setTitle("Список контактов");
 
-        contactService.getListContacts(callback);
+        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+            contactService.getListContacts(callback);
+        }else {
+           requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
+
 
         return view;
     }
@@ -112,4 +122,16 @@ public class ContactListFragment extends ListFragment{
        }
    };
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        switch (requestCode){
+            case Constants.PERMISSIONS_REQUEST_READ_CONTACTS:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    contactService.getListContacts(callback);
+
+                }
+        }
+    }
 }
