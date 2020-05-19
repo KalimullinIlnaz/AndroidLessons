@@ -15,16 +15,6 @@ import java.util.ArrayList;
 
 
 public class ContactService extends Service {
-    private String id = null;
-    private String name = null;
-    private String telephoneNumber = null;
-    private String telephoneNumber2 = null;
-    private String email = null;
-    private String email2 = null;
-    private String description = null;
-    private String birthOfDay = null;
-
-
     public interface ContactServiceInterface {
         ContactService getService();
     }
@@ -83,74 +73,58 @@ public class ContactService extends Service {
         try{
             if (cursor != null){
                 while (cursor.moveToNext()){
-                    id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                     Log.d(TAG_LOG, "ID " + id);
 
-                    name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
                     Log.d(TAG_LOG, "name " + name);
-                    readTelephoneNumbers(id,contentResolver);
+                    String[] telephoneNumbers = readTelephoneNumbers(id);
 
-                    contacts.add(new Contact(id,name,telephoneNumber));
+                    contacts.add(new Contact(id,name,telephoneNumbers[0]));
                 }
             }
         }finally {
-            assert cursor != null;
-            cursor.close();
+            if (cursor != null){
+                cursor.close();
+            }
         }
         return contacts;
     }
 
     private Contact getDetailsContact(String idContact){
+        Contact contact = null;
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,
                 ContactsContract.Contacts._ID + " = " + idContact,null ,null);
 
-        telephoneNumber = null;
-        telephoneNumber2 = null;
-        email = null;
-        email2 = null;
-        birthOfDay = null;
-
         try{
-            assert cursor != null;
-            cursor.moveToNext();
+            if (cursor != null) {
+                cursor.moveToNext();
 
-            name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-            readTelephoneNumbers(idContact,contentResolver);
-            readEmails(idContact,contentResolver);
-            readDataOfBirth(idContact,contentResolver);
+                String[] telephoneNumbers = readTelephoneNumbers(idContact);
+                String[] emails = readEmails(idContact);
+                String birthOfDay = readDataOfBirth(idContact);
 
-            description = "Описание контакта " + name;
+                contact = new Contact(idContact,name,birthOfDay,
+                        telephoneNumbers[0],telephoneNumbers[1],
+                        emails[0],emails[1],new String());
+            }
 
         }finally {
-            assert cursor != null;
-            cursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
-        if (email == null){
-            email = "Почта отсутствует";
-        }
-
-        if (email2 == null){
-            email2 = "Вторая почта отсутствует";
-        }
-
-        if (telephoneNumber2 == null){
-            telephoneNumber2 = "Второй телефонный номер отсутствует";
-        }
-
-        if (birthOfDay == null){
-            birthOfDay = "Дата рождения не установлена";
-        }
-
-
-        return new Contact(id,name,birthOfDay,telephoneNumber,telephoneNumber2,email,email2,description);
+        return contact;
     }
 
-
-    private void readTelephoneNumbers(String id,@NonNull ContentResolver contentResolver) {
+    private String[] readTelephoneNumbers(String id) {
         int countTelephoneNumbers = 0;
+        ContentResolver contentResolver = getContentResolver();
+        String[] telephoneNumbers = new String[2];
         Cursor pCur = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
                 null, null);
@@ -158,24 +132,28 @@ public class ContactService extends Service {
             assert pCur != null;
             while (pCur.moveToNext()) {
                 if (countTelephoneNumbers == 0){
-                    telephoneNumber = pCur.getString(
+                    telephoneNumbers[countTelephoneNumbers] = pCur.getString(
                             pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    Log.d(TAG_LOG, "telephoneNumber " + telephoneNumber);
+                    Log.d(TAG_LOG, "telephoneNumber " + telephoneNumbers[countTelephoneNumbers]);
                 }
                 if (countTelephoneNumbers == 1){
-                    telephoneNumber2 = pCur.getString(
+                    telephoneNumbers[countTelephoneNumbers] = pCur.getString(
                             pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    Log.d(TAG_LOG, "telephoneNumber2 " + telephoneNumber2);
+                    Log.d(TAG_LOG, "telephoneNumber2 " + telephoneNumbers[countTelephoneNumbers]);
                 }
                 countTelephoneNumbers++;
             }
         }finally {
-            assert pCur != null;
-            pCur.close();
+            if (pCur != null){
+                pCur.close();
+            }
         }
+        return telephoneNumbers;
     }
 
-    private void readEmails(String id,@NonNull ContentResolver contentResolver){
+    private String[] readEmails(String id){
+        ContentResolver contentResolver = getContentResolver();
+        String[] emails = new String[2];
         int countEmail = 0;
         Cursor emailCur = contentResolver.query(
                 ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -183,27 +161,32 @@ public class ContactService extends Service {
                 ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + id,
                 null, null);
         try{
-            assert emailCur != null;
-            while (emailCur.moveToNext()) {
-                if (countEmail == 0){
-                    email = emailCur.getString(
-                            emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    Log.d(TAG_LOG, "email " + email);
+            if (emailCur != null){
+                while (emailCur.moveToNext()) {
+                    if (countEmail == 0){
+                        emails[countEmail] = emailCur.getString(
+                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        Log.d(TAG_LOG, "email " + emails[countEmail]);
+                    }
+                    if (countEmail == 1){
+                        emails[countEmail] = emailCur.getString(
+                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        Log.d(TAG_LOG, "email 2 " + emails[countEmail]);
+                    }
+                    countEmail++;
                 }
-                if (countEmail == 1){
-                    email2 = emailCur.getString(
-                            emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    Log.d(TAG_LOG, "email 2 " + email2);
-                }
-                countEmail++;
             }
         }finally {
-            assert emailCur != null;
-            emailCur.close();
+            if (emailCur != null){
+                emailCur.close();
+            }
         }
+        return  emails;
     }
 
-    private void readDataOfBirth(String id,@NonNull ContentResolver contentResolver){
+    private String readDataOfBirth(String id){
+        String birthOfDay = null;
+        ContentResolver contentResolver = getContentResolver();
         Cursor dOfBirthCur = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
                 null,
@@ -213,17 +196,19 @@ public class ContactService extends Service {
                 null, null);
 
         try {
-            assert dOfBirthCur != null;
-            while (dOfBirthCur.moveToNext()){
-                birthOfDay = dOfBirthCur.getString(
-                        dOfBirthCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
-                Log.d(TAG_LOG, "birthOfDay" + birthOfDay);
-            }
-
+           if (dOfBirthCur != null){
+               while (dOfBirthCur.moveToNext()){
+                   birthOfDay = dOfBirthCur.getString(
+                           dOfBirthCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
+                   Log.d(TAG_LOG, "birthOfDay" + birthOfDay);
+               }
+           }
         }finally {
-            assert dOfBirthCur != null;
-            dOfBirthCur.close();
+            if (dOfBirthCur != null){
+                dOfBirthCur.close();
+            }
         }
+        return birthOfDay;
     }
 
     class LocalService extends Binder{

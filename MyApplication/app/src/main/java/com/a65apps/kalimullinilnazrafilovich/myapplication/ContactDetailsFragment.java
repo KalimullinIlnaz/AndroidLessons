@@ -129,15 +129,6 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
                     @Override
                     public void run() {
                         if (name == null) return;
-                        Date calendar;
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-                        simpleDateFormat.applyPattern("yyyy.MM.dd");
-                        try {
-                            calendar = simpleDateFormat.parse(contactDetails.getDateOfBirth());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
                         name.setText(contactDetails.getName());
                         dataOfBirth.setText(contactDetails.getDateOfBirth());
                         telephoneNumber.setText(contactDetails.getTelephoneNumber());
@@ -165,7 +156,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
 
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 
-            DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Calendar cal  = Calendar.getInstance();
             try {
                 cal.setTime(df.parse(contactDetails.getDateOfBirth()));

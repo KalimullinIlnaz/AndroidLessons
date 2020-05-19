@@ -26,7 +26,7 @@ public class BroadReceiver extends BroadcastReceiver {
         Log.d(TAG_LOG, "OnReceive context = " + context.toString());
         Log.d(TAG_LOG, "Receive action: " + intent.getAction());
 
-        int id = intent.getIntExtra("id",0);
+        String id = intent.getStringExtra("id");
         String textReminder = intent.getStringExtra("textReminder");
 
         Log.d(TAG_LOG, "id + text = " + id + " " +  textReminder);
@@ -34,7 +34,7 @@ public class BroadReceiver extends BroadcastReceiver {
         showNotification(context, textReminder, id);
     }
 
-    private void showNotification(Context context, String text, int id) {
+    private void showNotification(Context context, String text, String id) {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.putExtra("contactDetail","details");
         resultIntent.putExtra("id",id);
@@ -72,7 +72,7 @@ public class BroadReceiver extends BroadcastReceiver {
         repeatAlarm(context,id,text);
     }
 
-    private void repeatAlarm(Context context,int id,String text) {
+    private void repeatAlarm(Context context,String id,String text) {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(Constants.BROAD_ACTION);
