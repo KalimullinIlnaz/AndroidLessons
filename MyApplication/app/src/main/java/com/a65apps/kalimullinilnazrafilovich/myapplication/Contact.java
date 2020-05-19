@@ -1,8 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 public class Contact {
     private final String id;
     private final String name;
