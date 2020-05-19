@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.text.DateFormat;
@@ -199,7 +200,8 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     contactService.getDetailsContact(callback,id);
                 }else {
-
+                    Toast message = Toast.makeText(getContext(),R.string.deny_permission_message,Toast.LENGTH_LONG);
+                    message.show();
                 }
         }
     }
