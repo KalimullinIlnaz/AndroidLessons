@@ -6,7 +6,7 @@
     android:focusable="false"
     android:clickable="false"
     android:background="@android:color/white"
-    tools:context=".ContactListFragment"
+    tools:context=".fragments.ContactListFragment"
     android:orientation="horizontal">
 
     <ImageView

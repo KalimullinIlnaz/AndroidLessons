@@ -10,7 +10,7 @@ public class Contact {
     private final  String description;
     private final String dateOfBirth;
 
-    Contact(String id,String name,String telephoneNumber){
+    public Contact(String id, String name, String telephoneNumber){
         this.id = id;
         this.name = name;
         this.telephoneNumber = telephoneNumber;

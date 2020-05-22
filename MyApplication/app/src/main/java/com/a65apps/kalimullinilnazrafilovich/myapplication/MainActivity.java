@@ -1,22 +1,22 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity implements ContactService.ContactServiceInterface {
+import com.a65apps.kalimullinilnazrafilovich.myapplication.fragments.ContactDetailsFragment;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.fragments.ContactListFragment;
+import com.arellomobile.mvp.MvpAppCompatActivity;
+
+
+public class MainActivity extends MvpAppCompatActivity implements ContactService.ContactServiceInterface {
     private ContactService contactService;
 
     private boolean isBound = false;

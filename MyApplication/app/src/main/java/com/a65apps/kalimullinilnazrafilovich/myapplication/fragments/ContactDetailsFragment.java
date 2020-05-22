@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.myapplication;
+package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
 import android.Manifest;
 import android.app.AlarmManager;
@@ -22,6 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.ContactService;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,8 +38,10 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+public class ContactDetailsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
+    @InjectPresenter
+    ContactDetailsPresenter contactDetailsPresenter;
 
-public class ContactDetailsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener{
     private ContactService contactService;
     private View viewContactDetails;
 
@@ -45,16 +56,21 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
     private TextView description;
     private TextView dataOfBirth;
 
-
-    private final String TAG_LOG = "ContactDetailsFragment";
+    private final String TAG = "ContactDetailsFragment";
 
     private AlarmManager alarmManager;
 
-    interface GetContact{
+    //interface ContactDetailsView
+    @Override
+    public void showContactDetail() {
+
+    }
+
+    public interface GetContact{
         void getDetailsContact(Contact result);
     }
 
-    static ContactDetailsFragment newInstance(String id) {
+    public static ContactDetailsFragment newInstance(String id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
         Bundle args = new Bundle();
         args.putString("id",id);
@@ -71,11 +87,6 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewContactDetails = inflater.inflate(R.layout.fragment_contact_details, container, false);
@@ -88,7 +99,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
         email2 = viewContactDetails.findViewById(R.id.secondEmail);
         description = viewContactDetails.findViewById(R.id.description);
 
-        getActivity().setTitle("Детали контактов");
+        getActivity().setTitle(R.string.tittle_toolbar_contact_details);
 
         id = getArguments().getString("id");
 
@@ -161,7 +172,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
 
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getActivity(),0,intent,0);
         if (isChecked){
-            Log.d(TAG_LOG, "Alarm on");
+            Log.d(TAG, "Alarm on");
 
             Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 
@@ -186,7 +197,7 @@ public class ContactDetailsFragment extends Fragment implements CompoundButton.O
 
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),alarmIntent);
         }else {
-            Log.d(TAG_LOG, "Alarm off");
+            Log.d(TAG, "Alarm off");
             alarmManager.cancel(alarmIntent);
         }
     }

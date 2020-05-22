@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Contacts</string>
     <string name="Text">Контакты</string>
+    <string name="tittle_toolbar_contact_list">Список контактов</string>
+    <string name="tittle_toolbar_contact_details">Детали контакта</string>
     <string name="telephoneNumber">Number</string>
     <string name="name">Name</string>
     <string name="telephoneNumber1">53535353</string>
