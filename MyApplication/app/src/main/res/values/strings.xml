@@ -18,4 +18,6 @@
     <string name="title_notification">Напоминание о дне рождения</string>
     <string name="text_notification">сегодня празднует день рождения</string>
     <string name="deny_permission_message">Пожалуйста предоставте разрешение на чтение контактов</string>
+    <string name="title_toolbar_contact_details">Детали контактов</string>
+    <string name="tittle_toolbar_contact_list">Список контактов</string>
 </resources>

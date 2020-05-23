@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <receiver
-            android:name=".BroadReceiver"
+            android:name=".receivers.BroadReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -28,11 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".ContactService"
-            android:enabled="true">
-        </service>
 
     </application>
 
