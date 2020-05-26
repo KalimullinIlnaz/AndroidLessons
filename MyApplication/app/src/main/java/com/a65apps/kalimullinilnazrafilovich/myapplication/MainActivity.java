@@ -11,7 +11,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 
 
 public class MainActivity extends MvpAppCompatActivity  {
-
     private boolean isBound = false;
 
     private final String TAG = "MainActivity";
@@ -38,9 +37,6 @@ public class MainActivity extends MvpAppCompatActivity  {
         ContactListFragment contactListFragment = new ContactListFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        String details = getIntent().getStringExtra("contactDetail");
-        String id = getIntent().getStringExtra("id");
-
         fragmentTransaction.add(R.id.content,contactListFragment).commit();
     }
 

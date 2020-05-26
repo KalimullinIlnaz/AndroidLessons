@@ -27,16 +27,14 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactListView
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.util.ArrayList;
 
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView, ItemAdapterClickListener {
     private  String TAG = "ContactListFragment";
-
     private RecyclerView recyclerView;
+    private ContactAdapter contactAdapter;
 
     @InjectPresenter
     ContactListPresenter contactListPresenter;
@@ -47,15 +45,13 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     private ArrayList<Contact> contacts;
-
     private View view;
 
-    @StateStrategyType(OneExecutionStateStrategy.class)
     @Override
-    public void showContactList(final ArrayList<Contact> contacts) {
+    public void showContactList(ArrayList<Contact> contacts) {
         this.contacts = contacts;
-        recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
-        ContactAdapter contactAdapter = new ContactAdapter(contacts);
+        contactAdapter.setData(contacts);
+        contactAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(contactAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -66,8 +62,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-
         getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
+        contactAdapter = new ContactAdapter();
 
         int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {

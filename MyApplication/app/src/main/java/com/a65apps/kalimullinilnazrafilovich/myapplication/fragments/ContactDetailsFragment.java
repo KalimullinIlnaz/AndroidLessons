@@ -121,6 +121,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
                     Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
         }else {
             contactDetailsPresenter.showDetails();
+
         }
         return viewContactDetails;
     }
@@ -154,6 +155,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Calendar cal  = Calendar.getInstance();
+
             try {
                 cal.setTime(df.parse(contactDetails.getDateOfBirth()));
             } catch (ParseException e) {

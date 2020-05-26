@@ -7,41 +7,54 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactListPresenter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ContactListRepository {
-
     private String TAG = "ContactListRepository";
-
-    private ContentResolver contentResolver;
+    private final ContentResolver contentResolver;
 
     public ContactListRepository(Context context){
         contentResolver = context.getContentResolver();
     }
 
-    public ArrayList<Contact> getContacts(){
-        ArrayList<Contact> contacts = new ArrayList<>();
-
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
-        try{
-            if (cursor != null){
-                while (cursor.moveToNext()){
-                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    Log.d(TAG, "ID " + id);
-
-                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-                    Log.d(TAG, "name " + name);
-                    String[] telephoneNumbers = readTelephoneNumbers(id);
-
-                    contacts.add(new Contact(id,name,telephoneNumbers[0]));
+    public void getListContacts(ContactListPresenter.GetContacts callback) {
+        final WeakReference<ContactListPresenter.GetContacts> ref = new WeakReference<>(callback);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<Contact> result = getContacts();
+                ContactListPresenter.GetContacts local = ref.get();
+                if (local != null){
+                    local.getContacts(result);
                 }
             }
-        }finally {
-            if (cursor != null){
-                cursor.close();
+        }).start();
+    }
+
+    private ArrayList<Contact> getContacts(){
+        final ArrayList<Contact> contacts = new ArrayList<>();
+            Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
+            try{
+                if (cursor != null){
+                    while (cursor.moveToNext()){
+                        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        Log.d(TAG, "ID " + id);
+
+                        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+                        Log.d(TAG, "name " + name);
+                        String[] telephoneNumbers = readTelephoneNumbers(id);
+
+                        contacts.add(new Contact(id,name,telephoneNumbers[0]));
+                    }
+                }
+            }finally {
+                if (cursor != null){
+                    cursor.close();
+                }
             }
-        }
         return contacts;
     }
 

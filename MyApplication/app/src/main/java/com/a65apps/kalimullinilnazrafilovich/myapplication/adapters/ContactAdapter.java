@@ -16,24 +16,22 @@ import java.util.ArrayList;
 
 public class ContactAdapter extends RecyclerView.Adapter {
     private ArrayList<Contact> contacts;
-    private RecyclerView.ViewHolder viewHolder;
     private ItemAdapterClickListener itemAdapterClickListener;
 
-    public ContactAdapter(ArrayList<Contact> contacts){
-        this.contacts = contacts;
+    public void setData(ArrayList<Contact> contacts){
+        this.contacts = contacts;;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item,parent,false);
-        return new ContactViewHolder(view);
+        return new ContactViewHolder(view,contacts,itemAdapterClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((ContactViewHolder)holder).bindView(position);
-        viewHolder = holder;
     }
 
     @Override
@@ -45,21 +43,24 @@ public class ContactAdapter extends RecyclerView.Adapter {
         this.itemAdapterClickListener = itemAdapterClickListener;
     }
 
-    private  class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView name;
         private TextView telephoneNumber;
+        private ArrayList<Contact> contacts;
+        private ItemAdapterClickListener itemAdapterClickListener;
 
-        public ContactViewHolder(View itemView){
+        ContactViewHolder(View itemView, ArrayList<Contact> contacts,ItemAdapterClickListener itemAdapterClickListener){
             super(itemView);
+            this.contacts = contacts;
+            this.itemAdapterClickListener = itemAdapterClickListener;
 
             name = (TextView) itemView.findViewById(R.id.namePerson);
             telephoneNumber = (TextView) itemView.findViewById(R.id.telephoneNumberPerson);
 
             itemView.setOnClickListener(this);
-
         }
 
-        public void bindView(int position){
+        void bindView(int position){
             name.setText(contacts.get(position).getName());
             telephoneNumber.setText(contacts.get(position).getTelephoneNumber());
         }
@@ -68,7 +69,9 @@ public class ContactAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View v) {
             if (itemAdapterClickListener != null){
-                itemAdapterClickListener.onClick(v,getAdapterPosition());
+                if (getAdapterPosition() != RecyclerView.NO_POSITION){
+                    itemAdapterClickListener.onClick(v,getAdapterPosition());
+                }
             }
         }
     }

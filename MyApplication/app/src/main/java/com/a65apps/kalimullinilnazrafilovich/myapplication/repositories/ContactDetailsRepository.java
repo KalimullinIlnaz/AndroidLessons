@@ -7,18 +7,36 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
+
+import java.lang.ref.WeakReference;
+
 
 
 public class ContactDetailsRepository {
     private String TAG = "ContactDetailsRepository";
-
-    private ContentResolver contentResolver;
+    private final ContentResolver contentResolver;
 
     public ContactDetailsRepository(Context context){
         contentResolver = context.getContentResolver();
     }
 
-    public Contact getDetailsContact(String idContact){
+    public void getDetails(ContactDetailsPresenter.GetDetails callback, final String id)  {
+        final WeakReference<ContactDetailsPresenter.GetDetails> ref = new WeakReference<>(callback);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Contact result = getDetailsContact(id);
+                ContactDetailsPresenter.GetDetails  local = ref.get();
+                if (local != null){
+                    local.getDetails(result);
+                }
+            }
+        }).start();
+    }
+
+
+    private Contact getDetailsContact(String idContact){
         Contact contact = null;
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,
                 ContactsContract.Contacts._ID + " = " + idContact,null ,null);
@@ -43,7 +61,6 @@ public class ContactDetailsRepository {
                 cursor.close();
             }
         }
-
         return contact;
     }
 

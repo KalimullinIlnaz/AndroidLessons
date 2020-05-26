@@ -20,7 +20,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-
 public class BroadReceiver extends BroadcastReceiver {
     private final String TAG_LOG = "BroadCast";
     private static String CHANNEL_ID = "BirthDay";
