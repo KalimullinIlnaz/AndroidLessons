@@ -52,7 +52,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         this.contacts = contacts;
         contactAdapter.setData(contacts);
         contactAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(contactAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         contactAdapter.setClickListener(this);
@@ -66,6 +65,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
         recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
         contactAdapter = new ContactAdapter();
+        recyclerView.setAdapter(contactAdapter);
 
         int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {

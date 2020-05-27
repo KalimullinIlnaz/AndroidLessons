@@ -13,7 +13,6 @@ import com.arellomobile.mvp.MvpPresenter;
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactDetailsRepository contactDetailsRepository;
     private final String id;
-    private Contact contact;
 
     public interface GetDetails{
         void getDetails(Contact result);
@@ -25,31 +24,31 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
         this.id = id;
     }
 
-    private GetDetails callback = new GetDetails() {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private final GetDetails callback = new GetDetails() {
         @Override
-        public void getDetails(Contact result) {
-            contact = result;
+        public void getDetails(final Contact result) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    getViewState().showContactDetail(result);
+                }
+            });
         }
     };
 
-    public void showDetails(){
-        // Можно вот тут подсказать как нужно сделать,
-        // как дождаться выполнения этого потока не через join
-        /*
+    public void showDetails() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 contactDetailsRepository.getDetails(callback,id);
             }
         }).start();
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                getViewState().showContactDetail(contact);
-            }
-        });
+    }
 
-         */
+    public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
     }
 
 }
