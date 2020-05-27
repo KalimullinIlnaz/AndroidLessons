@@ -1,41 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:focusable="false"
-    android:clickable="false"
-    android:background="@android:color/white"
-    tools:context=".ContactListFragment"
-    android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/photoPerson"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:src="@drawable/ic_launcher_background">
-    </ImageView>
-
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
-        android:orientation="vertical">
+        android:id="@+id/contact_recycler_view">
+    </androidx.recyclerview.widget.RecyclerView>
 
-        <TextView
-            android:id="@+id/namePerson"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:layout_margin="4dp"
-            android:text="@string/name1" />
-
-        <TextView
-            android:id="@+id/telephoneNumberPerson"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:text="@string/telephoneNumber1" />
-    </LinearLayout>
 </LinearLayout>

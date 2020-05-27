@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.myapplication;
+package com.a65apps.kalimullinilnazrafilovich.myapplication.receivers;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -13,9 +13,12 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.MainActivity;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 
 public class BroadReceiver extends BroadcastReceiver {
     private final String TAG_LOG = "BroadCast";

@@ -10,7 +10,7 @@ public class Contact {
     private final  String description;
     private final String dateOfBirth;
 
-    Contact(String id,String name,String telephoneNumber){
+    public Contact(String id,String name,String telephoneNumber){
         this.id = id;
         this.name = name;
         this.telephoneNumber = telephoneNumber;
@@ -21,7 +21,7 @@ public class Contact {
         this.dateOfBirth = " ";
     }
 
-    Contact(String id,String name, String dateOfBirth,  String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
+    public Contact(String id,String name, String dateOfBirth,  String telephoneNumber, String telephoneNumber2, String email, String email2, String description){
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
