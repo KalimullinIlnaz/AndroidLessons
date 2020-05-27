@@ -39,12 +39,7 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
     };
 
     public void showContactList() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-               contactListRepository.getListContacts(callback);
-            }
-        }).start();
+       contactListRepository.getListContacts(callback);
     }
 
     public void onDestroy() {

@@ -39,12 +39,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     };
 
     public void showDetails() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                contactDetailsRepository.getDetails(callback,id);
-            }
-        }).start();
+        contactDetailsRepository.getDetails(callback,id);
     }
 
     public void onDestroy() {
