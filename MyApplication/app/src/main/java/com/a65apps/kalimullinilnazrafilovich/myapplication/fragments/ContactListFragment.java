@@ -1,11 +1,16 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces.ItemAdapterClickListener;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
@@ -51,7 +57,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public void showContactList(ArrayList<Contact> contacts) {
         this.contacts = contacts;
         contactAdapter.setData(contacts);
-        contactAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         contactAdapter.setClickListener(this);
@@ -63,7 +68,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
 
+        setHasOptionsMenu (true);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
+        recyclerView.addItemDecoration(new ItemDecoration(20,10,20,20));
         contactAdapter = new ContactAdapter();
         recyclerView.setAdapter(contactAdapter);
 
@@ -104,8 +112,34 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public void onClick(View view, int position) {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contacts.get(position).getId());
         FragmentManager fragmentManager = getFragmentManager();
-        assert fragmentManager != null;
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_item,menu);
+        initSearchView(menu);
+    }
+
+    private void initSearchView(Menu menu){
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint(getString(R.string.tittle_menu));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                contactListPresenter.showContactList(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                contactListPresenter.showContactList(newText);
+                return false;
+            }
+        });
+    }
+
 }
