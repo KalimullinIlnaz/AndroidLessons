@@ -7,25 +7,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemDecoration extends RecyclerView.ItemDecoration {
-    private int offsetLeft;
-    private int offsetRight;
-    private int offsetTop;
-    private int offsetBottom;
+    private int offsetLeftPx;
+    private int offsetRightPx;
+    private int offsetTopPx;
+    private int offsetBottomPx;
 
-    public ItemDecoration(int offsetLeft, int offsetRight, int offsetTop, int offsetBottom) {
-        this.offsetLeft =offsetLeft;
-        this.offsetRight = offsetRight;
-        this.offsetTop = offsetTop;
-        this.offsetBottom = offsetBottom;
+    public ItemDecoration(int offsetLeftPx, int offsetRightPx, int offsetTopPx, int offsetBottomPx) {
+        this.offsetLeftPx =offsetLeftPx;
+        this.offsetRightPx = offsetRightPx;
+        this.offsetTopPx = offsetTopPx;
+        this.offsetBottomPx = offsetBottomPx;
     }
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        outRect.right = offsetRight;
-        outRect.left = offsetLeft;
-        outRect.top = offsetTop;
-        outRect.bottom = offsetBottom;
-
+        outRect.right = offsetRightPx;
+        outRect.left = offsetLeftPx;
+        outRect.top = offsetTopPx;
+        outRect.bottom = offsetBottomPx;
     }
-}
 
+}

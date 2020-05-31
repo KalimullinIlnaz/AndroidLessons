@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +26,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces.ItemAdapterClickListener;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.adapters.ContactAdapter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactListPresenter;
@@ -37,10 +37,11 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import java.util.ArrayList;
 
 
-public class ContactListFragment extends MvpAppCompatFragment implements ContactListView, ItemAdapterClickListener {
-    private  String TAG = "ContactListFragment";
+public class ContactListFragment extends MvpAppCompatFragment implements ContactListView,ContactAdapter.onContactListener {
+    private String TAG = "ContactListFragment";
     private RecyclerView recyclerView;
     private ContactAdapter contactAdapter;
+
 
     @InjectPresenter
     ContactListPresenter contactListPresenter;
@@ -59,7 +60,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         contactAdapter.setData(contacts);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        contactAdapter.setClickListener(this);
     }
 
     @Nullable
@@ -68,16 +68,17 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
 
-        setHasOptionsMenu (true);
+        setHasOptionsMenu(true);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
-        recyclerView.addItemDecoration(new ItemDecoration(20,10,20,20));
-        contactAdapter = new ContactAdapter();
+        recyclerView.addItemDecoration(new ItemDecoration(dpToPx(10),dpToPx(5),dpToPx(10),dpToPx(10)));
+
+        contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
 
         int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            contactListPresenter.showContactList();
+            contactListPresenter.showFilteredContactList();
         }else {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
                     Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -85,12 +86,16 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         return view;
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         view = null;
         recyclerView = null;
+    }
+
+    private int dpToPx(int dp){
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        return (int) ((dp * displayMetrics.density) + 0.5);
     }
 
     @Override
@@ -100,20 +105,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             case Constants.PERMISSIONS_REQUEST_READ_CONTACTS:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    contactListPresenter.showContactList();
+                    contactListPresenter.showFilteredContactList();
                 }else {
                     Toast message = Toast.makeText(getContext(),R.string.deny_permission_message,Toast.LENGTH_LONG);
                     message.show();
                 }
         }
-    }
-
-    @Override
-    public void onClick(View view, int position) {
-        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contacts.get(position).getId());
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
     }
 
     @Override
@@ -130,16 +127,22 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                contactListPresenter.showContactList(query);
+                contactListPresenter.showFilteredContactList(query);
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
-                contactListPresenter.showContactList(newText);
+                contactListPresenter.showFilteredContactList(newText);
                 return false;
             }
         });
     }
 
+    @Override
+    public void onContactClick(int position) {
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contacts.get(position).getId());
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
+    }
 }
