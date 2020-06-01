@@ -41,6 +41,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private String TAG = "ContactListFragment";
     private RecyclerView recyclerView;
     private ContactAdapter contactAdapter;
+    private final int offsetDP = 6;
 
 
     @InjectPresenter
@@ -71,7 +72,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         setHasOptionsMenu(true);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
-        recyclerView.addItemDecoration(new ItemDecoration(dpToPx(10),dpToPx(5),dpToPx(10),dpToPx(10)));
+        recyclerView.addItemDecoration(new ItemDecoration(dpToPx(offsetDP),dpToPx(8),dpToPx(offsetDP),dpToPx(offsetDP)));
 
         contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
@@ -95,7 +96,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     private int dpToPx(int dp){
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        return (int) ((dp * displayMetrics.density) + 0.5);
+        return (int) (dp * displayMetrics.density);
     }
 
     @Override

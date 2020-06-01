@@ -78,7 +78,11 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
 
         @Override
         public void onClick(View v) {
-            onContactListener.onContactClick(getAdapterPosition());
+            if (onContactListener != null){
+                if (getAdapterPosition() != RecyclerView.NO_POSITION){
+                    onContactListener.onContactClick(getAdapterPosition());
+                }
+            }
         }
     }
 
