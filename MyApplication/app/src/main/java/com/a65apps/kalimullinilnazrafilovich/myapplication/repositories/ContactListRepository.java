@@ -20,12 +20,12 @@ public class ContactListRepository {
         contentResolver = context.getContentResolver();
     }
 
-    public void getListContacts(ContactListPresenter.GetContacts callback) {
+    public void getListContacts(ContactListPresenter.GetContacts callback, final String query) {
         final WeakReference<ContactListPresenter.GetContacts> ref = new WeakReference<>(callback);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<Contact> result = getContacts();
+                ArrayList<Contact> result = getContacts(query);
                 ContactListPresenter.GetContacts local = ref.get();
                 if (local != null){
                     local.getContacts(result);
@@ -34,27 +34,34 @@ public class ContactListRepository {
         }).start();
     }
 
-    private ArrayList<Contact> getContacts(){
+    private ArrayList<Contact> getContacts(String query){
         final ArrayList<Contact> contacts = new ArrayList<>();
-            Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
-            try{
-                if (cursor != null){
-                    while (cursor.moveToNext()){
-                        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                        Log.d(TAG, "ID " + id);
+        Cursor cursor;
+        if (query == null){
+            cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
+        }else {
+            cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " LIKE \'%" + query + "%\'",null,null);
+        }
 
-                        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-                        Log.d(TAG, "name " + name);
-                        String[] telephoneNumbers = readTelephoneNumbers(id);
+        try{
+            if (cursor != null){
+                while (cursor.moveToNext()){
+                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    Log.d(TAG, "ID " + id);
 
-                        contacts.add(new Contact(id,name,telephoneNumbers[0]));
-                    }
-                }
-            }finally {
-                if (cursor != null){
-                    cursor.close();
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+
+                    Log.d(TAG, "name " + name);
+                    String[] telephoneNumbers = readTelephoneNumbers(id);
+
+                    contacts.add(new Contact(id,name,telephoneNumbers[0]));
                 }
             }
+        }finally {
+            if (cursor != null){
+                cursor.close();
+            }
+        }
         return contacts;
     }
 

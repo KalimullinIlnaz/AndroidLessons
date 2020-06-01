@@ -20,4 +20,5 @@
     <string name="deny_permission_message">Пожалуйста предоставте разрешение на чтение контактов</string>
     <string name="title_toolbar_contact_details">Детали контактов</string>
     <string name="tittle_toolbar_contact_list">Список контактов</string>
+    <string name="tittle_menu">Поиск по контактам</string>
 </resources>
