@@ -1,49 +1,40 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactDetailsRepository contactDetailsRepository;
-    private final String id;
+    private String id;
 
-    public interface GetDetails{
-        void getDetails(Contact result);
-    }
-
+    private CompositeDisposable compositeDisposable;
 
     public ContactDetailsPresenter(ContactDetailsRepository contactDetailsRepository, String id){
         this.contactDetailsRepository = contactDetailsRepository;
         this.id = id;
+        compositeDisposable = new CompositeDisposable();
     }
-
-    private final Handler handler = new Handler(Looper.getMainLooper());
-
-    private final GetDetails callback = new GetDetails() {
-        @Override
-        public void getDetails(final Contact result) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    getViewState().showContactDetail(result);
-                }
-            });
-        }
-    };
 
     public void showDetails() {
-        contactDetailsRepository.getDetails(callback,id);
+        compositeDisposable
+                .add(Observable.just(contactDetailsRepository.getDetailsContact(id))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(contact -> getViewState().showContactDetail(contact)));
     }
 
+    @Override
     public void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
-
 }

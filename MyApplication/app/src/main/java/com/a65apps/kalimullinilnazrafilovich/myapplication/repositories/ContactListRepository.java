@@ -7,9 +7,6 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactListPresenter;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ContactListRepository {
@@ -20,21 +17,7 @@ public class ContactListRepository {
         contentResolver = context.getContentResolver();
     }
 
-    public void getListContacts(ContactListPresenter.GetContacts callback, final String query) {
-        final WeakReference<ContactListPresenter.GetContacts> ref = new WeakReference<>(callback);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<Contact> result = getContacts(query);
-                ContactListPresenter.GetContacts local = ref.get();
-                if (local != null){
-                    local.getContacts(result);
-                }
-            }
-        }).start();
-    }
-
-    private ArrayList<Contact> getContacts(String query){
+    public ArrayList<Contact> getContacts(String query){
         final ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor;
         if (query == null){

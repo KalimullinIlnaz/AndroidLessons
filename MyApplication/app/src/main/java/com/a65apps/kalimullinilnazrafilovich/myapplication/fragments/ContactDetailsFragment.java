@@ -39,7 +39,7 @@ import java.util.TimeZone;
 
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener
-                                                                            , ContactDetailsView {
+        , ContactDetailsView {
     private View viewContactDetails;
 
     private Contact contactDetails;
@@ -93,6 +93,19 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
                              Bundle savedInstanceState) {
         viewContactDetails = inflater.inflate(R.layout.fragment_contact_details, container, false);
 
+        getActivity().setTitle(getString(R.string.title_toolbar_contact_details));
+
+        initView();
+
+        ToggleButton toggleButton = viewContactDetails.findViewById(R.id.btnBirthdayReminder);
+
+        setStatusToggleButton(toggleButton);
+
+        checkPermission();
+        return viewContactDetails;
+    }
+
+    private void initView(){
         name = viewContactDetails.findViewById(R.id.name);
         dataOfBirth = viewContactDetails.findViewById(R.id.DayOfBirth);
         telephoneNumber = viewContactDetails.findViewById(R.id.firstTelephoneNumber);
@@ -100,21 +113,20 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email = viewContactDetails.findViewById(R.id.firstEmail);
         email2 = viewContactDetails.findViewById(R.id.secondEmail);
         description = viewContactDetails.findViewById(R.id.description);
+    }
 
-        getActivity().setTitle(getString(R.string.title_toolbar_contact_details));
-
-        ToggleButton toggleButton = viewContactDetails.findViewById(R.id.btnBirthdayReminder);
-
+    private void setStatusToggleButton(ToggleButton toggleButton){
         if (PendingIntent.getBroadcast(getActivity(), 0,
                 new Intent(Constants.BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null){
             toggleButton.setChecked(false);
-            toggleButton.setOnCheckedChangeListener(this);
         }else {
             toggleButton.setChecked(true);
-            toggleButton.setOnCheckedChangeListener(this);
         }
+        toggleButton.setOnCheckedChangeListener(this);
+    }
 
+    private void checkPermission(){
         int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
         if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
@@ -123,7 +135,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
             contactDetailsPresenter.showDetails();
 
         }
-        return viewContactDetails;
     }
 
     @Override
