@@ -11,10 +11,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 
 
 public class MainActivity extends MvpAppCompatActivity  {
-    private boolean isBound = false;
-
-    private final String TAG = "MainActivity";
-
     private boolean firstCreateMainActivity;
 
     @Override
@@ -22,16 +18,20 @@ public class MainActivity extends MvpAppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        firstCreateMainActivity = savedInstanceState == null;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         String details = getIntent().getStringExtra("contactDetail");
         String id = getIntent().getStringExtra("id");
 
-        firstCreateMainActivity = savedInstanceState == null;
         if (firstCreateMainActivity) addFragmentListContact();
         if (details != null){
             addFragmentContactDetail(id);
         }
     }
-
 
     private void addFragmentListContact(){
         ContactListFragment contactListFragment = new ContactListFragment();

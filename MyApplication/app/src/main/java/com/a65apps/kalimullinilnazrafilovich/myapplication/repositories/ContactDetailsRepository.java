@@ -21,22 +21,7 @@ public class ContactDetailsRepository {
         contentResolver = context.getContentResolver();
     }
 
-    public void getDetails(ContactDetailsPresenter.GetDetails callback, final String id)  {
-        final WeakReference<ContactDetailsPresenter.GetDetails> ref = new WeakReference<>(callback);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Contact result = getDetailsContact(id);
-                ContactDetailsPresenter.GetDetails  local = ref.get();
-                if (local != null){
-                    local.getDetails(result);
-                }
-            }
-        }).start();
-    }
-
-
-    private Contact getDetailsContact(String idContact){
+    public Contact getDetailsContact(String idContact){
         Contact contact = null;
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,
                 ContactsContract.Contacts._ID + " = " + idContact,null ,null);

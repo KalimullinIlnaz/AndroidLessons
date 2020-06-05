@@ -33,16 +33,20 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactListView
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.ArrayList;
 
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView,ContactAdapter.onContactListener {
-    private String TAG = "ContactListFragment";
     private RecyclerView recyclerView;
     private ContactAdapter contactAdapter;
     private final int offsetDP = 6;
 
+    private CircularProgressView circularProgressView;
+
+    private ArrayList<Contact> contacts;
+    private View view;
 
     @InjectPresenter
     ContactListPresenter contactListPresenter;
@@ -52,9 +56,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         return contactListPresenter = new ContactListPresenter(new ContactListRepository(getContext()));
     }
 
-    private ArrayList<Contact> contacts;
-    private View view;
-
     @Override
     public void showContactList(ArrayList<Contact> contacts) {
         this.contacts = contacts;
@@ -63,35 +64,36 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         recyclerView.setLayoutManager(layoutManager);
     }
 
+    @Override
+    public void showLoadingIndicator() {
+        circularProgressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+        circularProgressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
 
-        setHasOptionsMenu(true);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
+        circularProgressView = view.findViewById(R.id.circular_progress_view);
+        recyclerView = view.findViewById(R.id.contact_recycler_view);
         recyclerView.addItemDecoration(new ItemDecoration(dpToPx(offsetDP),dpToPx(8),dpToPx(offsetDP),dpToPx(offsetDP)));
 
         contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
 
-        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
-        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            contactListPresenter.showFilteredContactList();
-        }else {
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
-        }
         return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
-        recyclerView = null;
     }
 
     private int dpToPx(int dp){
@@ -100,17 +102,32 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        requestPermission();
+    }
+
+    private void requestPermission(){
+        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+            contactListPresenter.showContactList();
+        }else {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        switch (requestCode){
-            case Constants.PERMISSIONS_REQUEST_READ_CONTACTS:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    contactListPresenter.showFilteredContactList();
-                }else {
-                    Toast message = Toast.makeText(getContext(),R.string.deny_permission_message,Toast.LENGTH_LONG);
-                    message.show();
-                }
+        if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                contactListPresenter.showContactList();
+            } else {
+                Toast message = Toast.makeText(getContext(), R.string.deny_permission_message, Toast.LENGTH_LONG);
+                message.show();
+            }
         }
     }
 
@@ -128,12 +145,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                contactListPresenter.showFilteredContactList(query);
+
                 return false;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                contactListPresenter.showFilteredContactList(newText);
+                contactListPresenter.showContactList(newText);
                 return false;
             }
         });
@@ -145,5 +162,13 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+        recyclerView = null;
+        circularProgressView = null;
     }
 }
