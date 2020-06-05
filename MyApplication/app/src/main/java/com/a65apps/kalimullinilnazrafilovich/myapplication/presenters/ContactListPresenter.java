@@ -8,40 +8,38 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private final ContactListRepository contactListRepository;
     private CompositeDisposable compositeDisposable;
 
+    private PublishSubject<String> subject;
+
     public ContactListPresenter(ContactListRepository contactListRepository) {
-        this.contactListRepository = contactListRepository;
         compositeDisposable = new CompositeDisposable();
+        subject = PublishSubject.create();
+
+        compositeDisposable.add(
+                subject.switchMapSingle(query -> Single.fromCallable(() -> contactListRepository.getContacts(query)).subscribeOn(Schedulers.io()))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe( __ -> getViewState().showLoadingIndicator())
+                        .subscribe(list -> {
+                            getViewState().showContactList(list);
+                            getViewState().hideLoadingIndicator();
+                            //Как я понял doOnTerminate здесь не работает, можно через afterNext скрыть прогресс бар, но будет ли это правильным вариантом?
+                        }));
     }
 
     public void showContactList() {
-        compositeDisposable
-                .add(Observable.just(contactListRepository.getContacts(""))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(__ -> getViewState().showLoadingIndicator())
-                        .doOnTerminate(() ->  getViewState().hideLoadingIndicator())
-                        .subscribe(list -> getViewState().showContactList(list)));
+        subject.onNext("");
     }
 
     public void showContactList(String query) {
-        compositeDisposable
-                .add(Observable.just(contactListRepository.getContacts(query))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(__ -> getViewState().showLoadingIndicator())
-                        .doOnTerminate(() ->  getViewState().hideLoadingIndicator())
-                        .subscribe(list -> getViewState().showContactList(list)));
+        subject.onNext(query);
     }
 
     @Override

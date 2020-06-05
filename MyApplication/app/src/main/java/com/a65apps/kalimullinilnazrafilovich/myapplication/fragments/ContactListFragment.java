@@ -93,8 +93,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
 
-        circularProgressView.setVisibility(View.VISIBLE);
-
         return view;
     }
 
