@@ -7,6 +7,7 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -26,7 +27,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
 
     public void showDetails() {
         compositeDisposable
-                .add(Observable.just(contactDetailsRepository.getDetailsContact(id))
+                .add(Single.fromCallable(() -> contactDetailsRepository.getDetailsContact(id))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(contact -> getViewState().showContactDetail(contact)));
