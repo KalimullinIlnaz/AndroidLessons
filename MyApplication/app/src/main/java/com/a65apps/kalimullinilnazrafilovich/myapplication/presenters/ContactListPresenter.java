@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
+import android.widget.Toast;
+
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactListView;
 import com.arellomobile.mvp.InjectViewState;
@@ -27,11 +29,16 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
                 subject.switchMapSingle(query -> Single.fromCallable(() -> contactListRepository.getContacts(query)).subscribeOn(Schedulers.io()))
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe( __ -> getViewState().showLoadingIndicator())
-                        .subscribe(list -> {
-                            getViewState().showContactList(list);
-                            getViewState().hideLoadingIndicator();
-                            //Как я понял doOnTerminate здесь не работает, можно через afterNext скрыть прогресс бар, но будет ли это правильным вариантом?
-                        }));
+                        .subscribe(
+                                (list) -> {
+                                    getViewState().showContactList(list);
+                                    getViewState().hideLoadingIndicator();
+                                },
+                                (throwable) ->{
+                                    throwable.printStackTrace();
+                                    getViewState().hideLoadingIndicator();
+                                }
+                        ));
     }
 
     public void showContactList() {

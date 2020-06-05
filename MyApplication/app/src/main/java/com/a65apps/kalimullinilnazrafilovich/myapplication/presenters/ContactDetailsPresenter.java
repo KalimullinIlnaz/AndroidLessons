@@ -30,7 +30,11 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                 .add(Single.fromCallable(() -> contactDetailsRepository.getDetailsContact(id))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(contact -> getViewState().showContactDetail(contact)));
+                        .subscribe(
+                                (contact) -> getViewState().showContactDetail(contact),
+                                (Throwable::printStackTrace)
+                        )
+                );
     }
 
     @Override
