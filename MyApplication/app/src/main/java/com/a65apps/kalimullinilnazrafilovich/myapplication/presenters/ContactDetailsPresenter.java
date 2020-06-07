@@ -12,6 +12,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
+
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactDetailsRepository contactDetailsRepository;
@@ -22,6 +23,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     public ContactDetailsPresenter(ContactDetailsRepository contactDetailsRepository, String id){
         this.contactDetailsRepository = contactDetailsRepository;
         this.id = id;
+
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -36,6 +38,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                         )
                 );
     }
+
 
     @Override
     public void onDestroy() {
