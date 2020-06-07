@@ -1,5 +1,10 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -7,12 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +23,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -41,8 +40,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
-public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener
-                                                                            , ContactDetailsView {
+public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
     private final String TAG = "ContactDetailsFragment";
 
     private View view;
@@ -69,6 +67,14 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         return contactDetailsPresenter = new ContactDetailsPresenter(new ContactDetailsRepository(getContext()),getArguments().getString("id"));
     }
 
+    public static ContactDetailsFragment newInstance(String id) {
+        ContactDetailsFragment fragment = new ContactDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString("id",id);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void showContactDetail(Contact contact) {
         this.contact = contact;
@@ -80,14 +86,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email.setText(this.contact.getEmail());
         email2.setText(this.contact.getEmail2());
         description.setText(this.contact.getDescription());
-    }
-
-    public static ContactDetailsFragment newInstance(String id) {
-        ContactDetailsFragment fragment = new ContactDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString("id",id);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -108,16 +106,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         return view;
     }
 
-    private void checkPermissions(){
-        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
-        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
-        }else {
-            contactDetailsPresenter.showDetails();
-        }
-    }
-
     private void setStatusToggleButton(ToggleButton toggleButton){
         if (PendingIntent.getBroadcast(getActivity(), 0,
                 new Intent(Constants.BROAD_ACTION),
@@ -127,6 +115,16 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
             toggleButton.setChecked(true);
         }
         toggleButton.setOnCheckedChangeListener(this);
+    }
+
+    private void checkPermissions(){
+        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+        }else {
+            contactDetailsPresenter.showDetails();
+        }
     }
 
     private void openMapFragment() {

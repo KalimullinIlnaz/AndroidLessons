@@ -1,14 +1,18 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,9 +24,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces.ItemAdapterClickListener;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.adapters.ContactAdapter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactListPresenter;
@@ -30,13 +34,17 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactListView
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.ArrayList;
 
 
-public class ContactListFragment extends MvpAppCompatFragment implements ContactListView, ItemAdapterClickListener {
+public class ContactListFragment extends MvpAppCompatFragment implements ContactListView,ContactAdapter.onContactListener {
     private RecyclerView recyclerView;
     private ContactAdapter contactAdapter;
+    private final int offsetDP = 6;
+
+    private CircularProgressView circularProgressView;
 
     private ArrayList<Contact> contacts;
     private View view;
@@ -53,10 +61,24 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public void showContactList(ArrayList<Contact> contacts) {
         this.contacts = contacts;
         contactAdapter.setData(contacts);
-        contactAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        contactAdapter.setClickListener(this);
+    }
+
+    @Override
+    public void showLoadingIndicator() {
+        circularProgressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingIndicator() {
+        circularProgressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -65,18 +87,28 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
 
-        setHasOptionsMenu(true);
+        circularProgressView = view.findViewById(R.id.circular_progress_view);
+        recyclerView = view.findViewById(R.id.contact_recycler_view);
+        recyclerView.addItemDecoration(new ItemDecoration(dpToPx(offsetDP),dpToPx(8),dpToPx(offsetDP),dpToPx(offsetDP)));
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.contact_recycler_view);
-        contactAdapter = new ContactAdapter();
+        contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
-
-        checkPermissions();
 
         return view;
     }
 
-    private void checkPermissions(){
+    private int dpToPx(int dp){
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        return (int) (dp * displayMetrics.density);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        requestPermission();
+    }
+
+    private void requestPermission(){
         int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
             contactListPresenter.showContactList();
@@ -84,31 +116,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
                     Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.map_item,menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        openFullMapFragment();
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void openFullMapFragment(){
-        FullMapFragment fullMapFragment = new FullMapFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, fullMapFragment).addToBackStack(null).commit();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
-        recyclerView = null;
     }
 
     @Override
@@ -126,10 +133,59 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onClick(View view, int position) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_item,menu);
+
+        getActivity().getMenuInflater().inflate(R.menu.map_item,menu);
+
+        initSearchView(menu);
+    }
+
+    private void initSearchView(Menu menu){
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint(getString(R.string.tittle_menu));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                contactListPresenter.showContactList(query);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                contactListPresenter.showContactList(newText);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        openFullMapFragment();
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openFullMapFragment(){
+        FullMapFragment fullMapFragment = new FullMapFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, fullMapFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onContactClick(int position) {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contacts.get(position).getId());
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+        recyclerView = null;
+        circularProgressView = null;
     }
 }

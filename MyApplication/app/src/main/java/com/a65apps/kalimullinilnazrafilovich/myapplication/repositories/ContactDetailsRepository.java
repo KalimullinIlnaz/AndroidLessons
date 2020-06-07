@@ -16,7 +16,6 @@ public class ContactDetailsRepository {
         contentResolver = context.getContentResolver();
     }
 
-
     public Contact getDetailsContact(String idContact){
         Contact contact = null;
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,

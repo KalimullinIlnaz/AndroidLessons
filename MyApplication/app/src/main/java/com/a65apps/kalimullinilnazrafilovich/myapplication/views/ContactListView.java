@@ -10,4 +10,8 @@ import java.util.ArrayList;
 public interface ContactListView extends MvpView {
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showContactList(ArrayList<Contact> contacts);
+
+    void showLoadingIndicator();
+
+    void hideLoadingIndicator();
 }
