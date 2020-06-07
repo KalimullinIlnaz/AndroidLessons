@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces.ItemAdapterClickListener;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
@@ -64,7 +64,6 @@ public class ContactAdapter extends RecyclerView.Adapter {
             name.setText(contacts.get(position).getName());
             telephoneNumber.setText(contacts.get(position).getTelephoneNumber());
         }
-        private  String TAG = "111";
 
         @Override
         public void onClick(View v) {

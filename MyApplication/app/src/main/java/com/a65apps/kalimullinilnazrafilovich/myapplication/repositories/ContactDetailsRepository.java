@@ -6,12 +6,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
-
-import java.lang.ref.WeakReference;
-
-
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 
 public class ContactDetailsRepository {
     private String TAG = "ContactDetailsRepository";
@@ -21,26 +16,11 @@ public class ContactDetailsRepository {
         contentResolver = context.getContentResolver();
     }
 
-    public void getDetails(ContactDetailsPresenter.GetDetails callback, final String id)  {
-        final WeakReference<ContactDetailsPresenter.GetDetails> ref = new WeakReference<>(callback);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Contact result = getDetailsContact(id);
-                ContactDetailsPresenter.GetDetails  local = ref.get();
-                if (local != null){
-                    local.getDetails(result);
-                }
-            }
-        }).start();
-    }
 
-
-    private Contact getDetailsContact(String idContact){
+    public Contact getDetailsContact(String idContact){
         Contact contact = null;
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,
                 ContactsContract.Contacts._ID + " = " + idContact,null ,null);
-
         try{
             if (cursor != null) {
                 cursor.moveToNext();
@@ -55,7 +35,6 @@ public class ContactDetailsRepository {
                         telephoneNumbers[0],telephoneNumbers[1],
                         emails[0],emails[1],new String());
             }
-
         }finally {
             if (cursor != null) {
                 cursor.close();

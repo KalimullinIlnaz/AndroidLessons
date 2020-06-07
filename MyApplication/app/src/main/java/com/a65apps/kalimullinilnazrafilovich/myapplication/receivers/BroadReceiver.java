@@ -42,7 +42,6 @@ public class BroadReceiver extends BroadcastReceiver {
         resultIntent.putExtra("contactDetail","details");
         resultIntent.putExtra("id",id);
 
-
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(resultIntent);
 

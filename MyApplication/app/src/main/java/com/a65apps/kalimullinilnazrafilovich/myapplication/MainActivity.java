@@ -11,10 +11,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 
 
 public class MainActivity extends MvpAppCompatActivity  {
-    private boolean isBound = false;
-
-    private final String TAG = "MainActivity";
-
     private boolean firstCreateMainActivity;
 
     @Override
@@ -31,6 +27,7 @@ public class MainActivity extends MvpAppCompatActivity  {
             addFragmentContactDetail(id);
         }
     }
+
 
 
     private void addFragmentListContact(){

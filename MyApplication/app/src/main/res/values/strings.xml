@@ -1,23 +1,22 @@
 <resources>
     <string name="app_name">Contacts</string>
     <string name="Text">Контакты</string>
-    <string name="telephoneNumber">Number</string>
-    <string name="name">Name</string>
-    <string name="telephoneNumber1">53535353</string>
-    <string name="name1">Вова</string>
-    <string name="contact_details">Детали контакта</string>
-    <string name="description">Описание</string>
-    <string name="second_email">Email 2</string>
-    <string name="firstEmail">Email</string>
-    <string name="second_telephone_number">Телефон 2</string>
-    <string name="name2">Паша</string>
-    <string name="telephoneNumber2">342423423234</string>
-    <string name="dayOfBirth">DayOfBirth</string>
-    <string name="birthdayReminderOn">Выключить напоминание</string>
-    <string name="birthdayReminderOff">Включить напоминание</string>
+    <string name="name">name</string>
+    <string name="telephone_number">telephoneNumber</string>
+    <string name="second_telephone_number">second_telephone_number</string>
+    <string name="first_email">firstEmail</string>
+    <string name="second_email">second_email</string>
+    <string name="description">description</string>
+    <string name="day_of_birth">DayOfBirth</string>
+    <string name="birthday_reminder_on">Выключить напоминание</string>
+    <string name="birthday_reminder_off">Включить напоминание</string>
     <string name="title_notification">Напоминание о дне рождения</string>
     <string name="text_notification">сегодня празднует день рождения</string>
     <string name="deny_permission_message">Пожалуйста предоставте разрешение на чтение контактов</string>
+    <string name="google_maps_key">key</string>
+    <string name="yandex_maps_key">key</string>
     <string name="title_toolbar_contact_details">Детали контактов</string>
     <string name="tittle_toolbar_contact_list">Список контактов</string>
+    <string name="title_toolbar_map">Местоположение</string>
+    <string name="show_all_markers">Посмотреть местоположение на карте</string>
 </resources>

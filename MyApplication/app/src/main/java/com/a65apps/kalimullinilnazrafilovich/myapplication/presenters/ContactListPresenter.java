@@ -1,49 +1,45 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
-import android.os.Handler;
-import android.os.Looper;
-
-
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactListView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import java.util.ArrayList;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private final ContactListRepository contactListRepository;
+    private CompositeDisposable compositeDisposable;
 
-    public interface GetContacts {
-        void getContacts(ArrayList<Contact> result);
-    }
+    private PublishSubject<String> subject;
 
     public ContactListPresenter(ContactListRepository contactListRepository) {
-        this.contactListRepository = contactListRepository;
+        compositeDisposable = new CompositeDisposable();
+        subject = PublishSubject.create();
+
+        compositeDisposable.add(
+                subject.switchMapSingle(query -> Single.fromCallable(contactListRepository::getContacts).subscribeOn(Schedulers.io()))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                (list) -> {
+                                    getViewState().showContactList(list);
+                                },
+                                Throwable::printStackTrace
+                        ));
     }
-
-    private final Handler handler = new Handler(Looper.getMainLooper());
-
-    private final GetContacts callback = new GetContacts() {
-        @Override
-        public void getContacts(final ArrayList<Contact> result) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    getViewState().showContactList(result);
-                }
-            });
-        }
-    };
 
     public void showContactList() {
-       contactListRepository.getListContacts(callback);
+        subject.onNext("");
     }
 
+    @Override
     public void onDestroy() {
-        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
 }
 

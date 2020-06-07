@@ -1,14 +1,17 @@
-package com.a65apps.kalimullinilnazrafilovich.myapplication;
+package com.a65apps.kalimullinilnazrafilovich.myapplication.models;
 
 public class Contact {
     private final String id;
     private final String name;
     private final String telephoneNumber;
-    private final  String telephoneNumber2;
-    private final  String email;
-    private final  String email2;
-    private final  String description;
+    private final String telephoneNumber2;
+    private final String email;
+    private final String email2;
+    private final String description;
     private final String dateOfBirth;
+    private double longitude = 0;
+    private double latitude = 0;
+    private String address;
 
     public Contact(String id,String name,String telephoneNumber){
         this.id = id;
@@ -62,5 +65,29 @@ public class Contact {
 
     public String getDescription() {
         return description;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setLongitude(double longitude){
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

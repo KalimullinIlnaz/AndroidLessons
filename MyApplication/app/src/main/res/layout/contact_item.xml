@@ -27,14 +27,14 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_margin="4dp"
-            android:text="@string/name1" />
+            android:text="@string/name" />
 
         <TextView
             android:id="@+id/telephoneNumberPerson"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="@string/telephoneNumber1" />
+            android:text="@string/telephone_number" />
     </LinearLayout>
 
 </LinearLayout>
