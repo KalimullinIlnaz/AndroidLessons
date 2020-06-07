@@ -17,6 +17,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactDetailsRepository contactDetailsRepository;
     private String id;
+    private int k;
 
     private CompositeDisposable compositeDisposable;
 
@@ -24,6 +25,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
         this.contactDetailsRepository = contactDetailsRepository;
         this.id = id;
 
+        k =1;
         compositeDisposable = new CompositeDisposable();
     }
 
