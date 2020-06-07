@@ -39,7 +39,6 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                 );
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
