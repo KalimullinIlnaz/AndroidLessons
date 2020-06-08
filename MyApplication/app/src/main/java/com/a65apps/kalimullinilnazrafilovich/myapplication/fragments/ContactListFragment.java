@@ -135,9 +135,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_item,menu);
-
-        getActivity().getMenuInflater().inflate(R.menu.map_item,menu);
-
         initSearchView(menu);
     }
 
@@ -162,7 +159,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        openFullMapFragment();
+        if (item.getItemId() == R.id.map){
+            openFullMapFragment();
+        }
         return super.onOptionsItemSelected(item);
     }
 

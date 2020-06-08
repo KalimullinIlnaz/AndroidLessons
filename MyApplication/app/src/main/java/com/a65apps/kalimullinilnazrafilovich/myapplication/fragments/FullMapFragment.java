@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.PolyUtil;
 
 import java.util.List;
 
@@ -32,9 +31,11 @@ public class FullMapFragment extends MvpAppCompatFragment implements FullMapView
     private View view;
     private GoogleMap map;
 
-    private boolean fromMarker,toMarker;
+    private boolean fromMarker = false;
+    private boolean toMarker = false;
 
-    private String from, to,result;
+    private String from;
+    private String to;
 
     @InjectPresenter
     FullMapPresenter fullMapPresenter;
@@ -58,12 +59,6 @@ public class FullMapFragment extends MvpAppCompatFragment implements FullMapView
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        fullMapPresenter.showMarkers();
-    }
-
     private void initMap(){
         SupportMapFragment mapFragment = (SupportMapFragment)getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -74,36 +69,27 @@ public class FullMapFragment extends MvpAppCompatFragment implements FullMapView
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        map.setOnMapClickListener(latLng -> {
-            if ((!fromMarker) && (!toMarker)) {
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                from = latLng.latitude + "," + latLng.longitude;
-                map.addMarker(markerOptions);
+
+        fullMapPresenter.showMarkers();
+
+        map.setOnMarkerClickListener(marker -> {
+            if ((!fromMarker) && (!toMarker)){
+                from = marker.getPosition().latitude + "," + marker.getPosition().longitude;
                 fromMarker = true;
             } else {
                 if ((fromMarker) && (!toMarker)) {
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    to = latLng.latitude + "," + latLng.longitude;
-                    map.addMarker(markerOptions);
+                    to = marker.getPosition().latitude + "," + marker.getPosition().longitude;
                     toMarker = true;
-                    fullMapPresenter.showRoute(from,to);
-                } else {
-                    if (fromMarker) {
-                        map.clear();
-                        fromMarker = false;
-                        toMarker = false;
-                        fullMapPresenter.showMarkers();
-                    }
                 }
             }
-            if ((fromMarker) && (toMarker)){
-                fullMapPresenter.showRoute(from,to);
+            if ((fromMarker) && (toMarker)) {
+                fullMapPresenter.showRoute(from, to);
+                fromMarker = false;
+                toMarker = false;
             }
+            return false;
         });
     }
-
     //FullMapView
     @Override
     public void showMarkers(List<Location> locations) {
@@ -119,26 +105,25 @@ public class FullMapFragment extends MvpAppCompatFragment implements FullMapView
 
     //FullMapView
     @Override
-    public void showRoute(String route,String status) {
-        if (status.equals("ZERO_RESULTS")){
-            Toast.makeText(getContext(),"Не существует наземного маршрута", Toast.LENGTH_SHORT).show();
-        }else {
-            drawRoute(route);
-        }
+    public void showRoute(List<LatLng> points) {
+        drawRoute(points);
     }
 
-    private void drawRoute(String route){
-        List<LatLng> mPoints = PolyUtil.decode(route);
+    //FullMapView
+    @Override
+    public void showMessageNoRoute() {
+        Toast.makeText(getContext(),"Не существует наземного маршрута", Toast.LENGTH_SHORT).show();
+    }
 
+    private void drawRoute(List<LatLng> mPoints){
         PolylineOptions line = new PolylineOptions();
-        line.width(4f).color(R.color.colorPrimary);
-
         LatLngBounds.Builder latLngBuilder = new LatLngBounds.Builder();
 
         for (int i = 0; i < mPoints.size(); i++) {
             line.add(mPoints.get(i));
             latLngBuilder.include(mPoints.get(i));
         }
+
         map.addPolyline(line);
 
         LatLngBounds latLngBounds = latLngBuilder.build();

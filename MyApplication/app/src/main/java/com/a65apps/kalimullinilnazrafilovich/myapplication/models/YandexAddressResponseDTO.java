@@ -3,7 +3,7 @@ package com.a65apps.kalimullinilnazrafilovich.myapplication.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Address {
+public class YandexAddressResponseDTO {
 
     @SerializedName("response")
     @Expose

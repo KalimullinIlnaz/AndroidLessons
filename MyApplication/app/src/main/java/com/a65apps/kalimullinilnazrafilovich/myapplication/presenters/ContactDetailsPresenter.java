@@ -1,6 +1,9 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
+import android.content.Context;
+
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -17,17 +20,22 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactDetailsRepository contactDetailsRepository;
     private String id;
 
+    private DataBaseRepository dataBaseRepository;
+
     private CompositeDisposable compositeDisposable;
 
-    public ContactDetailsPresenter(ContactDetailsRepository contactDetailsRepository, String id){
+    public ContactDetailsPresenter(Context context,ContactDetailsRepository contactDetailsRepository, String id){
         this.contactDetailsRepository = contactDetailsRepository;
         this.id = id;
+
+        dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
+
         compositeDisposable = new CompositeDisposable();
     }
 
     public void showDetails() {
         compositeDisposable
-                .add(Single.fromCallable(() -> contactDetailsRepository.getDetailsContact(id))
+                .add(Single.fromCallable(() -> dataBaseRepository.getContactFromDB(id))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(

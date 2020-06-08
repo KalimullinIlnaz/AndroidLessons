@@ -1,15 +1,37 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.repositories;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Address;
-import retrofit2.Response;
+import android.content.Context;
 
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.YandexAddressResponseDTO;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.GoogleRouteResponseDTO;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.services.GoogleRouteService;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.services.YandexGeocodeService;
+
+import io.reactivex.rxjava3.core.Single;
 
 public class GeocodeRepository {
-    public String getAddress(Response<Address> response) {
-        Address fullAddress = response.body();
-        return fullAddress.getResponse()
-                .getGeoObjectCollection().getFeatureMember().get(0).getGeoObject()
-                .getMetaDataProperty().getGeocoderMetaData().getText();
+    private Context context;
+
+    public GeocodeRepository(Context context){
+        this.context = context;
     }
 
+    public Single<YandexAddressResponseDTO> getAddressFromYandexService(String coordinate){
+        return YandexGeocodeService.getInstance()
+                .getJSONApi()
+                .getLocation(
+                        coordinate,
+                        context.getResources().getString(R.string.yandex_maps_key));
+    }
+
+    public Single<GoogleRouteResponseDTO> getRoutePointsFromGoogleService(String from, String to){
+        return GoogleRouteService.getInstance()
+                .getJSONApi()
+                .getRoute(from,
+                        to,
+                        "walking",
+                        context.getResources().getString(R.string.google_maps_key),
+                        "ru");
+        }
 }

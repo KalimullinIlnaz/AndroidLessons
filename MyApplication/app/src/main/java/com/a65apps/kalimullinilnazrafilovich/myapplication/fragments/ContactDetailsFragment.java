@@ -49,22 +49,23 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     private Contact contact;
     private String id;
 
-    private TextView telephoneNumber;
     private TextView name;
+    private TextView address;
+    private TextView telephoneNumber;
     private TextView telephoneNumber2;
     private TextView email;
     private TextView email2;
     private TextView description;
     private TextView dataOfBirth;
 
-    private Button btnShowAllMarkers;
+    private Button btnLocationOnMap;
 
     @InjectPresenter
     ContactDetailsPresenter contactDetailsPresenter;
 
     @ProvidePresenter
     ContactDetailsPresenter providerContactDetailsPresenter(){
-        return contactDetailsPresenter = new ContactDetailsPresenter(new ContactDetailsRepository(getContext()),getArguments().getString("id"));
+        return contactDetailsPresenter = new ContactDetailsPresenter(getContext(),new ContactDetailsRepository(getContext()),getArguments().getString("id"));
     }
 
     public static ContactDetailsFragment newInstance(String id) {
@@ -77,15 +78,15 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
     @Override
     public void showContactDetail(Contact contact) {
-        this.contact = contact;
         if (name == null) return;
-        name.setText(this.contact.getName());
-        dataOfBirth.setText(this.contact.getDateOfBirth());
-        telephoneNumber.setText(this.contact.getTelephoneNumber());
-        telephoneNumber2.setText(this.contact.getTelephoneNumber2());
-        email.setText(this.contact.getEmail());
-        email2.setText(this.contact.getEmail2());
-        description.setText(this.contact.getDescription());
+        name.setText(contact.getName());
+        dataOfBirth.setText(contact.getDateOfBirth());
+        address.setText(contact.getAddress());
+        telephoneNumber.setText(contact.getTelephoneNumber());
+        telephoneNumber2.setText(contact.getTelephoneNumber2());
+        email.setText(contact.getEmail());
+        email2.setText(contact.getEmail2());
+        description.setText(contact.getDescription());
     }
 
     @Override
@@ -97,7 +98,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         id = getArguments().getString("id");
 
         initViews();
-        btnShowAllMarkers.setOnClickListener(v -> openMapFragment());
+        btnLocationOnMap.setOnClickListener(v -> openMapFragment());
 
         ToggleButton toggleButton = view.findViewById(R.id.btnBirthdayReminder);
         setStatusToggleButton(toggleButton);
@@ -115,6 +116,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
             toggleButton.setChecked(true);
         }
         toggleButton.setOnCheckedChangeListener(this);
+    }
+
+    private void setStatusLocationBtn(){
+
     }
 
     private void checkPermissions(){
@@ -135,14 +140,15 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     }
 
     private void initViews(){
-        btnShowAllMarkers = view.findViewById(R.id.btn_show_all_markers);
         name = view.findViewById(R.id.name);
         dataOfBirth = view.findViewById(R.id.DayOfBirth);
+        address = view.findViewById(R.id.address);
         telephoneNumber = view.findViewById(R.id.firstTelephoneNumber);
         telephoneNumber2 = view.findViewById(R.id.secondTelephoneNumber);
         email = view.findViewById(R.id.firstEmail);
         email2 = view.findViewById(R.id.secondEmail);
         description = view.findViewById(R.id.description);
+        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
     }
 
     @Override
@@ -211,6 +217,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email = null;
         email2 = null;
         description = null;
-        btnShowAllMarkers = null;
+        btnLocationOnMap = null;
     }
 }
