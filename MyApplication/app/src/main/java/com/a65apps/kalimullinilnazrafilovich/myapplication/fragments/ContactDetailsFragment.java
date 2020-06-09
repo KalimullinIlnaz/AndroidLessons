@@ -65,7 +65,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
     @ProvidePresenter
     ContactDetailsPresenter providerContactDetailsPresenter(){
-        return contactDetailsPresenter = new ContactDetailsPresenter(getContext(),new ContactDetailsRepository(getContext()),getArguments().getString("id"));
+        return contactDetailsPresenter = new ContactDetailsPresenter(
+                getContext(),
+                new ContactDetailsRepository(getContext()),
+                getArguments().getString("id"));
     }
 
     public static ContactDetailsFragment newInstance(String id) {
@@ -79,6 +82,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     @Override
     public void showContactDetail(Contact contact) {
         if (name == null) return;
+
         name.setText(contact.getName());
         dataOfBirth.setText(contact.getDateOfBirth());
         address.setText(contact.getAddress());
@@ -87,6 +91,8 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email.setText(contact.getEmail());
         email2.setText(contact.getEmail2());
         description.setText(contact.getDescription());
+
+        setStatusLocationBtn(contact.getAddress());
     }
 
     @Override
@@ -118,8 +124,12 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         toggleButton.setOnCheckedChangeListener(this);
     }
 
-    private void setStatusLocationBtn(){
-
+    private void setStatusLocationBtn(String address){
+        if (address.equals("")){
+            btnLocationOnMap.setText("Добавить адрес на карте");
+        }else {
+            btnLocationOnMap.setText("Посмотреть местоположение на карте");
+        }
     }
 
     private void checkPermissions(){
@@ -129,6 +139,20 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
                     Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
         }else {
             contactDetailsPresenter.showDetails();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                contactDetailsPresenter.showDetails();
+            } else {
+                Toast message = Toast.makeText(getContext(), R.string.deny_permission_message, Toast.LENGTH_LONG);
+                message.show();
+            }
         }
     }
 
@@ -193,22 +217,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                contactDetailsPresenter.showDetails();
-            } else {
-                Toast message = Toast.makeText(getContext(), R.string.deny_permission_message, Toast.LENGTH_LONG);
-                message.show();
-            }
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         view = null;
         name = null;
         dataOfBirth = null;

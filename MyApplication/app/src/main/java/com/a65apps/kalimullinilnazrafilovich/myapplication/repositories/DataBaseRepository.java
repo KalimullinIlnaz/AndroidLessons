@@ -23,9 +23,13 @@ public class DataBaseRepository {
     public Contact getContactFromDB(String id)  {
         Contact contact = contactDetailsRepository.getDetailsContact(id);
 
-        contact.setLatitude(database.locationDao().getById(contact.getId()).getLatitude());
-        contact.setLongitude(database.locationDao().getById(contact.getId()).getLongitude());
-        contact.setAddress(database.locationDao().getById(contact.getId()).getAddress());
+        if (database.locationDao().isExists(id) == 1){
+            contact.setLatitude(database.locationDao().getById(contact.getId()).getLatitude());
+            contact.setLongitude(database.locationDao().getById(contact.getId()).getLongitude());
+            contact.setAddress(database.locationDao().getById(contact.getId()).getAddress());
+        }else {
+            contact.setAddress("");
+        }
 
         return contact;
     }

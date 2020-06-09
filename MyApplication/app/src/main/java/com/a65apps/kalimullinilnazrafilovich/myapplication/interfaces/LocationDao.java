@@ -20,4 +20,7 @@ public interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Location location);
+
+    @Query("SELECT EXISTS(SELECT * FROM location WHERE contact_id = :id)")
+    int isExists(String id);
 }
