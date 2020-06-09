@@ -12,7 +12,11 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -46,24 +50,23 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
     }
 
     public void showRoute(String from,String to){
-        // как я понял по логам, запрос на сервер происходит несколько раз, почему так?
-        compositeDisposable.add(geocodeRepository.getRoutePointsFromGoogleService(from,to)
+        compositeDisposable
+            .add(geocodeRepository.getRoutePointsFromGoogleService(from, to)
             .map(this::getPoints)
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                (points) ->  {
-                    //cитуацию с отсутсвием маршрута решу
-                    //Оставлять ли маршруты на карте? может стоит ещё кнопку сделать для очистки карты от нарисованных маршрутов?
-                    if (points == null) getViewState().showMessageNoRoute();
-                    getViewState().showRoute(points);
-                },
-                (Throwable::printStackTrace)
+                    (dots) -> {
+                        if (dots.isEmpty()) getViewState().showMessageNoRoute();
+                            else getViewState().showRoute(dots);
+                    },
+                    (Throwable::printStackTrace)
             ));
     }
 
     private List<LatLng> getPoints(GoogleRouteResponseDTO dto){
-        return PolyUtil.decode(dto.getPoints());
+        if (dto.getStatus().equals("OK")) return PolyUtil.decode(dto.getPoints());
+        else return new ArrayList<>();
     }
 
     @Override

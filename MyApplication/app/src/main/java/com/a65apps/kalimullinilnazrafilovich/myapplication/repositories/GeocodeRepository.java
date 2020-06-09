@@ -7,8 +7,8 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.models.YandexAddressR
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.GoogleRouteResponseDTO;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.services.GoogleRouteService;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.services.YandexGeocodeService;
-
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GeocodeRepository {
     private Context context;
@@ -22,7 +22,8 @@ public class GeocodeRepository {
                 .getJSONApi()
                 .getLocation(
                         coordinate,
-                        context.getResources().getString(R.string.yandex_maps_key));
+                        context.getResources().getString(R.string.yandex_maps_key))
+                .subscribeOn(Schedulers.io());
     }
 
     public Single<GoogleRouteResponseDTO> getRoutePointsFromGoogleService(String from, String to){
@@ -32,6 +33,7 @@ public class GeocodeRepository {
                         to,
                         "walking",
                         context.getResources().getString(R.string.google_maps_key),
-                        "ru");
+                        "ru")
+                .subscribeOn(Schedulers.io());
         }
 }
