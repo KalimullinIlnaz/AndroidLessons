@@ -11,9 +11,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.views.MapView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.concurrent.Callable;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -22,16 +19,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @InjectViewState
 public class MapPresenter extends MvpPresenter<MapView> {
-    private Context context;
-
     private CompositeDisposable compositeDisposable;
 
     private DataBaseRepository dataBaseRepository;
     private GeocodeRepository geocodeRepository;
 
     public MapPresenter(Context context, ContactDetailsRepository contactDetailsRepository){
-        this.context = context;
-
         geocodeRepository = new GeocodeRepository(context);
         dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
 
@@ -51,24 +44,27 @@ public class MapPresenter extends MvpPresenter<MapView> {
             );
     }
 
-    public Contact getData(String id){
-        Contact contact = dataBaseRepository.getContactFromDB(id);
-        return contact;
+    private Contact getData(String id){
+        return dataBaseRepository.getContactFromDB(id);
     }
 
     public void getLocationMapClick(String id,LatLng point) {
         String coordinate = point.longitude + "," + point.latitude;
 
         compositeDisposable.add(geocodeRepository.getAddressFromYandexService(coordinate)
-                .map(dto -> {
-                    dataBaseRepository.insertData(id,
-                            getFullAddress(dto),
-                            point.latitude,
-                            point.longitude);
-                    return dto;
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess( (dto) ->
+                        {
+                            String address = getFullAddress(dto);
+                            if (!address.equals("")){
+                                dataBaseRepository.insertData(id,
+                                        address,
+                                        point.latitude,
+                                        point.longitude);
+                            }
+                        }
+                )
                 .subscribe(
                         (address) -> getViewState().showMapMarker(point),
                         (Throwable::printStackTrace)
@@ -76,12 +72,14 @@ public class MapPresenter extends MvpPresenter<MapView> {
     }
 
     private String getFullAddress(YandexAddressResponseDTO yandexAddressResponseDTO){
-        return yandexAddressResponseDTO.getResponse()
-                .getGeoObjectCollection().getFeatureMember().get(0).getGeoObject()
-                .getMetaDataProperty().getGeocoderMetaData().getText();
+        try {
+            return yandexAddressResponseDTO.getResponse()
+                    .getGeoObjectCollection().getFeatureMember().get(0).getGeoObject()
+                    .getMetaDataProperty().getGeocoderMetaData().getText();
+        }catch (IndexOutOfBoundsException e){
+            return "";
+        }
     }
-
-
 
     @Override
     public void onDestroy() {

@@ -126,9 +126,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
     private void setStatusLocationBtn(String address){
         if (address.equals("")){
-            btnLocationOnMap.setText("Добавить адрес на карте");
+            btnLocationOnMap.setText(R.string.status_btn_location_add);
         }else {
-            btnLocationOnMap.setText("Посмотреть местоположение на карте");
+            btnLocationOnMap.setText(R.string.status_btn_location_check);
         }
     }
 

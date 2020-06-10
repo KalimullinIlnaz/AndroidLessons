@@ -36,7 +36,10 @@ public class GoogleRouteResponseDTO {
     }
 
     public String getPoints() {
-        return this.routes.get(0).overview_polyline.points;
+        try {
+            return this.routes.get(0).overview_polyline.points;
+        }catch (IndexOutOfBoundsException e){
+            return "";
+        }
     }
-
 }

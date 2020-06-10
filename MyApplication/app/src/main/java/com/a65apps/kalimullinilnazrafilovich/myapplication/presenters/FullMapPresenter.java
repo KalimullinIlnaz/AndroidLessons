@@ -14,10 +14,6 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -52,26 +48,29 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
     public void showRoute(String from,String to){
         compositeDisposable
             .add(geocodeRepository.getRoutePointsFromGoogleService(from, to)
-            .map(this::getPoints)
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                    (dots) -> {
-                        if (dots.isEmpty()) getViewState().showMessageNoRoute();
-                            else getViewState().showRoute(dots);
-                    },
-                    (Throwable::printStackTrace)
-            ));
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.computation())
+                    .map(this::getPoints)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            (dots) ->{
+                                if (dots.isEmpty()) getViewState().showMessageNoRoute();
+                                else getViewState().showRoute(dots);
+                            },
+                            (Throwable::printStackTrace)
+                    )
+            );
     }
 
     private List<LatLng> getPoints(GoogleRouteResponseDTO dto){
-        if (dto.getStatus().equals("OK")) return PolyUtil.decode(dto.getPoints());
+        if (dto.getPoints().equals("")) return PolyUtil.decode(dto.getPoints());
         else return new ArrayList<>();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         compositeDisposable.dispose();
     }
 }

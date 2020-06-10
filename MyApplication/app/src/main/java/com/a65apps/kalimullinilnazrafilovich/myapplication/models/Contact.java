@@ -1,6 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.models;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Contact {
     @NonNull
@@ -27,7 +28,7 @@ public class Contact {
     @NonNull
     private final String dateOfBirth;
 
-    @NonNull
+    @Nullable
     private String address;
 
     private double longitude = 0;
@@ -96,7 +97,7 @@ public class Contact {
         return description;
     }
 
-    @NonNull
+    @Nullable
     public String getAddress() {
         return address;
     }
@@ -110,6 +111,7 @@ public class Contact {
         return longitude;
     }
 
+    @Nullable
     public void setLongitude(double longitude){
         this.longitude = longitude;
     }

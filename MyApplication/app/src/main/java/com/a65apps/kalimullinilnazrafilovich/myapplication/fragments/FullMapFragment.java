@@ -112,7 +112,7 @@ public class FullMapFragment extends MvpAppCompatFragment implements FullMapView
     //FullMapView
     @Override
     public void showMessageNoRoute() {
-        Toast.makeText(getContext(),"Не существует наземного маршрута", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),R.string.no_route_message, Toast.LENGTH_SHORT).show();
     }
 
     private void drawRoute(List<LatLng> mPoints){
