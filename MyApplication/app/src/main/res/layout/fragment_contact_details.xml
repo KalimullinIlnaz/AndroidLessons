@@ -40,14 +40,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
-                android:text="@string/dayOfBirth" />
+                android:text="@string/day_of_birth" />
 
             <ToggleButton
                 android:id ="@+id/btnBirthdayReminder"
                 android:layout_width ="match_parent"
                 android:layout_height ="wrap_content"
-                android:textOn ="@string/birthdayReminderOn"
-                android:textOff = "@string/birthdayReminderOff"/>
+                android:textOn ="@string/birthday_reminder_on"
+                android:textOff = "@string/birthday_reminder_off"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -59,11 +59,19 @@
         android:padding="4dp">
 
         <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/address">
+        </TextView>
+
+        <TextView
             android:id="@+id/firstTelephoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="@string/telephoneNumber" />
+            android:text="@string/telephone_number" />
 
         <TextView
             android:id="@+id/secondTelephoneNumber"
@@ -77,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="@string/firstEmail" />
+            android:text="@string/first_email" />
 
         <TextView
             android:id="@+id/secondEmail"
@@ -89,8 +97,16 @@
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:text="@string/description" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_show_all_markers"
+            android:text="@string/show_all_markers">
+        </Button>
     </LinearLayout>
+
 </LinearLayout>

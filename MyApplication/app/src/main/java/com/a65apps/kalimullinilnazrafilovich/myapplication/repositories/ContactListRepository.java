@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import java.util.ArrayList;
 
 public class ContactListRepository {
@@ -17,13 +17,19 @@ public class ContactListRepository {
         contentResolver = context.getContentResolver();
     }
 
+
     public ArrayList<Contact> getContacts(String query){
         final ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor;
         if (query == null){
             cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
         }else {
-            cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " LIKE \'%" + query + "%\'",null,null);
+            cursor = contentResolver.query(
+                    ContactsContract.Contacts.CONTENT_URI,
+                    null,
+                    ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " LIKE \'%" + query + "%\'",
+                    null,
+                    null);
         }
 
         try{

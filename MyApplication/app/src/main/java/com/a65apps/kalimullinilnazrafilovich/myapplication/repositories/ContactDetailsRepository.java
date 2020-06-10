@@ -6,12 +6,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
-
-import java.lang.ref.WeakReference;
-
-
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 
 public class ContactDetailsRepository {
     private String TAG = "ContactDetailsRepository";
@@ -25,7 +20,6 @@ public class ContactDetailsRepository {
         Contact contact = null;
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,null,
                 ContactsContract.Contacts._ID + " = " + idContact,null ,null);
-
         try{
             if (cursor != null) {
                 cursor.moveToNext();
@@ -40,7 +34,6 @@ public class ContactDetailsRepository {
                         telephoneNumbers[0],telephoneNumbers[1],
                         emails[0],emails[1],new String());
             }
-
         }finally {
             if (cursor != null) {
                 cursor.close();

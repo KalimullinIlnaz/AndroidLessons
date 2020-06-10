@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -23,8 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.ItemDecoration;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.adapters.ContactAdapter;
@@ -145,7 +146,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                contactListPresenter.showContactList(query);
                 return false;
             }
             @Override
@@ -154,6 +155,21 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
                 return false;
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.map){
+            openFullMapFragment();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openFullMapFragment(){
+        FullMapFragment fullMapFragment = new FullMapFragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, fullMapFragment).addToBackStack(null).commit();
     }
 
     @Override

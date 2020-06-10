@@ -1,5 +1,10 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -7,24 +12,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.Contact;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -38,46 +40,35 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
-public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener
-        , ContactDetailsView {
-    private View viewContactDetails;
+public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
+    private final String TAG = "ContactDetailsFragment";
 
-    private Contact contactDetails;
+    private View view;
+    private AlarmManager alarmManager;
+
+    private Contact contact;
     private String id;
 
-    private TextView telephoneNumber;
     private TextView name;
+    private TextView address;
+    private TextView telephoneNumber;
     private TextView telephoneNumber2;
     private TextView email;
     private TextView email2;
     private TextView description;
     private TextView dataOfBirth;
 
-
-    private final String TAG = "ContactDetailsFragment";
-
-    private AlarmManager alarmManager;
+    private Button btnLocationOnMap;
 
     @InjectPresenter
     ContactDetailsPresenter contactDetailsPresenter;
 
-
     @ProvidePresenter
-    ContactDetailsPresenter  providerContactDetailsPresenter(){
-        return contactDetailsPresenter = new ContactDetailsPresenter(new ContactDetailsRepository(getContext()),getArguments().getString("id"));
-    }
-
-    @Override
-    public void showContactDetail(Contact contact) {
-        this.contactDetails = contact;
-        if (name == null) return;
-        name.setText(contactDetails.getName());
-        dataOfBirth.setText(contactDetails.getDateOfBirth());
-        telephoneNumber.setText(contactDetails.getTelephoneNumber());
-        telephoneNumber2.setText(contactDetails.getTelephoneNumber2());
-        email.setText(contactDetails.getEmail());
-        email2.setText(contactDetails.getEmail2());
-        description.setText(contactDetails.getDescription());
+    ContactDetailsPresenter providerContactDetailsPresenter(){
+        return contactDetailsPresenter = new ContactDetailsPresenter(
+                getContext(),
+                new ContactDetailsRepository(getContext()),
+                getArguments().getString("id"));
     }
 
     public static ContactDetailsFragment newInstance(String id) {
@@ -89,30 +80,37 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        viewContactDetails = inflater.inflate(R.layout.fragment_contact_details, container, false);
+    public void showContactDetail(Contact contact) {
+        if (name == null) return;
 
-        getActivity().setTitle(getString(R.string.title_toolbar_contact_details));
+        name.setText(contact.getName());
+        dataOfBirth.setText(contact.getDateOfBirth());
+        address.setText(contact.getAddress());
+        telephoneNumber.setText(contact.getTelephoneNumber());
+        telephoneNumber2.setText(contact.getTelephoneNumber2());
+        email.setText(contact.getEmail());
+        email2.setText(contact.getEmail2());
+        description.setText(contact.getDescription());
 
-        initView();
-
-        ToggleButton toggleButton = viewContactDetails.findViewById(R.id.btnBirthdayReminder);
-
-        setStatusToggleButton(toggleButton);
-
-        checkPermission();
-        return viewContactDetails;
+        setStatusLocationBtn(contact.getAddress());
     }
 
-    private void initView(){
-        name = viewContactDetails.findViewById(R.id.name);
-        dataOfBirth = viewContactDetails.findViewById(R.id.DayOfBirth);
-        telephoneNumber = viewContactDetails.findViewById(R.id.firstTelephoneNumber);
-        telephoneNumber2 = viewContactDetails.findViewById(R.id.secondTelephoneNumber);
-        email = viewContactDetails.findViewById(R.id.firstEmail);
-        email2 = viewContactDetails.findViewById(R.id.secondEmail);
-        description = viewContactDetails.findViewById(R.id.description);
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_contact_details, container, false);
+        getActivity().setTitle(getString(R.string.title_toolbar_contact_details));
+
+        id = getArguments().getString("id");
+
+        initViews();
+        btnLocationOnMap.setOnClickListener(v -> openMapFragment());
+
+        ToggleButton toggleButton = view.findViewById(R.id.btnBirthdayReminder);
+        setStatusToggleButton(toggleButton);
+
+        checkPermissions();
+        return view;
     }
 
     private void setStatusToggleButton(ToggleButton toggleButton){
@@ -126,28 +124,55 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         toggleButton.setOnCheckedChangeListener(this);
     }
 
-    private void checkPermission(){
+    private void setStatusLocationBtn(String address){
+        if (address.equals("")){
+            btnLocationOnMap.setText(R.string.status_btn_location_add);
+        }else {
+            btnLocationOnMap.setText(R.string.status_btn_location_check);
+        }
+    }
+
+    private void checkPermissions(){
         int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
         if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
                     Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
         }else {
             contactDetailsPresenter.showDetails();
-
         }
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        viewContactDetails = null;
-        name = null;
-        dataOfBirth = null;
-        telephoneNumber = null;
-        telephoneNumber2 = null;
-        email = null;
-        email2 = null;
-        description = null;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                contactDetailsPresenter.showDetails();
+            } else {
+                Toast message = Toast.makeText(getContext(), R.string.deny_permission_message, Toast.LENGTH_LONG);
+                message.show();
+            }
+        }
+    }
+
+    private void openMapFragment() {
+        ContactMapFragment contactMapFragment = ContactMapFragment.newInstance(id);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, contactMapFragment).addToBackStack(null).commit();
+    }
+
+    private void initViews(){
+        name = view.findViewById(R.id.name);
+        dataOfBirth = view.findViewById(R.id.DayOfBirth);
+        address = view.findViewById(R.id.address);
+        telephoneNumber = view.findViewById(R.id.firstTelephoneNumber);
+        telephoneNumber2 = view.findViewById(R.id.secondTelephoneNumber);
+        email = view.findViewById(R.id.firstEmail);
+        email2 = view.findViewById(R.id.secondEmail);
+        description = view.findViewById(R.id.description);
+        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
     }
 
     @Override
@@ -156,7 +181,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
         Intent intent = new Intent(Constants.BROAD_ACTION);
         intent.putExtra("id",id);
-        intent.putExtra("textReminder", contactDetails.getName() + " " + getActivity().getString(R.string.text_notification));
+        intent.putExtra("textReminder", contact.getName() + " " + getActivity().getString(R.string.text_notification));
 
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getActivity(),0,intent,0);
         if (isChecked){
@@ -168,7 +193,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
             Calendar cal  = Calendar.getInstance();
 
             try {
-                cal.setTime(df.parse(contactDetails.getDateOfBirth()));
+                cal.setTime(df.parse(contact.getDateOfBirth()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -192,17 +217,17 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        switch (requestCode){
-            case Constants.PERMISSIONS_REQUEST_READ_CONTACTS:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    contactDetailsPresenter.showDetails();
-                }else {
-                    Toast message = Toast.makeText(getContext(),R.string.deny_permission_message,Toast.LENGTH_LONG);
-                    message.show();
-                }
-        }
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        view = null;
+        name = null;
+        dataOfBirth = null;
+        telephoneNumber = null;
+        telephoneNumber2 = null;
+        email = null;
+        email2 = null;
+        description = null;
+        btnLocationOnMap = null;
     }
 }
