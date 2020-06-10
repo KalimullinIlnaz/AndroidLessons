@@ -53,7 +53,6 @@ public class MapPresenter extends MvpPresenter<MapView> {
 
         compositeDisposable.add(geocodeRepository.getAddressFromYandexService(coordinate)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess( (dto) ->
                         {
                             String address = getFullAddress(dto);
@@ -65,6 +64,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                             }
                         }
                 )
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         (address) -> getViewState().showMapMarker(point),
                         (Throwable::printStackTrace)

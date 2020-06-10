@@ -101,8 +101,7 @@ public class Contact {
     public String getAddress() {
         return address;
     }
-
-
+    
     public double getLatitude() {
         return latitude;
     }
@@ -111,7 +110,6 @@ public class Contact {
         return longitude;
     }
 
-    @Nullable
     public void setLongitude(double longitude){
         this.longitude = longitude;
     }
@@ -120,7 +118,7 @@ public class Contact {
         this.latitude = latitude;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(@Nullable String address) {
         this.address = address;
     }
 }
