@@ -17,23 +17,17 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private ContactDetailsRepository contactDetailsRepository;
-    private String id;
-
     private DataBaseRepository dataBaseRepository;
 
     private CompositeDisposable compositeDisposable;
 
-    public ContactDetailsPresenter(Context context,ContactDetailsRepository contactDetailsRepository, String id){
-        this.contactDetailsRepository = contactDetailsRepository;
-        this.id = id;
-
+    public ContactDetailsPresenter(Context context,ContactDetailsRepository contactDetailsRepository){
         dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
 
         compositeDisposable = new CompositeDisposable();
     }
 
-    public void showDetails() {
+    public void showDetails(String id) {
         compositeDisposable
                 .add(Single.fromCallable(() -> dataBaseRepository.getContactFromDB(id))
                         .subscribeOn(Schedulers.io())

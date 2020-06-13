@@ -14,7 +14,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.MainActivity;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.activity.MainActivity;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
 import java.util.Calendar;

@@ -26,7 +26,6 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
 
     private CompositeDisposable compositeDisposable;
 
-
     public FullMapPresenter(Context context, ContactDetailsRepository contactDetailsRepository){
         dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
         geocodeRepository = new GeocodeRepository(context);
@@ -63,7 +62,7 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
     }
 
     private List<LatLng> getPoints(GoogleRouteResponseDTO dto){
-        if (dto.getPoints().equals("")) return PolyUtil.decode(dto.getPoints());
+        if (!dto.getPoints().equals("")) return PolyUtil.decode(dto.getPoints());
         else return new ArrayList<>();
     }
 

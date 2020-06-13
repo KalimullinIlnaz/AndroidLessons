@@ -4,11 +4,15 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.database.AppDatabase;
+
+import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDatabase;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Location;
 
 import java.util.List;
+
+
+
 public class DataBaseRepository {
     private ContactDetailsRepository contactDetailsRepository;
 
@@ -16,6 +20,7 @@ public class DataBaseRepository {
 
     public DataBaseRepository(Context context, ContactDetailsRepository contactDetailsRepository){
         this.contactDetailsRepository = contactDetailsRepository;
+
         database = Room.databaseBuilder(context,
                 AppDatabase.class,"user_location").build();
     }

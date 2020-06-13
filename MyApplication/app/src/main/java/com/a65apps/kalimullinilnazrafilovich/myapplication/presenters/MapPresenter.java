@@ -16,7 +16,6 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-
 @InjectViewState
 public class MapPresenter extends MvpPresenter<MapView> {
     private CompositeDisposable compositeDisposable;
@@ -29,7 +28,6 @@ public class MapPresenter extends MvpPresenter<MapView> {
         dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
 
         compositeDisposable = new CompositeDisposable();
-
     }
 
     public void showMarker(String id){

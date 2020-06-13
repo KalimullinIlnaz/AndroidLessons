@@ -1,10 +1,11 @@
-package com.a65apps.kalimullinilnazrafilovich.myapplication;
+package com.a65apps.kalimullinilnazrafilovich.myapplication.activity;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.fragments.ContactDetailsFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.fragments.ContactListFragment;
 import com.arellomobile.mvp.MvpAppCompatActivity;

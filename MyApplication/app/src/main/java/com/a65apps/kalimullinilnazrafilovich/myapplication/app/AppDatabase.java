@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.myapplication.database;
+package com.a65apps.kalimullinilnazrafilovich.myapplication.app;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

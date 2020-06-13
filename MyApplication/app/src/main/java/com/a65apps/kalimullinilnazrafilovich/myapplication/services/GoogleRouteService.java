@@ -1,7 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.services;
 
-
-
 import com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces.GoogleRouteApi;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;

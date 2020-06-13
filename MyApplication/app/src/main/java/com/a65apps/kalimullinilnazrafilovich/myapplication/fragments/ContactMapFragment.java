@@ -1,14 +1,18 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDelegate;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.di.map.MapComponent;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.MapPresenter;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.MapView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -22,6 +26,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 public class ContactMapFragment extends MvpAppCompatFragment implements MapView, OnMapReadyCallback{
     private String id;
 
@@ -30,11 +37,12 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
 
     @InjectPresenter
     MapPresenter mapPresenter;
+    @Inject
+    public Provider<MapPresenter> mapPresenterProvider;
 
     @ProvidePresenter
     MapPresenter provideMapPresenter(){
-        return mapPresenter =  new MapPresenter(getContext(),
-                new ContactDetailsRepository(getContext()));
+        return mapPresenterProvider.get();
     }
 
     public static ContactMapFragment newInstance(String id) {
@@ -43,6 +51,15 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
         args.putString("id",id);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        AppDelegate appDelegate = (AppDelegate) getActivity().getApplication();
+        MapComponent mapComponent = appDelegate.getAppComponent()
+                .plusMapComponent();
+        mapComponent.inject(this);
+        super.onAttach(context);
     }
 
     @Override

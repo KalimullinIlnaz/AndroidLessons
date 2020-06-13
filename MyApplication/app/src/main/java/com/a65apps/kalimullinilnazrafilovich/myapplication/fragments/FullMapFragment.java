@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -7,7 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDelegate;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.di.fullMap.FullMapComponent;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Location;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.FullMapPresenter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
@@ -27,6 +32,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 public class FullMapFragment extends MvpAppCompatFragment implements FullMapView, OnMapReadyCallback {
     private View view;
     private GoogleMap map;
@@ -40,10 +48,22 @@ public class FullMapFragment extends MvpAppCompatFragment implements FullMapView
     @InjectPresenter
     FullMapPresenter fullMapPresenter;
 
+    @Inject
+    public Provider<FullMapPresenter> fullMapPresenterProvider;
+
     @ProvidePresenter
     FullMapPresenter provideFullMapPresenter(){
-        return fullMapPresenter =  new FullMapPresenter(getContext(),
-                new ContactDetailsRepository(getContext()));
+        return fullMapPresenterProvider.get();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        AppDelegate appDelegate = (AppDelegate)getActivity().getApplication();
+        FullMapComponent fullMapComponent = appDelegate.getAppComponent()
+                .plusFullMapComponent();
+        fullMapComponent.inject(this);
+
+        super.onAttach(context);
     }
 
     @Override

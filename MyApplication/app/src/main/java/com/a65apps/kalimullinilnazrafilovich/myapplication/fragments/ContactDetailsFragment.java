@@ -24,9 +24,10 @@ import android.widget.ToggleButton;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDelegate;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.di.contactDetails.ContactDetailsComponent;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -39,15 +40,28 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
     private final String TAG = "ContactDetailsFragment";
+
+    @InjectPresenter
+    public ContactDetailsPresenter contactDetailsPresenter;
+    @Inject
+    public Provider<ContactDetailsPresenter> contactDetailsPresenterProvider;
+    @ProvidePresenter
+    ContactDetailsPresenter providePresenter(){
+        return contactDetailsPresenterProvider.get();
+    }
 
     private View view;
     private AlarmManager alarmManager;
 
     private Contact contact;
     private String id;
+
 
     private TextView name;
     private TextView address;
@@ -59,17 +73,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     private TextView dataOfBirth;
 
     private Button btnLocationOnMap;
-
-    @InjectPresenter
-    ContactDetailsPresenter contactDetailsPresenter;
-
-    @ProvidePresenter
-    ContactDetailsPresenter providerContactDetailsPresenter(){
-        return contactDetailsPresenter = new ContactDetailsPresenter(
-                getContext(),
-                new ContactDetailsRepository(getContext()),
-                getArguments().getString("id"));
-    }
 
     public static ContactDetailsFragment newInstance(String id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
@@ -93,6 +96,15 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         description.setText(contact.getDescription());
 
         setStatusLocationBtn(contact.getAddress());
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        AppDelegate appDelegate = (AppDelegate) getActivity().getApplication();
+        ContactDetailsComponent contactDetailsComponent = appDelegate.getAppComponent()
+                .plusContactDetailsComponent();
+        contactDetailsComponent.inject(this);
+        super.onAttach(context);
     }
 
     @Override
@@ -138,7 +150,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
                     Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
         }else {
-            contactDetailsPresenter.showDetails();
+            contactDetailsPresenter.showDetails(id);
         }
     }
 
@@ -148,7 +160,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                contactDetailsPresenter.showDetails();
+                contactDetailsPresenter.showDetails(id);
             } else {
                 Toast message = Toast.makeText(getContext(), R.string.deny_permission_message, Toast.LENGTH_LONG);
                 message.show();
