@@ -17,7 +17,6 @@ public class ContactListRepository {
         contentResolver = context.getContentResolver();
     }
 
-
     public ArrayList<Contact> getContacts(String query){
         final ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor;

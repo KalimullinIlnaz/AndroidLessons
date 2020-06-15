@@ -1,9 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
-import android.content.Context;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.GoogleRouteResponseDTO;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.GeocodeRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.FullMapView;
@@ -14,6 +12,8 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -27,11 +27,11 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
     private CompositeDisposable compositeDisposable;
 
 
-    public FullMapPresenter(Context context, ContactDetailsRepository contactDetailsRepository){
-        dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
-        geocodeRepository = new GeocodeRepository(context);
-
+    public FullMapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
         compositeDisposable = new CompositeDisposable();
+
+        this.dataBaseRepository = dataBaseRepository;
+        this.geocodeRepository = geocodeRepository;
     }
 
     public void showMarkers(){
@@ -63,7 +63,7 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
     }
 
     private List<LatLng> getPoints(GoogleRouteResponseDTO dto){
-        if (dto.getPoints().equals("")) return PolyUtil.decode(dto.getPoints());
+        if (!dto.getPoints().equals("")) return PolyUtil.decode(dto.getPoints());
         else return new ArrayList<>();
     }
 

@@ -1,23 +1,19 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.repositories;
 
-import android.content.Context;
 
-import androidx.room.Room;
-
-import com.a65apps.kalimullinilnazrafilovich.myapplication.database.AppDatabase;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDatabase;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Location;
 
 import java.util.List;
+
 public class DataBaseRepository {
     private ContactDetailsRepository contactDetailsRepository;
-
     private AppDatabase database;
 
-    public DataBaseRepository(Context context, ContactDetailsRepository contactDetailsRepository){
+    public DataBaseRepository(AppDatabase database, ContactDetailsRepository contactDetailsRepository){
         this.contactDetailsRepository = contactDetailsRepository;
-        database = Room.databaseBuilder(context,
-                AppDatabase.class,"user_location").build();
+        this.database = database;
     }
 
     public Contact getContactFromDB(String id)  {

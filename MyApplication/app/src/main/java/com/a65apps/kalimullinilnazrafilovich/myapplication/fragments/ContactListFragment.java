@@ -25,6 +25,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.ItemDecoration;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDelegate;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.di.contactDetails.ContactDetailsComponent;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.di.contacts.ContactsListComponent;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
@@ -37,6 +40,9 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView,ContactAdapter.onContactListener {
@@ -51,10 +57,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @InjectPresenter
     ContactListPresenter contactListPresenter;
+    @Inject
+    public Provider<ContactListPresenter> contactListPresenterProvider;
 
     @ProvidePresenter
-    ContactListPresenter providerContactListPresenter(){
-        return contactListPresenter = new ContactListPresenter(new ContactListRepository(getContext()));
+    ContactListPresenter providePresenter(){
+        return contactListPresenterProvider.get();
     }
 
     @Override
@@ -73,6 +81,16 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void hideLoadingIndicator() {
         circularProgressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        AppDelegate appDelegate = (AppDelegate) getActivity().getApplication();
+        ContactsListComponent contactsListComponent = appDelegate.getAppComponent()
+                .plusContactsListComponent();
+        contactsListComponent.inject(this);
+
+        super.onAttach(context);
     }
 
     @Override

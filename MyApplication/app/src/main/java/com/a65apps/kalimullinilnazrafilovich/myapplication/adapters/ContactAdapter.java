@@ -66,6 +66,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
 
             name = (TextView) itemView.findViewById(R.id.namePerson);
             telephoneNumber = (TextView) itemView.findViewById(R.id.telephoneNumberPerson);
+            
             this.onContactListener = onContactListener;
 
             itemView.setOnClickListener(this);
