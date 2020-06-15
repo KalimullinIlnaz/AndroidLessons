@@ -7,15 +7,10 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Location;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-
-
 public class DataBaseRepository {
     private ContactDetailsRepository contactDetailsRepository;
     private AppDatabase database;
 
-    @Inject
     public DataBaseRepository(AppDatabase database, ContactDetailsRepository contactDetailsRepository){
         this.contactDetailsRepository = contactDetailsRepository;
         this.database = database;

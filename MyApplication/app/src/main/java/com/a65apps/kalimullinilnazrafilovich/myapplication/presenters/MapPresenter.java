@@ -24,7 +24,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
     private DataBaseRepository dataBaseRepository;
     private GeocodeRepository geocodeRepository;
 
-    @Inject
+
     public MapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
         compositeDisposable = new CompositeDisposable();
 

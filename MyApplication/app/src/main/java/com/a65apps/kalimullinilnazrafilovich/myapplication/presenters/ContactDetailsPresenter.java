@@ -7,8 +7,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsV
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import javax.inject.Inject;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -20,7 +18,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
 
     private DataBaseRepository dataBaseRepository;
 
-    @Inject
+
     public ContactDetailsPresenter(DataBaseRepository dataBaseRepository){
         compositeDisposable = new CompositeDisposable();
 

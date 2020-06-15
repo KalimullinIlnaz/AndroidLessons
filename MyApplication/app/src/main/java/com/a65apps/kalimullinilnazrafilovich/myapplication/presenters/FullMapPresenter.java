@@ -1,9 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
-import android.content.Context;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.models.GoogleRouteResponseDTO;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.GeocodeRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.FullMapView;
@@ -15,7 +13,6 @@ import com.google.maps.android.PolyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -29,7 +26,7 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
 
     private CompositeDisposable compositeDisposable;
 
-    @Inject
+
     public FullMapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
         compositeDisposable = new CompositeDisposable();
 
