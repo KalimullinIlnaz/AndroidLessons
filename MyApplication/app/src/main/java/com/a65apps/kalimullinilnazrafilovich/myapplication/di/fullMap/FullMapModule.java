@@ -1,12 +1,11 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.di.fullMap;
 
 
-import android.content.Context;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.di.scope.FullMapScope;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.FullMapPresenter;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
-
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.GeocodeRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,13 +15,7 @@ public class FullMapModule {
 
     @Provides
     @FullMapScope
-    public ContactDetailsRepository provideContactDetailsRepository(Context context){
-        return new ContactDetailsRepository(context);
-    }
-
-    @Provides
-    @FullMapScope
-    public FullMapPresenter provideFullMapPresenter(Context context, ContactDetailsRepository contactDetailsRepository){
-        return new FullMapPresenter(context, contactDetailsRepository);
+    public FullMapPresenter provideFullMapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
+        return new FullMapPresenter(dataBaseRepository, geocodeRepository);
     }
 }

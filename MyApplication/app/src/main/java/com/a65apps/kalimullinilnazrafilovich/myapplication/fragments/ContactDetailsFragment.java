@@ -62,7 +62,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     private Contact contact;
     private String id;
 
-
     private TextView name;
     private TextView address;
     private TextView telephoneNumber;
@@ -84,8 +83,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
     @Override
     public void showContactDetail(Contact contact) {
-        if (name == null) return;
+        this.contact = contact;
 
+        if (name == null) return;
         name.setText(contact.getName());
         dataOfBirth.setText(contact.getDateOfBirth());
         address.setText(contact.getAddress());
@@ -104,6 +104,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         ContactDetailsComponent contactDetailsComponent = appDelegate.getAppComponent()
                 .plusContactDetailsComponent();
         contactDetailsComponent.inject(this);
+
         super.onAttach(context);
     }
 
@@ -116,6 +117,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         id = getArguments().getString("id");
 
         initViews();
+
         btnLocationOnMap.setOnClickListener(v -> openMapFragment());
 
         ToggleButton toggleButton = view.findViewById(R.id.btnBirthdayReminder);

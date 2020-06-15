@@ -14,6 +14,9 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -26,11 +29,12 @@ public class FullMapPresenter extends MvpPresenter<FullMapView> {
 
     private CompositeDisposable compositeDisposable;
 
-    public FullMapPresenter(Context context, ContactDetailsRepository contactDetailsRepository){
-        dataBaseRepository = new DataBaseRepository(context,contactDetailsRepository);
-        geocodeRepository = new GeocodeRepository(context);
-
+    @Inject
+    public FullMapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
         compositeDisposable = new CompositeDisposable();
+
+        this.dataBaseRepository = dataBaseRepository;
+        this.geocodeRepository = geocodeRepository;
     }
 
     public void showMarkers(){
