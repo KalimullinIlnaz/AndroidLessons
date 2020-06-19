@@ -4,7 +4,8 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces.LocationDao;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Location;
+
+import Entities.Location;
 
 @Database(entities = {Location.class},version = 1,exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {

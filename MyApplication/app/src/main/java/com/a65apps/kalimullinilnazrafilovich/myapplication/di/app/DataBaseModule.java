@@ -4,10 +4,13 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+
 import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDatabase;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepositoryImpl;
 
 import javax.inject.Singleton;
 
+import Interactors.db.DataBaseModel;
 import dagger.Module;
 import dagger.Provides;
 
@@ -20,4 +23,11 @@ public class DataBaseModule {
         return Room.databaseBuilder(context, AppDatabase.class,"user_location")
                 .build();
     }
+
+    @Provides
+    @Singleton
+    public DataBaseModel provideDataBaseModel(DataBaseRepositoryImpl dataBaseRepository){
+        return new DataBaseModel(dataBaseRepository);
+    }
+
 }

@@ -1,14 +1,13 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Location;
-
 import java.util.List;
+
+import Entities.Location;
 
 @Dao
 public interface LocationDao {

@@ -26,7 +26,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDelegate;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.di.contactDetails.ContactDetailsComponent;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactDetailsPresenter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -42,6 +41,8 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import Entities.Contact;
 
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
@@ -79,23 +80,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         args.putString("id",id);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void showContactDetail(Contact contact) {
-        this.contact = contact;
-
-        if (name == null) return;
-        name.setText(contact.getName());
-        dataOfBirth.setText(contact.getDateOfBirth());
-        address.setText(contact.getAddress());
-        telephoneNumber.setText(contact.getTelephoneNumber());
-        telephoneNumber2.setText(contact.getTelephoneNumber2());
-        email.setText(contact.getEmail());
-        email2.setText(contact.getEmail2());
-        description.setText(contact.getDescription());
-
-        setStatusLocationBtn(contact.getAddress());
     }
 
     @Override
@@ -243,5 +227,22 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email2 = null;
         description = null;
         btnLocationOnMap = null;
+    }
+
+    @Override
+    public void showContactDetail(Contact contact) {
+        this.contact = contact;
+
+        if (name == null) return;
+        name.setText(contact.getName());
+        dataOfBirth.setText(contact.getDateOfBirth());
+        address.setText(contact.getAddress());
+        telephoneNumber.setText(contact.getTelephoneNumber());
+        telephoneNumber2.setText(contact.getTelephoneNumber2());
+        email.setText(contact.getEmail());
+        email2.setText(contact.getEmail2());
+        description.setText(contact.getDescription());
+
+        setStatusLocationBtn(contact.getAddress());
     }
 }

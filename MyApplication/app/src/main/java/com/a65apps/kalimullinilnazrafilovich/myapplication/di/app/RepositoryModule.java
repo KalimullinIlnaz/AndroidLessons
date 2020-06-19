@@ -3,12 +3,14 @@ package com.a65apps.kalimullinilnazrafilovich.myapplication.di.app;
 import android.content.Context;
 
 import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDatabase;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.GeocodeRepository;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepositoryImpl;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepositoryImpl;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.GeocodeRepositoryImpl;
 
 import javax.inject.Singleton;
 
+import Interactors.details.ContactDetailsModel;
+import Interactors.details.ContactDetailsRepository;
 import dagger.Module;
 import dagger.Provides;
 
@@ -16,19 +18,19 @@ import dagger.Provides;
 public class RepositoryModule {
     @Provides
     @Singleton
-    public ContactDetailsRepository provideContactDetailsRepository(Context context) {
-        return new ContactDetailsRepository(context);
+    public ContactDetailsRepositoryImpl provideContactDetailsRepository(Context context) {
+        return new ContactDetailsRepositoryImpl(context);
     }
 
     @Provides
     @Singleton
-    public DataBaseRepository provideDataBaseRepository(AppDatabase database, ContactDetailsRepository contactDetailsRepository){
-        return new DataBaseRepository(database, contactDetailsRepository);
+    public DataBaseRepositoryImpl provideDataBaseRepository(AppDatabase database, ContactDetailsRepositoryImpl contactDetailsRepository){
+        return new DataBaseRepositoryImpl(database, contactDetailsRepository);
     }
 
     @Provides
     @Singleton
-    public GeocodeRepository provideGeocodeRepository(Context context){
-        return new GeocodeRepository(context);
+    public GeocodeRepositoryImpl provideGeocodeRepository(Context context){
+        return new GeocodeRepositoryImpl(context);
     }
 }

@@ -26,10 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.app.AppDelegate;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.di.contactDetails.ContactDetailsComponent;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.di.contacts.ContactsListComponent;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.adapters.ContactAdapter;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.presenters.ContactListPresenter;
@@ -43,6 +40,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import Entities.Contact;
 
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView,ContactAdapter.onContactListener {
@@ -72,6 +71,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
     }
+
 
     @Override
     public void showLoadingIndicator() {
@@ -184,10 +184,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     private void openFullMapFragment(){
-        FullMapFragment fullMapFragment = new FullMapFragment();
+        MapRouteFragment mapRouteFragment = new MapRouteFragment();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, fullMapFragment).addToBackStack(null).commit();
+        fragmentTransaction.replace(R.id.content, mapRouteFragment).addToBackStack(null).commit();
     }
 
     @Override

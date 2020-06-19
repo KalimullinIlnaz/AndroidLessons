@@ -1,12 +1,12 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
+import androidx.annotation.NonNull;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.ContactDetailsRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.ContactDetailsView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import Interactors.details.ContactDetailsInteractor;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -16,18 +16,17 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private CompositeDisposable compositeDisposable;
 
-    private DataBaseRepository dataBaseRepository;
+    private final ContactDetailsInteractor contactDetailsInteractor;
 
+    public ContactDetailsPresenter(@NonNull ContactDetailsInteractor contactDetailsInteractor){
+        this.contactDetailsInteractor = contactDetailsInteractor;
 
-    public ContactDetailsPresenter(DataBaseRepository dataBaseRepository){
         compositeDisposable = new CompositeDisposable();
-
-        this.dataBaseRepository = dataBaseRepository;
     }
 
     public void showDetails(String id) {
         compositeDisposable
-                .add(Single.fromCallable(() -> dataBaseRepository.getContactFromDB(id))
+                .add(Single.fromCallable(() -> contactDetailsInteractor.loadDetailsContact(id))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(

@@ -33,6 +33,7 @@ dependencies {
 
     //Moxy
     implementation "com.arello-mobile:moxy:1.5.5"
+    implementation project(path: ':java')
     annotationProcessor "com.arello-mobile:moxy-compiler:1.5.5"
     implementation 'com.android.support:recyclerview-v7:29.0.0'
     implementation ('tech.schoolhelper:moxy-x-androidx:1.7.0'){
@@ -46,10 +47,6 @@ dependencies {
     //Retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
-
-    //Room
-    implementation "androidx.room:room-runtime:2.2.5"
-    annotationProcessor "androidx.room:room-compiler:2.2.5"
 
     //Google Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
@@ -70,6 +67,10 @@ dependencies {
     implementation  'com.google.dagger:dagger-android:2.20'
     implementation  'com.google.dagger:dagger-android-support:2.20'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.20'
+
+    //Room
+    implementation "androidx.room:room-runtime:2.2.5"
+    annotationProcessor "androidx.room:room-compiler:2.2.5"
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

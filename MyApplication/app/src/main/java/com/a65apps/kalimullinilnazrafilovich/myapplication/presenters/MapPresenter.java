@@ -1,17 +1,15 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.presenters;
 
-
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.Contact;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.YandexAddressResponseDTO;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.DataBaseRepository;
-import com.a65apps.kalimullinilnazrafilovich.myapplication.repositories.GeocodeRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.views.MapView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
 
-import javax.inject.Inject;
-
+import Entities.Contact;
+import Entities.Location;
+import Entities.YandexAddressResponseDTO;
+import Interactors.db.DataBaseInteractor;
+import Interactors.location.MapLocationInteractor;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -21,15 +19,14 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MapPresenter extends MvpPresenter<MapView> {
     private CompositeDisposable compositeDisposable;
 
-    private DataBaseRepository dataBaseRepository;
-    private GeocodeRepository geocodeRepository;
+    private final MapLocationInteractor mapLocationInteractor;
+    private final DataBaseInteractor dataBaseInteractor;
 
-
-    public MapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
+    public MapPresenter(MapLocationInteractor mapLocationInteractor, DataBaseInteractor dataBaseInteractor){
         compositeDisposable = new CompositeDisposable();
 
-        this.dataBaseRepository = dataBaseRepository;
-        this.geocodeRepository = geocodeRepository;
+        this.mapLocationInteractor = mapLocationInteractor;
+        this.dataBaseInteractor = dataBaseInteractor;
     }
 
     public void showMarker(String id){
@@ -44,23 +41,22 @@ public class MapPresenter extends MvpPresenter<MapView> {
             );
     }
 
-    private Contact getData(String id){
-        return dataBaseRepository.getContactFromDB(id);
+    private Contact getData(String id) {
+        return dataBaseInteractor.getContactById(id);
     }
 
     public void getLocationMapClick(String id,LatLng point) {
         String coordinate = point.longitude + "," + point.latitude;
 
-        compositeDisposable.add(geocodeRepository.getAddressFromYandexService(coordinate)
+        compositeDisposable.add(mapLocationInteractor.loadAddress(coordinate)
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess( (dto) ->
                         {
                             String address = getFullAddress(dto);
                             if (!address.equals("")){
-                                dataBaseRepository.insertData(id,
-                                        address,
-                                        point.latitude,
-                                        point.longitude);
+                                dataBaseInteractor.insertContact(
+                                        new Location(id,address,point.latitude,
+                                        point.longitude));
                             }
                         }
                 )

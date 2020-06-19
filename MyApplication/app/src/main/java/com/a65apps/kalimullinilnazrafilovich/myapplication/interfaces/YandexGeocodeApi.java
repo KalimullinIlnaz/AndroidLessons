@@ -1,8 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.myapplication.interfaces;
 
-import com.a65apps.kalimullinilnazrafilovich.myapplication.models.YandexAddressResponseDTO;
 
 
+import Entities.YandexAddressResponseDTO;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
