@@ -23,7 +23,7 @@ public class MapRouteModule {
 
     @Provides
     @MapRouteScope
-    public MapRouteModel provideMapRouteModel(DataBaseRepositoryImpl dataBaseRepository, GeocodeRepositoryImpl geocodeRepository){
-        return new MapRouteModel(dataBaseRepository, geocodeRepository);
+    public MapRouteModel provideMapRouteModel(GeocodeRepositoryImpl geocodeRepository){
+        return new MapRouteModel(geocodeRepository);
     }
 }

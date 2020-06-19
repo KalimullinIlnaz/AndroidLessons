@@ -24,8 +24,8 @@ public class MapModule {
 
     @Provides
     @MapScope
-    public MapLocationModel provideMapLocationModel(DataBaseRepositoryImpl dataBaseRepository, GeocodeRepositoryImpl geocodeRepository){
-        return new MapLocationModel(dataBaseRepository, geocodeRepository);
+    public MapLocationModel provideMapLocationModel(GeocodeRepositoryImpl geocodeRepository){
+        return new MapLocationModel(geocodeRepository);
 
     }
 }
