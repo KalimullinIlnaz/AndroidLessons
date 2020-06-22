@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactAdapter;
@@ -38,12 +39,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import entities.Contact;
 
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView, ContactAdapter.onContactListener {
@@ -53,7 +52,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     private CircularProgressView circularProgressView;
 
-    private ArrayList<Contact> contacts;
+    private List<Contact> contactEntities;
     private View view;
 
     @InjectPresenter
@@ -66,14 +65,14 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         return contactListPresenterProvider.get();
     }
 
+
     @Override
-    public void showContactList(ArrayList<Contact> contacts) {
-        this.contacts = contacts;
-        contactAdapter.setData(contacts);
+    public void showContactList(List<Contact> contactEntities) {
+        this.contactEntities = contactEntities;
+        contactAdapter.setData(contactEntities);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
     }
-
 
     @Override
     public void showLoadingIndicator() {
@@ -197,7 +196,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void onContactClick(int position) {
-        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contacts.get(position).getId());
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contactEntities.get(position).getId());
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();

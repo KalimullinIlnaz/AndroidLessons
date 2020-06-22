@@ -1,12 +1,11 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
-
-
-
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.GeocodeRepository;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.DataBaseRepository;
+import com.a65apps.kalimullinilnazrafilovich.entities.Point;
+import com.a65apps.kalimullinilnazrafilovich.entities.Route;
+import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
+import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteInteractor;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper.GoogleDTOMapper;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.FullMapView;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.GoogleRouteResponseDTO;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,7 +16,6 @@ import java.util.List;
 
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -25,20 +23,19 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MapRoutePresenter extends MvpPresenter<FullMapView> {
     private CompositeDisposable compositeDisposable;
 
-    private final DataBaseRepository dataBaseRepository;
-    private final GeocodeRepository geocodeRepository;
+    private final ContactLocationInteractor contactLocationInteractor;
+    private final RouteInteractor routeInteractor;
 
-
-    public MapRoutePresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
+    public MapRoutePresenter(ContactLocationInteractor contactLocationInteractor, RouteInteractor routeInteractor){
         compositeDisposable = new CompositeDisposable();
 
-       this.dataBaseRepository = dataBaseRepository;
-       this.geocodeRepository = geocodeRepository;
+        this.contactLocationInteractor = contactLocationInteractor;
+        this.routeInteractor = routeInteractor;
     }
 
     public void showMarkers(){
         compositeDisposable
-            .add(Single.fromCallable(dataBaseRepository::getAllLocations)
+            .add(contactLocationInteractor.loadAllContactLocations()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -49,10 +46,10 @@ public class MapRoutePresenter extends MvpPresenter<FullMapView> {
 
     public void showRoute(String from,String to){
         compositeDisposable
-            .add(geocodeRepository.getRoutePoints(from, to)
+            .add(
+                    routeInteractor.loadRoute(from, to)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.computation())
-                    .map(this::getPoints)
+                    .map( (route) -> getListLatLnt(route))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             (dots) ->{
@@ -64,9 +61,15 @@ public class MapRoutePresenter extends MvpPresenter<FullMapView> {
             );
     }
 
-    private List<LatLng> getPoints(GoogleRouteResponseDTO dto){
-        if (!dto.getPoints().equals("")) return PolyUtil.decode(dto.getPoints());
-        else return new ArrayList<>();
+    private List<LatLng> getListLatLnt(Route route){
+        if (route.getPoints().isEmpty()) return new ArrayList<>();
+        else {
+            List<LatLng> latLngs = new ArrayList<>();
+            for (Point point: route.getPoints()) {
+                latLngs.add(new LatLng(point.getLatitude(), point.getLongitude()));
+            }
+            return latLngs;
+        }
     }
 
     @Override

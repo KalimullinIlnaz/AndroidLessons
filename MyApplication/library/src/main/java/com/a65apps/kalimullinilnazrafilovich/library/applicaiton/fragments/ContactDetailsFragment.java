@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactDetailsContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
@@ -42,8 +43,6 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import entities.Contact;
 
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
@@ -241,13 +240,13 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         if (name == null) return;
         name.setText(contact.getName());
         dataOfBirth.setText(contact.getDateOfBirth());
-        address.setText(contact.getAddress());
+        address.setText(contact.getLocation().getAddress());
         telephoneNumber.setText(contact.getTelephoneNumber());
         telephoneNumber2.setText(contact.getTelephoneNumber2());
         email.setText(contact.getEmail());
         email2.setText(contact.getEmail2());
         description.setText(contact.getDescription());
 
-        setStatusLocationBtn(contact.getAddress());
+        setStatusLocationBtn(contact.getLocation().getAddress());
     }
 }

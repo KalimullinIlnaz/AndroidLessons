@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import java.util.ArrayList;
-
-import entities.Contact;
+import java.util.List;
 
 public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactViewHolder> {
     private onContactListener onContactListener;
@@ -49,8 +48,8 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
                 }
             };
 
-    public void setData(ArrayList<Contact> contacts){
-        submitList(contacts);
+    public void setData(List<Contact> contactEntities){
+        submitList(contactEntities);
     }
 
     @Override

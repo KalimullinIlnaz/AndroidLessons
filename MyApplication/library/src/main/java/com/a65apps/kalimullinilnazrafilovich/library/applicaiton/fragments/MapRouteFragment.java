@@ -10,9 +10,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.MapRouteContainer;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.Location;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.MapRoutePresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.FullMapView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
@@ -119,10 +119,10 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
     public void showMarkers(List<Location> locations) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Location curLocation:locations) {
-            setMarker(new LatLng(curLocation.getLatitude(),
-                    curLocation.getLongitude()));
-            builder.include(new LatLng(curLocation.getLatitude(),
-                    curLocation.getLongitude()));
+            setMarker(new LatLng(curLocation.getPoint().getLatitude(),
+                    curLocation.getPoint().getLongitude()));
+            builder.include(new LatLng(curLocation.getPoint().getLatitude(),
+                    curLocation.getPoint().getLongitude()));
         }
         setCamOnMarkers(builder.build());
     }

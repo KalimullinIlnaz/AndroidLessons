@@ -7,7 +7,7 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactLi
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import interactors.contacts.ContactListInteractor;
+import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListInteractor;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -25,9 +25,10 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
         compositeDisposable = new CompositeDisposable();
         subject = PublishSubject.create();
 
+        
         compositeDisposable.add(
                 subject.switchMapSingle(
-                        query -> Single.fromCallable(() -> contactListInteractor.loadContactsOnRequest(query))
+                        query -> contactListInteractor.loadContactsOnRequest(query)
                                 .subscribeOn(Schedulers.io())
                         )
                         .observeOn(AndroidSchedulers.mainThread())

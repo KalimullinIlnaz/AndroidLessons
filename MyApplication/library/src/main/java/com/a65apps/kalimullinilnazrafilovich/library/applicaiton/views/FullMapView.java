@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views;
 
+import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
@@ -7,8 +8,6 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
-
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.Location;
 
 public interface FullMapView extends MvpView {
     @StateStrategyType(AddToEndSingleStrategy.class)

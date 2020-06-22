@@ -1,17 +1,15 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.GeocodeRepository;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.Location;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.YandexAddressResponseDTO;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.DataBaseRepository;
+import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
+import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationORM;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.MapView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
 
-import entities.Contact;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -19,63 +17,49 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MapPresenter extends MvpPresenter<MapView> {
     private CompositeDisposable compositeDisposable;
 
-    private DataBaseRepository dataBaseRepository;
-    private GeocodeRepository geocodeRepository;
+    private final ContactLocationInteractor contactLocationInteractor;
+    private final ContactDetailsInteractor contactDetailsInteractor;
 
-
-    public MapPresenter(DataBaseRepository dataBaseRepository, GeocodeRepository geocodeRepository){
+    public MapPresenter(ContactLocationInteractor contactLocationInteractor,
+                        ContactDetailsInteractor contactDetailsInteractor){
         compositeDisposable = new CompositeDisposable();
 
-        this.dataBaseRepository = dataBaseRepository;
-        this.geocodeRepository = geocodeRepository;
+        this.contactLocationInteractor = contactLocationInteractor;
+        this.contactDetailsInteractor = contactDetailsInteractor;
     }
 
     public void showMarker(String id){
         compositeDisposable
-            .add(Single.fromCallable(() -> getData(id))
+            .add(contactDetailsInteractor.loadDetailsContact(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    (contact) -> getViewState().showMapMarker(new LatLng(contact.getLatitude(),contact.getLongitude())),
-                    (Throwable::printStackTrace)
-                )
-            );
-    }
-
-    private Contact getData(String id) {
-        return dataBaseRepository.getContactById(id);
-    }
-
-    public void getLocationMapClick(String id,LatLng point) {
-        String coordinate = point.longitude + "," + point.latitude;
-
-        compositeDisposable.add(geocodeRepository.getAddress(coordinate)
-                .subscribeOn(Schedulers.io())
-                .doOnSuccess( (dto) ->
-                        {
-                            String address = getFullAddress(dto);
-                            if (!address.equals("")){
-                                dataBaseRepository.insertContact(
-                                        new Location(id,address,point.latitude,
-                                        point.longitude));
-                            }
+                    (contact) -> {
+                        if (contact.getLocation().getAddress().equals("")){
+                            getViewState().showMapMarker(
+                                    new LatLng(0,0)
+                            );
+                        }else {
+                            getViewState().showMapMarker(
+                                    new LatLng(contact.getLocation().getPoint().getLatitude(),
+                                            contact.getLocation().getPoint().getLongitude()));
                         }
-                )
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        (address) -> getViewState().showMapMarker(point),
-                        (Throwable::printStackTrace)
-                ));
+                    }, (Throwable::printStackTrace))
+                );
     }
 
-    private String getFullAddress(YandexAddressResponseDTO yandexAddressResponseDTO){
-        try {
-            return yandexAddressResponseDTO.getResponse()
-                    .getGeoObjectCollection().getFeatureMember().get(0).getGeoObject()
-                    .getMetaDataProperty().getGeocoderMetaData().getText();
-        }catch (IndexOutOfBoundsException e){
-            return "";
-        }
+    public void getLocationMapClick(String id, LatLng point) {
+        contactDetailsInteractor.loadDetailsContact(id).subscribe(
+                (contact) -> compositeDisposable.add(
+                        contactLocationInteractor.loadContactLocation(contact, point.longitude, point.latitude)
+                                .subscribeOn(Schedulers.io())
+                                .doOnSuccess( (dto) -> contactLocationInteractor.saveContactLocation(dto, contact))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        (address) -> getViewState().showMapMarker(point),
+                                        (Throwable::printStackTrace)
+                                ))
+        );
     }
 
     @Override
