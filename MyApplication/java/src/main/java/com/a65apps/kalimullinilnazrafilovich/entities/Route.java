@@ -12,6 +12,7 @@ public class Route {
         this.points = points;
     }
 
+    @Nullable
     public List<Point> getPoints() {
         return points;
     }

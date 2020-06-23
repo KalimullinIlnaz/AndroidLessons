@@ -40,7 +40,7 @@ public class ContactLocationRepository implements LocationRepository {
     @Override
     public Single<List<Location>> getAllContactLocations() {
         return Single.fromCallable( () -> database.locationDao().getAll())
-                .flatMapObservable( locationOrms -> Observable.fromIterable(locationOrms))
+                .flatMapObservable(Observable::fromIterable)
                 .flatMapSingle( item ->
                         contactDetailsContentResolverRepository.getDetailsContact(item.getContactID())
                 .map( contact -> new Pair<LocationOrm, Contact>(item,contact)))
@@ -52,16 +52,19 @@ public class ContactLocationRepository implements LocationRepository {
     }
 
     @Override
-    public Single<Location> getContactLocationByCoordinate(Contact contact, double latitude, double longitude) {
+    public Single<Location> createOrUpdateContactLocationByCoordinate(Contact contact, double latitude, double longitude) {
         String coordinate = latitude + "," + longitude;
 
-        return YandexGeocodeService.getInstance()
+        Single<Location> locationSingle = YandexGeocodeService.getInstance()
                 .getJSONApi()
                 .getLocation(
                         coordinate,
                         context.getResources().getString(R.string.yandex_maps_key))
                 .subscribeOn(Schedulers.io())
-                .map( (responseDTO) ->
-                        new YandexDTOMapper().transform(contact, responseDTO, latitude, longitude));
+                .map( (responseDTO) -> new YandexDTOMapper().transform(contact, responseDTO, latitude, longitude));
+
+        locationSingle.subscribe(location -> insertContactLocation(location,contact));
+
+        return locationSingle;
     }
 }

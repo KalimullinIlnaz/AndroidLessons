@@ -47,15 +47,16 @@ public class MapPresenter extends MvpPresenter<MapView> {
     }
 
     public void getLocationMapClick(String id, LatLng point) {
-        contactDetailsInteractor.loadDetailsContact(id)
-                .flatMap( contact -> contactLocationInteractor.loadContactLocationByCoordinate(contact, point.latitude, point.longitude)
-                    .doOnSuccess((dto) -> contactLocationInteractor.saveContactLocation(dto, contact)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        (address) -> getViewState().showMapMarker(point),
-                        (Throwable::printStackTrace)
-                );
+        compositeDisposable.add(
+                contactDetailsInteractor.loadDetailsContact(id)
+                        .flatMap(contact -> contactLocationInteractor.createOrUpdateContactLocationByCoordinate(contact, point.latitude, point.longitude))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                (address) -> getViewState().showMapMarker(point),
+                                (Throwable::printStackTrace)
+                        )
+        );
     }
 
     @Override

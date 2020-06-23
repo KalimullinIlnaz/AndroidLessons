@@ -25,7 +25,7 @@ public class ContactLocationModel implements ContactLocationInteractor {
     }
 
     @Override
-    public Single<Location> loadContactLocationByCoordinate(Contact contact, double latitude, double longitude) {
-        return locationRepository.getContactLocationByCoordinate(contact,latitude, longitude);
+    public Single<Location> createOrUpdateContactLocationByCoordinate(Contact contact, double latitude, double longitude) {
+        return locationRepository.createOrUpdateContactLocationByCoordinate(contact,latitude, longitude);
     }
 }
