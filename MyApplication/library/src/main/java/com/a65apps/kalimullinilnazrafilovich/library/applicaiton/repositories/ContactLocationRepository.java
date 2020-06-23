@@ -1,29 +1,31 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper.YandexDTOMapper;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationORM;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationOrm;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services.YandexGeocodeService;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ContactLocationRepository implements LocationRepository {
     private final AppDatabase database;
     private final Context context;
-    private final ContactDetailsContentResolverRepository contactDetailsContentResolverRepository;
+    private final ContactDetailsRepository contactDetailsContentResolverRepository;
 
-    public ContactLocationRepository(AppDatabase database, Context context, ContactDetailsContentResolverRepository contactDetailsContentResolverRepository){
+    public ContactLocationRepository(AppDatabase database, Context context, ContactDetailsRepository contactDetailsContentResolverRepository){
         this.database = database;
         this.context = context;
         this.contactDetailsContentResolverRepository = contactDetailsContentResolverRepository;
@@ -31,36 +33,26 @@ public class ContactLocationRepository implements LocationRepository {
 
     @Override
     public void insertContactLocation(Location location, Contact contact) {
-        LocationORM locationORM = new LocationORM(contact,location);
+        LocationOrm locationORM = new LocationOrm(contact,location);
         database.locationDao().insert(locationORM);
     }
 
     @Override
     public Single<List<Location>> getAllContactLocations() {
-        return Single.fromCallable( () -> {
-            List<LocationORM> locationORMList =  database.locationDao().getAll();
-            List<Location> locations = new ArrayList<>();
-            for (LocationORM locationORM:locationORMList) {
-                contactDetailsContentResolverRepository.getDetailsContact(locationORM.getContactID())
-                .subscribe(
-                        ( (contactORM) -> {
-                            Contact contact = contactORM;
-                            locations.add(new Location(
-                                    contact,
-                                    locationORM.getAddress(),
-                                    new Point(locationORM.getLatitude(), locationORM.getLongitude())
-                                    )
-                            );
-                        })
-                );
-
-            }
-            return locations;
-        });
+        return Single.fromCallable( () -> database.locationDao().getAll())
+                .flatMapObservable( locationOrms -> Observable.fromIterable(locationOrms))
+                .flatMapSingle( item ->
+                        contactDetailsContentResolverRepository.getDetailsContact(item.getContactID())
+                .map( contact -> new Pair<LocationOrm, Contact>(item,contact)))
+                .map( pair -> new Location(
+                        pair.second,
+                        pair.first.getAddress(),
+                        new Point(pair.first.getLatitude(), pair.first.getLongitude())
+                )).toList();
     }
 
     @Override
-    public Single<Location> getContactLocation(Contact contact, double latitude, double longitude) {
+    public Single<Location> getContactLocationByCoordinate(Contact contact, double latitude, double longitude) {
         String coordinate = latitude + "," + longitude;
 
         return YandexGeocodeService.getInstance()

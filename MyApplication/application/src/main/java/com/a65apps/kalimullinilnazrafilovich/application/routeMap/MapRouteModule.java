@@ -1,8 +1,11 @@
 package com.a65apps.kalimullinilnazrafilovich.application.routeMap;
 
 import com.a65apps.kalimullinilnazrafilovich.application.scope.MapRouteScope;
+import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationModel;
+import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository;
+import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteModel;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.MapRoutePresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactLocationRepository;
@@ -16,19 +19,19 @@ public class MapRouteModule {
 
     @Provides
     @MapRouteScope
-    public MapRoutePresenter provideFullMapPresenter(ContactLocationModel contactLocationModel, RouteModel routeModel){
+    public MapRoutePresenter provideFullMapPresenter(ContactLocationInteractor contactLocationModel, RouteInteractor routeModel){
         return new MapRoutePresenter(contactLocationModel, routeModel);
     }
 
     @Provides
     @MapRouteScope
-    public ContactLocationModel provideContactLocationModel(ContactLocationRepository contactLocationRepository){
+    public ContactLocationInteractor provideContactLocationModel(LocationRepository contactLocationRepository){
         return new ContactLocationModel(contactLocationRepository);
     }
 
     @Provides
     @MapRouteScope
-    public RouteModel provideRouteModel(GeocodeRouteRepository geocodeRouteRepository){
+    public RouteInteractor provideRouteModel(GeocodeRepository geocodeRouteRepository){
         return new RouteModel(geocodeRouteRepository);
     }
 }

@@ -5,22 +5,21 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Location;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationORM;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationOrm;
 
 import java.util.List;
 
 @Dao
 public interface LocationDao {
-    @Query("SELECT * FROM LocationORM")
-    List<LocationORM> getAll();
+    @Query("SELECT * FROM LocationOrm")
+    List<LocationOrm> getAll();
 
-    @Query("SELECT * FROM LocationORM WHERE contact_id = :id")
-    LocationORM getById(String id);
+    @Query("SELECT * FROM LocationOrm WHERE contact_id = :id")
+    LocationOrm getById(String id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(LocationORM location);
+    void insert(LocationOrm location);
 
-    @Query("SELECT EXISTS(SELECT * FROM LocationORM WHERE contact_id = :id)")
+    @Query("SELECT EXISTS(SELECT * FROM LocationOrm WHERE contact_id = :id)")
     int isExists(String id);
 }

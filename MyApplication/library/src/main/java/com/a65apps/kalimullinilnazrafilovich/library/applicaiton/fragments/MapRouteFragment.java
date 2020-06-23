@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
+import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.MapRouteContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.MapRoutePresenter;
@@ -41,8 +42,8 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
     private boolean fromMarker = false;
     private boolean toMarker = false;
 
-    private String from;
-    private String to;
+    private Point from = null;
+    private Point to = null;
 
     @InjectPresenter
     MapRoutePresenter mapRoutePresenter;
@@ -97,11 +98,15 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
 
         map.setOnMarkerClickListener(marker -> {
             if ((!fromMarker) && (!toMarker)){
-                from = marker.getPosition().latitude + "," + marker.getPosition().longitude;
+                from = new Point(
+                        marker.getPosition().latitude,
+                        marker.getPosition().longitude);
                 fromMarker = true;
             } else {
                 if ((fromMarker) && (!toMarker)) {
-                    to = marker.getPosition().latitude + "," + marker.getPosition().longitude;
+                    to = new Point(
+                            marker.getPosition().latitude,
+                            marker.getPosition().longitude);
                     toMarker = true;
                 }
             }

@@ -31,7 +31,7 @@ public class Contact {
     private final String dateOfBirth;
 
     @Nullable
-    private Location location;
+    private final Location location;
 
     public Contact(@NonNull String id, @NonNull String name, @NonNull String telephoneNumber){
         this.id = id;
@@ -42,10 +42,12 @@ public class Contact {
         this.email2 = " ";
         this.description = " ";
         this.dateOfBirth = " ";
+        this.location = null;
     }
 
     public Contact(@NonNull String id, @NonNull String name, @NonNull String dateOfBirth, @NonNull String telephoneNumber,
-                   @NonNull String telephoneNumber2, @NonNull String email, @NonNull String email2, @NonNull String description){
+                   @NonNull String telephoneNumber2, @NonNull String email, @NonNull String email2, @NonNull String description,
+                   @Nullable Location location){
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
@@ -54,6 +56,7 @@ public class Contact {
         this.telephoneNumber2 = telephoneNumber2;
         this.email2 = email2;
         this.description = description;
+        this.location = location;
     }
 
     @NonNull
@@ -101,7 +104,4 @@ public class Contact {
         return location;
     }
 
-    public void setLocation(@Nullable Location location) {
-        this.location = location;
-    }
 }

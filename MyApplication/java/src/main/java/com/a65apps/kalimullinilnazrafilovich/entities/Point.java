@@ -1,27 +1,24 @@
 package com.a65apps.kalimullinilnazrafilovich.entities;
 
-public class Point {
-    private double latitude;
-    private double longitude;
+import io.reactivex.rxjava3.annotations.Nullable;
 
-    public Point(double latitude, double longitude) {
+public class Point {
+    private final double latitude;
+    private final double longitude;
+
+    public Point(@Nullable double latitude, @Nullable double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
+    @Nullable
     public double getLongitude() {
         return longitude;
     }
 
+    @Nullable
     public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
 }

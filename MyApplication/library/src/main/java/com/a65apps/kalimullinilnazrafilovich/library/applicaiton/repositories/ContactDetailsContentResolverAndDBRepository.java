@@ -8,21 +8,26 @@ import android.util.Log;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
+import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
 
 import io.reactivex.rxjava3.core.Single;
 
-public class ContactDetailsContentResolverRepository implements ContactDetailsRepository {
+public class ContactDetailsContentResolverAndDBRepository implements ContactDetailsRepository {
     private String TAG = "ContactDetailsRepository";
     private final ContentResolver contentResolver;
 
-    public ContactDetailsContentResolverRepository(Context context){
+    private final AppDatabase database;
+
+    public ContactDetailsContentResolverAndDBRepository(Context context, AppDatabase database){
         contentResolver = context.getContentResolver();
+        this.database = database;
     }
 
     @Override
     public Single<Contact> getDetailsContact(String id) {
-        return Single.fromCallable( () -> getDetails(id));
+        return Single.fromCallable( () -> getDataFromDB(getDetails(id)));
     }
 
     private Contact getDetails(String id){
@@ -45,8 +50,7 @@ public class ContactDetailsContentResolverRepository implements ContactDetailsRe
 
                 contact = new Contact(id,name,birthOfDay,
                         telephoneNumbers[0],telephoneNumbers[1],
-                        emails[0],emails[1],new String());
-                contact.setLocation(new Location());
+                        emails[0],emails[1],new String(),null);
 
             }
         }finally {
@@ -146,5 +150,41 @@ public class ContactDetailsContentResolverRepository implements ContactDetailsRe
         return birthOfDay;
     }
 
+    private Contact getDataFromDB(Contact contact){
+
+        if (database.locationDao().isExists(contact.getId()) == 1){
+            Point point = new Point(
+                    database.locationDao().getById(contact.getId()).getLatitude(),
+                    database.locationDao().getById(contact.getId()).getLongitude());
+
+            Location location = new Location(contact,
+                    database.locationDao().getById(contact.getId()).getAddress(),
+                    point);
+
+            return createNewContact(contact,location);
+        }else {
+            Point point = new Point(
+                    0,
+                    0);
+            Location location= new Location(contact,
+                    "",
+                    point);
+
+            return createNewContact(contact,location);
+        }
+    }
+
+    private Contact createNewContact(Contact contact,Location location){
+        return new Contact(
+                contact.getId(),
+                contact.getName(),
+                contact.getDateOfBirth(),
+                contact.getTelephoneNumber(),
+                contact.getTelephoneNumber2(),
+                contact.getEmail(),
+                contact.getEmail2(),
+                contact.getDescription(),
+                location);
+    }
 }
 

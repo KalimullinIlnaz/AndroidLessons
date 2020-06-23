@@ -13,5 +13,5 @@ public interface LocationRepository {
 
     Single<List<Location>> getAllContactLocations();
 
-    Single<Location> getContactLocation(Contact contact, double latitude, double longitude);
+    Single<Location> getContactLocationByCoordinate(Contact contact, double latitude, double longitude);
 }

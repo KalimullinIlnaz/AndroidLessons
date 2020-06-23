@@ -4,12 +4,10 @@ import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.entities.Route;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteInteractor;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper.GoogleDTOMapper;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.FullMapView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,28 +42,27 @@ public class MapRoutePresenter extends MvpPresenter<FullMapView> {
             ));
     }
 
-    public void showRoute(String from,String to){
+    public void showRoute(Point from, Point to){
         compositeDisposable
-            .add(
-                    routeInteractor.loadRoute(from, to)
-                    .subscribeOn(Schedulers.io())
-                    .map( (route) -> getListLatLnt(route))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            (dots) ->{
-                                if (dots.isEmpty()) getViewState().showMessageNoRoute();
-                                else getViewState().showRoute(dots);
-                            },
-                            (Throwable::printStackTrace)
-                    )
+            .add(routeInteractor.loadRoute(from, to)
+                .subscribeOn(Schedulers.io())
+                .map( (route) -> getListLatLng(routeInteractor.routeToPoints(route)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        (dots) ->{
+                            if (dots.isEmpty()) getViewState().showMessageNoRoute();
+                            else getViewState().showRoute(dots);
+                        },
+                        (Throwable::printStackTrace)
+                )
             );
     }
 
-    private List<LatLng> getListLatLnt(Route route){
-        if (route.getPoints().isEmpty()) return new ArrayList<>();
+    private List<LatLng> getListLatLng(List<Point> points){
+        if (points.isEmpty()) return new ArrayList<>();
         else {
             List<LatLng> latLngs = new ArrayList<>();
-            for (Point point: route.getPoints()) {
+            for (Point point: points) {
                 latLngs.add(new LatLng(point.getLatitude(), point.getLongitude()));
             }
             return latLngs;

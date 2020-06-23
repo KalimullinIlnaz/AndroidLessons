@@ -1,9 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationORM;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.MapView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -49,17 +47,15 @@ public class MapPresenter extends MvpPresenter<MapView> {
     }
 
     public void getLocationMapClick(String id, LatLng point) {
-        contactDetailsInteractor.loadDetailsContact(id).subscribe(
-                (contact) -> compositeDisposable.add(
-                        contactLocationInteractor.loadContactLocation(contact, point.longitude, point.latitude)
-                                .subscribeOn(Schedulers.io())
-                                .doOnSuccess( (dto) -> contactLocationInteractor.saveContactLocation(dto, contact))
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(
-                                        (address) -> getViewState().showMapMarker(point),
-                                        (Throwable::printStackTrace)
-                                ))
-        );
+        contactDetailsInteractor.loadDetailsContact(id)
+                .flatMap( contact -> contactLocationInteractor.loadContactLocationByCoordinate(contact, point.latitude, point.longitude)
+                    .doOnSuccess((dto) -> contactLocationInteractor.saveContactLocation(dto, contact)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        (address) -> getViewState().showMapMarker(point),
+                        (Throwable::printStackTrace)
+                );
     }
 
     @Override

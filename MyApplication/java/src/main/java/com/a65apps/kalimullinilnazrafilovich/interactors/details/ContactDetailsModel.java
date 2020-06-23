@@ -6,15 +6,13 @@ import io.reactivex.rxjava3.core.Single;
 
 public class ContactDetailsModel implements ContactDetailsInteractor {
     private final ContactDetailsRepository contactDetailsRepository;
-    private final ContactDataBaseRepository contactDataBaseRepository;
 
-    public ContactDetailsModel(ContactDetailsRepository contactDetailsRepository, ContactDataBaseRepository contactDataBaseRepository){
+    public ContactDetailsModel(ContactDetailsRepository contactDetailsRepository){
         this.contactDetailsRepository = contactDetailsRepository;
-        this.contactDataBaseRepository = contactDataBaseRepository;
     }
 
     @Override
     public Single<Contact> loadDetailsContact(String id) {
-        return contactDataBaseRepository.getContactLocation(contactDetailsRepository.getDetailsContact(id));
+        return contactDetailsRepository.getDetailsContact(id);
     }
 }

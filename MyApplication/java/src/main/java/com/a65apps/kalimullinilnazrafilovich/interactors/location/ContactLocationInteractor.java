@@ -13,5 +13,5 @@ public interface ContactLocationInteractor {
 
     Single<List<Location>> loadAllContactLocations();
 
-    Single<Location> loadContactLocation(Contact contact, double latitude, double longitude);
+    Single<Location> loadContactLocationByCoordinate(Contact contact, double latitude, double longitude);
 }

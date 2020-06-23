@@ -2,10 +2,13 @@ package com.a65apps.kalimullinilnazrafilovich.entities;
 
 import java.util.List;
 
-public class Route {
-    private List<Point> points;
+import io.reactivex.rxjava3.annotations.Nullable;
 
-    public Route(List<Point> points){
+public class Route {
+    @Nullable
+    private final List<Point> points;
+
+    public Route(@Nullable List<Point> points){
         this.points = points;
     }
 
@@ -13,7 +16,4 @@ public class Route {
         return points;
     }
 
-    public void setPoints(List<Point> points) {
-        this.points = points;
-    }
 }

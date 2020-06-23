@@ -8,17 +8,24 @@ import androidx.room.PrimaryKey;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 
+
 @Entity
-public class LocationORM {
-    public LocationORM(){
-
-    }
-
-    public LocationORM(Contact contact, Location location){
+public class LocationOrm {
+    public LocationOrm(Contact contact, Location location){
         this.contactID = contact.getId();
         this.address = location.getAddress();
         this.latitude = location.getPoint().getLatitude();
         this.longitude = location.getPoint().getLongitude();
+    }
+
+    public LocationOrm(String contactID,
+                       double latitude,
+                       double longitude,
+                       String address){
+        this.contactID = contactID;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
     }
 
     @NonNull
