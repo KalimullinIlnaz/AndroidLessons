@@ -60,7 +60,6 @@ public class ContactLocationRepository implements LocationRepository {
                 .getLocation(
                         coordinate,
                         context.getResources().getString(R.string.yandex_maps_key))
-                .subscribeOn(Schedulers.io())
                 .map( (responseDTO) -> new YandexDTOMapper().transform(contact, responseDTO, latitude, longitude))
                 .doOnSuccess( location -> insertContactLocation(location,contact));
 
