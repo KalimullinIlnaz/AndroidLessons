@@ -46,7 +46,7 @@ public class BroadReceiver extends BroadcastReceiver {
         stackBuilder.addNextIntent(resultIntent);
 
         PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context,CHANNEL_ID)
@@ -81,11 +81,17 @@ public class BroadReceiver extends BroadcastReceiver {
         intent.putExtra("id",id);
         intent.putExtra("textReminder", text);
 
-        Calendar birthOfDay = new GregorianCalendar();
-        birthOfDay.add(Calendar.YEAR,1);
+        GregorianCalendar birthOfDay = new GregorianCalendar();
+        if ((!birthOfDay.isLeapYear(birthOfDay.get(Calendar.YEAR) + 1)) &&
+                birthOfDay.get(Calendar.MONTH) == Calendar.FEBRUARY && birthOfDay.get(Calendar.DATE) == 29) {
+            birthOfDay.roll(Calendar.YEAR,1);
+            birthOfDay.roll(Calendar.DATE, -1);
+        }else {
+            birthOfDay.add(Calendar.YEAR,1);
+        }
 
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context,0,intent,0);
-        alarmManager.set(AlarmManager.RTC, birthOfDay.getTimeInMillis(),alarmIntent);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context,id.hashCode(),intent,0);
+        alarmManager.set(AlarmManager.RTC, birthOfDay.getTimeInMillis(), alarmPendingIntent);
     }
 
 }
