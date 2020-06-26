@@ -15,4 +15,5 @@ public class ContactDetailsModel implements ContactDetailsInteractor {
     public Single<Contact> loadDetailsContact(String id) {
         return contactDetailsRepository.getDetailsContact(id);
     }
+
 }

@@ -30,9 +30,10 @@ dependencies {
 
     implementation 'com.google.maps.android:android-maps-utils:1.3.3'
 
+    implementation project(path: ':java')
+
     //Moxy
     implementation "com.arello-mobile:moxy:1.5.5"
-    implementation project(path: ':java')
     annotationProcessor "com.arello-mobile:moxy-compiler:1.5.5"
     implementation 'com.android.support:recyclerview-v7:29.0.0'
     implementation ('tech.schoolhelper:moxy-x-androidx:1.7.0'){
@@ -51,7 +52,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     //RxJava
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation "io.reactivex.rxjava3:rxjava:3.0.4"
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 
     //Rx-Retrofit call adapter

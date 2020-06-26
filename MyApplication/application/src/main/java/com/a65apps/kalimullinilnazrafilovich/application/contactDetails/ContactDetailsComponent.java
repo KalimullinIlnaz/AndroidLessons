@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.application;
+package com.a65apps.kalimullinilnazrafilovich.application.contactDetails;
 
 
 import com.a65apps.kalimullinilnazrafilovich.application.contactDetails.ContactDetailsModule;

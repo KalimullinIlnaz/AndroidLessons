@@ -1,7 +1,9 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
 
+import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
+import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -15,11 +17,14 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private CompositeDisposable compositeDisposable;
 
     private final ContactDetailsInteractor contactDetailsInteractor;
+    private final NotificationInteractor notificationInteractor;
 
-    public ContactDetailsPresenter(ContactDetailsInteractor contactDetailsInteractor){
+    public ContactDetailsPresenter(ContactDetailsInteractor contactDetailsInteractor,
+                                   NotificationInteractor notificationInteractor){
         compositeDisposable = new CompositeDisposable();
 
         this.contactDetailsInteractor = contactDetailsInteractor;
+        this.notificationInteractor = notificationInteractor;
     }
 
     public void showDetails(String id) {
@@ -31,6 +36,10 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                                 (contact) -> getViewState().showContactDetail(contact),
                                 (Throwable::printStackTrace)
                         ));
+    }
+
+    public void setOrRemoveNotification(Contact contact, boolean status){
+        notificationInteractor.setOrRemoveBirthdayNotification(contact, status);
     }
 
     @Override
