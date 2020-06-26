@@ -1,6 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 
 public class NotificationModel implements NotificationInteractor {
     private final NotificationRepository notificationRepository;
@@ -10,7 +10,7 @@ public class NotificationModel implements NotificationInteractor {
     }
 
     @Override
-    public void setOrRemoveBirthdayNotification(Contact contact, boolean status) {
-        notificationRepository.onOrOffBirthdayReminder(contact,status);
+    public void setOrRemoveBirthdayNotification(BirthdayNotification birthdayNotification) {
+        notificationRepository.onOrOffBirthdayReminder(birthdayNotification);
     }
 }

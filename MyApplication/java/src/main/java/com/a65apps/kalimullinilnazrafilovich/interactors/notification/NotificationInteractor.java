@@ -1,7 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 
 public interface NotificationInteractor {
-    void setOrRemoveBirthdayNotification(Contact contact, boolean status);
+    void setOrRemoveBirthdayNotification(BirthdayNotification birthdayNotification);
 }

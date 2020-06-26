@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
@@ -26,22 +27,22 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
     }
 
     @Override
-    public void onOrOffBirthdayReminder(Contact contact,boolean status) {
+    public void onOrOffBirthdayReminder(BirthdayNotification birthdayNotification) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(Constants.BROAD_ACTION);
-        intent.putExtra("id",contact.getId());
-        intent.putExtra("textReminder", contact.getName() + " " + context.getString(R.string.text_notification));
+        intent.putExtra("id",birthdayNotification.getIdContact());
+        intent.putExtra("textReminder", birthdayNotification.getNameContact() + " " + context.getString(R.string.text_notification));
 
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context,contact.getId().hashCode(),intent,0);
-        if (status){
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context,birthdayNotification.getIdContact().hashCode(),intent,0);
+        if (birthdayNotification.isStatus()){
             GregorianCalendar calendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             Calendar cal  = Calendar.getInstance();
 
             try {
-                cal.setTime(df.parse(contact.getDateOfBirth()));
+                cal.setTime(df.parse(birthdayNotification.getDateOfBithday()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

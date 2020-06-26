@@ -6,14 +6,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactDetailsContainer;
@@ -169,7 +168,13 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        contactDetailsPresenter.setOrRemoveNotification(contact, isChecked);
+        BirthdayNotification birthdayNotification = new BirthdayNotification(
+                contact.getId(),
+                contact.getName(),
+                contact.getDateOfBirth(),
+                isChecked
+        );
+        contactDetailsPresenter.setOrRemoveNotification(birthdayNotification);
     }
 
     @Override

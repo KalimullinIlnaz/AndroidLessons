@@ -1,7 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView;
@@ -38,8 +38,8 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                         ));
     }
 
-    public void setOrRemoveNotification(Contact contact, boolean status){
-        notificationInteractor.setOrRemoveBirthdayNotification(contact, status);
+    public void setOrRemoveNotification(BirthdayNotification birthdayNotification){
+        notificationInteractor.setOrRemoveBirthdayNotification(birthdayNotification);
     }
 
     @Override
