@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.receivers;
 
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,35 +8,45 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.activity.MainActivity;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.BirthdayNotificationContainer;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import javax.inject.Inject;
+
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BroadReceiver extends BroadcastReceiver {
     private final String CHANNEL_ID = "BirthDay";
 
-    private final NotificationInteractor notificationInteractor;
+    @Inject
+    NotificationInteractor notificationInteractor;
 
-    BroadReceiver(NotificationInteractor notificationInteractor){
-        this.notificationInteractor = notificationInteractor;
-    }
+    @Inject
+    ContactDetailsInteractor contactDetailsInteractor;
+
+    private BirthdayNotificationContainer birthdayNotificationComponent;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (!(context.getApplicationContext() instanceof HasAppContainer)){
+            throw new IllegalStateException();
+        }
+
+        birthdayNotificationComponent = ((HasAppContainer) context.getApplicationContext()).appContainer().plusBirthdayNotificationContainer();
+        birthdayNotificationComponent.inject(this);
+
         String id = intent.getStringExtra("id");
         String textReminder = intent.getStringExtra("textReminder");
 
         showNotification(context, textReminder, id);
     }
-
 
     private void showNotification(Context context, String text, String id) {
         Intent resultIntent = new Intent(context, MainActivity.class);
@@ -73,30 +82,15 @@ public class BroadReceiver extends BroadcastReceiver {
         assert notificationManager != null;
         notificationManager.notify(1,  notification.build());
 
-        repeatAlarm(context,id,text);
+        repeatAlarm(id);
     }
 
-    private void repeatAlarm(Context context,String id,String text) {
-
-
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(Constants.BROAD_ACTION);
-        intent.putExtra("id",id);
-        intent.putExtra("textReminder", text);
-
-        GregorianCalendar birthOfDay = new GregorianCalendar();
-
-        if ((!birthOfDay.isLeapYear(birthOfDay.get(Calendar.YEAR) + 1)) &&
-                birthOfDay.get(Calendar.MONTH) == Calendar.FEBRUARY && birthOfDay.get(Calendar.DATE) == 29) {
-            birthOfDay.roll(Calendar.YEAR,1);
-            birthOfDay.roll(Calendar.DATE, -1);
-        }else {
-            birthOfDay.add(Calendar.YEAR,1);
-        }
-
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context,id.hashCode(),intent,0);
-        alarmManager.set(AlarmManager.RTC, birthOfDay.getTimeInMillis(), alarmPendingIntent);
+    private void repeatAlarm(String id) {
+        contactDetailsInteractor.loadDetailsContact(id)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        contact -> notificationInteractor.onBirthdayNotification(contact)
+                );
     }
 
 }

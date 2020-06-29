@@ -32,9 +32,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
@@ -125,11 +123,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     private void setStatusToggleButton(ToggleButton toggleButton){
         birthdayNotification = contactDetailsPresenter.getStatusToggleButton(contact);
 
-        if (birthdayNotification.getNotificationWorkStatusBoolean()){
-            toggleButton.setChecked(true);
-        }else {
-            toggleButton.setChecked(false);
-        }
+        toggleButton.setChecked(birthdayNotification.getNotificationWorkStatusBoolean());
         toggleButton.setOnCheckedChangeListener(this);
     }
 
@@ -175,7 +169,11 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        birthdayNotification = contactDetailsPresenter.setOrRemoveNotification(contact);
+        if (isChecked){
+            birthdayNotification = contactDetailsPresenter.setNotification(contact);
+        }else {
+            birthdayNotification = contactDetailsPresenter.removeNotification(contact);
+        }
     }
 
     @Override

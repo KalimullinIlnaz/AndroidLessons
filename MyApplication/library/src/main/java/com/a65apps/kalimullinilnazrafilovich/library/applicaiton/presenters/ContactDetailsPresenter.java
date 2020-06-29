@@ -39,9 +39,14 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                         ));
     }
 
-    public BirthdayNotification setOrRemoveNotification(Contact contact){
-        return notificationInteractor.onOrOffBirthdayNotification(contact);
+    public BirthdayNotification setNotification(Contact contact){
+        return notificationInteractor.onBirthdayNotification(contact);
     }
+
+    public BirthdayNotification removeNotification(Contact contact){
+        return notificationInteractor.offBirthdayNotification(contact);
+    }
+
 
     public BirthdayNotification getStatusToggleButton(Contact contact){
         return notificationInteractor.getNotificationWorkStatus(contact);

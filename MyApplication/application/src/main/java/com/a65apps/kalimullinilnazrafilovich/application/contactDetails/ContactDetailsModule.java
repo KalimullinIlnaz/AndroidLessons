@@ -4,8 +4,6 @@ import com.a65apps.kalimullinilnazrafilovich.application.scope.ContactDetailsSco
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactDetailsPresenter;
 
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
@@ -29,11 +27,6 @@ public class ContactDetailsModule {
         return new ContactDetailsModel(contactDetailsRepository);
     }
 
-    @Provides
-    @ContactDetailsScope
-    public NotificationInteractor provideNotificationInteractor(NotificationRepository notificationRepository){
-        return new NotificationModel(notificationRepository);
-    }
 
 }
 

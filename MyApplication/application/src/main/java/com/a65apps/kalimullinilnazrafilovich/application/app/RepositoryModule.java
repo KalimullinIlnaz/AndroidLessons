@@ -2,13 +2,11 @@ package com.a65apps.kalimullinilnazrafilovich.application.app;
 
 import android.content.Context;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository;
-import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactDetailsContentResolverAndDBRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactListContentResolverRepository;
@@ -51,7 +49,7 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public NotificationRepository provideNotificationRepository(Context context, CurrentTime currentTime){
-        return new NotificationAlarmManagerRepository(context, currentTime);
+    public NotificationRepository provideNotificationRepository(Context context){
+        return new NotificationAlarmManagerRepository(context);
     }
 }
