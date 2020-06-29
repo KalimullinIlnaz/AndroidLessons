@@ -1,42 +1,24 @@
 package com.a65apps.kalimullinilnazrafilovich.entities;
 
-import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.annotations.Nullable;
 
 public class BirthdayNotification {
-    @NonNull
-    private final String idContact;
+    @Nullable
+    private final Contact contact;
 
-    @NonNull
-    private final String nameContact;
+    private final boolean notificationWorkStatus;
 
-    @NonNull
-    private final String dateOfBithday;
-
-    private final boolean status;
-
-    public BirthdayNotification(@NonNull String idContact,@NonNull String nameContact,@NonNull String dateOfBithday, boolean status){
-        this.idContact = idContact;
-        this.nameContact = nameContact;
-        this.dateOfBithday = dateOfBithday;
-        this.status = status;
+    public BirthdayNotification(@Nullable Contact contact, boolean notificationWorkStatus){
+        this.contact = contact;
+        this.notificationWorkStatus = notificationWorkStatus;
     }
 
-    @NonNull
-    public String getIdContact() {
-        return idContact;
+    @Nullable
+    public Contact getContact() {
+        return contact;
     }
 
-    @NonNull
-    public String getNameContact() {
-        return nameContact;
-    }
-
-    @NonNull
-    public String getDateOfBithday() {
-        return dateOfBithday;
-    }
-
-    public boolean isStatus() {
-        return status;
+    public boolean getNotificationWorkStatusBoolean() {
+        return notificationWorkStatus;
     }
 }

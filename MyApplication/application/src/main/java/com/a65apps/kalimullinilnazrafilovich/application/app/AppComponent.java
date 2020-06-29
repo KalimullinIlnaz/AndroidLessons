@@ -16,7 +16,8 @@ import dagger.Component;
 @Component(modules = {
         AppModule.class,
         DataBaseModule.class,
-        RepositoryModule.class})
+        RepositoryModule.class,
+        TimeModule.class})
 public interface AppComponent extends AppContainer {
     ContactsListComponent plusContactListContainer();
     ContactDetailsComponent plusContactDetailsContainer();

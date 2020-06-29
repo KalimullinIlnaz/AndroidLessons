@@ -21,18 +21,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class BroadReceiver extends BroadcastReceiver {
-    private final String TAG_LOG = "BroadCast";
     private static String CHANNEL_ID = "BirthDay";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG_LOG, "OnReceive context = " + context.toString());
-        Log.d(TAG_LOG, "Receive action: " + intent.getAction());
-
         String id = intent.getStringExtra("id");
         String textReminder = intent.getStringExtra("textReminder");
-
-        Log.d(TAG_LOG, "id + text = " + id + " " +  textReminder);
 
         showNotification(context, textReminder, id);
     }
@@ -82,6 +76,7 @@ public class BroadReceiver extends BroadcastReceiver {
         intent.putExtra("textReminder", text);
 
         GregorianCalendar birthOfDay = new GregorianCalendar();
+
         if ((!birthOfDay.isLeapYear(birthOfDay.get(Calendar.YEAR) + 1)) &&
                 birthOfDay.get(Calendar.MONTH) == Calendar.FEBRUARY && birthOfDay.get(Calendar.DATE) == 29) {
             birthOfDay.roll(Calendar.YEAR,1);

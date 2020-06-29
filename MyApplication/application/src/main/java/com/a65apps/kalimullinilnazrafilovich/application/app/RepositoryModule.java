@@ -8,6 +8,7 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsR
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository;
+import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactDetailsContentResolverAndDBRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactListContentResolverRepository;
@@ -50,7 +51,7 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public NotificationRepository provideNotificationRepository(Context context){
-        return new NotificationAlarmManagerRepository(context);
+    public NotificationRepository provideNotificationRepository(Context context, CurrentTime currentTime){
+        return new NotificationAlarmManagerRepository(context, currentTime);
     }
 }

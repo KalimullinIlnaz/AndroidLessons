@@ -7,9 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.Application;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -62,6 +60,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     private TextView dataOfBirth;
 
     private Button btnLocationOnMap;
+    private ToggleButton btnBirthdayNotification;
+
+    private BirthdayNotification birthdayNotification;
 
     public static ContactDetailsFragment newInstance(String id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
@@ -97,17 +98,28 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
         btnLocationOnMap.setOnClickListener(v -> openMapFragment());
 
-        ToggleButton toggleButton = view.findViewById(R.id.btnBirthdayReminder);
-        setStatusToggleButton(toggleButton);
-
         checkPermissions();
+
         return view;
     }
 
+    private void initViews(){
+        name = view.findViewById(R.id.name);
+        dataOfBirth = view.findViewById(R.id.DayOfBirth);
+        address = view.findViewById(R.id.address);
+        telephoneNumber = view.findViewById(R.id.firstTelephoneNumber);
+        telephoneNumber2 = view.findViewById(R.id.secondTelephoneNumber);
+        email = view.findViewById(R.id.firstEmail);
+        email2 = view.findViewById(R.id.secondEmail);
+        description = view.findViewById(R.id.description);
+        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
+        btnBirthdayNotification = view.findViewById(R.id.btnBirthdayReminder);
+    }
+
     private void setStatusToggleButton(ToggleButton toggleButton){
-        if (PendingIntent.getBroadcast(getActivity(), id.hashCode(),
-                new Intent(Constants.BROAD_ACTION),
-                PendingIntent.FLAG_NO_CREATE) != null){
+        birthdayNotification = contactDetailsPresenter.getStatusToggleButton(contact);
+
+        if (birthdayNotification.getNotificationWorkStatusBoolean()){
             toggleButton.setChecked(true);
         }else {
             toggleButton.setChecked(false);
@@ -154,27 +166,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         fragmentTransaction.replace(R.id.content, contactMapFragment).addToBackStack(null).commit();
     }
 
-    private void initViews(){
-        name = view.findViewById(R.id.name);
-        dataOfBirth = view.findViewById(R.id.DayOfBirth);
-        address = view.findViewById(R.id.address);
-        telephoneNumber = view.findViewById(R.id.firstTelephoneNumber);
-        telephoneNumber2 = view.findViewById(R.id.secondTelephoneNumber);
-        email = view.findViewById(R.id.firstEmail);
-        email2 = view.findViewById(R.id.secondEmail);
-        description = view.findViewById(R.id.description);
-        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
-    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        BirthdayNotification birthdayNotification = new BirthdayNotification(
-                contact.getId(),
-                contact.getName(),
-                contact.getDateOfBirth(),
-                isChecked
-        );
-        contactDetailsPresenter.setOrRemoveNotification(birthdayNotification);
+        birthdayNotification = contactDetailsPresenter.setOrRemoveNotification(contact);
     }
 
     @Override
@@ -190,6 +185,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email2 = null;
         description = null;
         btnLocationOnMap = null;
+        btnBirthdayNotification = null;
     }
 
     @Override
@@ -207,6 +203,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         description.setText(contact.getDescription());
 
         setStatusLocationBtn(contact.getLocation().getAddress());
+        setStatusToggleButton(btnBirthdayNotification);
     }
 
 }
