@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.activity.MainActivity;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
@@ -21,7 +22,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class BroadReceiver extends BroadcastReceiver {
-    private static String CHANNEL_ID = "BirthDay";
+    private final String CHANNEL_ID = "BirthDay";
+
+    private final NotificationInteractor notificationInteractor;
+
+    BroadReceiver(NotificationInteractor notificationInteractor){
+        this.notificationInteractor = notificationInteractor;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,6 +37,7 @@ public class BroadReceiver extends BroadcastReceiver {
 
         showNotification(context, textReminder, id);
     }
+
 
     private void showNotification(Context context, String text, String id) {
         Intent resultIntent = new Intent(context, MainActivity.class);
@@ -69,6 +77,8 @@ public class BroadReceiver extends BroadcastReceiver {
     }
 
     private void repeatAlarm(Context context,String id,String text) {
+
+
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(Constants.BROAD_ACTION);

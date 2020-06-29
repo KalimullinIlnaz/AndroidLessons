@@ -3,6 +3,8 @@ package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 
+import java.util.Calendar;
+
 public class NotificationModel implements NotificationInteractor {
     private final NotificationRepository notificationRepository;
 
@@ -15,7 +17,7 @@ public class NotificationModel implements NotificationInteractor {
         if (notificationRepository.checkStatusAlarmManager(contact).getNotificationWorkStatusBoolean()){
             return notificationRepository.removeBirthdayReminder(contact);
         }else {
-            if (notificationRepository.thisYearLeap()){
+            if (contact.getDateOfBirth().isLeapYear(Calendar.YEAR)){
                 return notificationRepository.setBirthdayReminderForLeapYear(contact);
             }else {
                 return notificationRepository.setBirthdayReminder(contact);

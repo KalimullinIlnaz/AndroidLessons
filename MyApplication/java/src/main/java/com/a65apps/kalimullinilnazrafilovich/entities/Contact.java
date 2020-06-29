@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.entities;
 
 
+import java.util.GregorianCalendar;
+
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.annotations.Nullable;
 
@@ -28,7 +30,7 @@ public class Contact {
     private final String description;
 
     @NonNull
-    private final String dateOfBirth;
+    private final GregorianCalendar dateOfBirth;
 
     @Nullable
     private final Location location;
@@ -41,11 +43,11 @@ public class Contact {
         this.telephoneNumber2  = " ";
         this.email2 = " ";
         this.description = " ";
-        this.dateOfBirth = " ";
+        dateOfBirth = null;
         this.location = null;
     }
 
-    public Contact(@NonNull String id, @NonNull String name, @NonNull String dateOfBirth, @NonNull String telephoneNumber,
+    public Contact(@NonNull String id, @NonNull String name, @NonNull GregorianCalendar dateOfBirth, @NonNull String telephoneNumber,
                    @NonNull String telephoneNumber2, @NonNull String email, @NonNull String email2, @NonNull String description,
                    @Nullable Location location){
         this.id = id;
@@ -70,7 +72,7 @@ public class Contact {
     }
 
     @NonNull
-    public String getDateOfBirth() {
+    public GregorianCalendar getDateOfBirth() {
         return dateOfBirth;
     }
 

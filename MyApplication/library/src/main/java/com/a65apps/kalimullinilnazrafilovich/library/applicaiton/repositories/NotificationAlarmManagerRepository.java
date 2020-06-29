@@ -13,13 +13,9 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -97,14 +93,6 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
         return new BirthdayNotification(contact, status);
     }
 
-    @Override
-    public boolean thisYearLeap() {
-        GregorianCalendar gregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentTime.now());
-        return gregorianCalendar.isLeapYear(calendar.get(Calendar.YEAR));
-    }
-
     private PendingIntent createPendingIntentForContact(Contact contact){
         Intent intent = new Intent(Constants.BROAD_ACTION);
 
@@ -117,18 +105,8 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
     private GregorianCalendar createGregorianCalendarForContact(Contact contact){
         GregorianCalendar gregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 
-        @SuppressLint("SimpleDateFormat")
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar dateOfBirthdayInCalendarFormat = Calendar.getInstance();
-
-        try {
-            dateOfBirthdayInCalendarFormat.setTime(Objects.requireNonNull(df.parse(contact.getDateOfBirth())));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        gregorianCalendar.set(Calendar.DATE, dateOfBirthdayInCalendarFormat.get(Calendar.DAY_OF_MONTH));
-        gregorianCalendar.set(Calendar.MONTH, dateOfBirthdayInCalendarFormat.get(Calendar.MONTH));
+        gregorianCalendar.set(Calendar.DATE, contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH));
+        gregorianCalendar.set(Calendar.MONTH, contact.getDateOfBirth().get(Calendar.MONTH));
 
         return gregorianCalendar;
     }

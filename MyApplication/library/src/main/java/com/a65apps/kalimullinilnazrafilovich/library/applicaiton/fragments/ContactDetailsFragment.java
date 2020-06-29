@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -30,6 +31,11 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -194,7 +200,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
         if (name == null) return;
         name.setText(contact.getName());
-        dataOfBirth.setText(contact.getDateOfBirth());
+        dataOfBirth.setText(parseDateToString(contact.getDateOfBirth()));
         address.setText(contact.getLocation().getAddress());
         telephoneNumber.setText(contact.getTelephoneNumber());
         telephoneNumber2.setText(contact.getTelephoneNumber2());
@@ -204,6 +210,13 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
         setStatusLocationBtn(contact.getLocation().getAddress());
         setStatusToggleButton(btnBirthdayNotification);
+    }
+
+    private String parseDateToString(GregorianCalendar gregorianCalendar){
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        df.setCalendar(gregorianCalendar);
+        return df.format(gregorianCalendar.getTime());
     }
 
 }

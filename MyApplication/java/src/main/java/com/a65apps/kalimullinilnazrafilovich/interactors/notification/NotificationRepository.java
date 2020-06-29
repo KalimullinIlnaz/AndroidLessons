@@ -12,5 +12,4 @@ public interface NotificationRepository {
 
     BirthdayNotification checkStatusAlarmManager(Contact contact);
 
-    boolean thisYearLeap();
 }

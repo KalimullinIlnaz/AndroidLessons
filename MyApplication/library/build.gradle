@@ -38,7 +38,7 @@ dependencies {
 
     //Moxy
     implementation "com.arello-mobile:moxy:1.5.5"
-    annotationProcessor "com.arello-mobile:moxy-compiler:1.5.5"
+    annotationProcessor  "com.arello-mobile:moxy-compiler:1.5.5"
     implementation 'com.android.support:recyclerview-v7:29.0.0'
     implementation ('tech.schoolhelper:moxy-x-androidx:1.7.0'){
         exclude group: 'tech.schoolhelper', module:'moxy-x'
