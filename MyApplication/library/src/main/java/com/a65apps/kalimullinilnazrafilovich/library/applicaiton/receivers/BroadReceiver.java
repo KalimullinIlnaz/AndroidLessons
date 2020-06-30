@@ -20,6 +20,8 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BroadReceiver extends BroadcastReceiver {
@@ -31,16 +33,16 @@ public class BroadReceiver extends BroadcastReceiver {
     @Inject
     ContactDetailsInteractor contactDetailsInteractor;
 
-    private BirthdayNotificationContainer birthdayNotificationComponent;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if (!(context.getApplicationContext() instanceof HasAppContainer)){
             throw new IllegalStateException();
         }
 
-        birthdayNotificationComponent = ((HasAppContainer) context.getApplicationContext()).appContainer().plusBirthdayNotificationContainer();
+        BirthdayNotificationContainer birthdayNotificationComponent =
+                ((HasAppContainer) context.getApplicationContext()).appContainer().plusBirthdayNotificationContainer();
         birthdayNotificationComponent.inject(this);
+
 
         String id = intent.getStringExtra("id");
         String textReminder = intent.getStringExtra("textReminder");
@@ -86,11 +88,16 @@ public class BroadReceiver extends BroadcastReceiver {
     }
 
     private void repeatAlarm(String id) {
-        contactDetailsInteractor.loadDetailsContact(id)
+        PendingResult result = goAsync();
+
+        Disposable disposable = contactDetailsInteractor.loadDetailsContact(id)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        contact -> notificationInteractor.onBirthdayNotification(contact)
+                        contact -> {
+                            notificationInteractor.onBirthdayNotification(contact);
+                            result.finish();
+                        }
                 );
     }
-
 }

@@ -19,19 +19,20 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
 
     private final AlarmManager alarmManager;
 
-    public NotificationAlarmManagerRepository(Context context){
+    public NotificationAlarmManagerRepository(Context context) {
         this.context = context;
 
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
+    //unit
     @Override
     public BirthdayNotification setBirthdayReminder(Contact contact, GregorianCalendar gregorianCalendar) {
         PendingIntent alarmPendingIntent = createPendingIntentForContact(contact);
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, 10, alarmPendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar.getTimeInMillis(), alarmPendingIntent);
 
-        return new BirthdayNotification(contact, true);
+        return getBirthdayNotificationEntity(contact);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
         alarmManager.cancel(alarmPendingIntent);
         alarmPendingIntent.cancel();
 
-        return new BirthdayNotification(contact, false);
+        return getBirthdayNotificationEntity(contact);
     }
 
     @Override
@@ -53,13 +54,13 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
         return new BirthdayNotification(contact, status);
     }
 
-    private PendingIntent createPendingIntentForContact(Contact contact){
+    private PendingIntent createPendingIntentForContact(Contact contact) {
         Intent intent = new Intent(Constants.BROAD_ACTION);
 
         intent.putExtra("id", contact.getId());
         intent.putExtra("textReminder", contact.getName() + " " + context.getString(R.string.text_notification));
 
-        return PendingIntent.getBroadcast(context,contact.getId().hashCode(),intent,0);
+        return PendingIntent.getBroadcast(context, contact.getId().hashCode(), intent, 0);
     }
 
 }
