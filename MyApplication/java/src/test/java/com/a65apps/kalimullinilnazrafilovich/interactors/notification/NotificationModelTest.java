@@ -1,11 +1,8 @@
-package com.a65apps.kalimullinilnazrafilovich.tests;
+package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
 import org.junit.Assert;
@@ -65,7 +62,7 @@ public class NotificationModelTest {
     }
 
     @Test
-    public void birthdayNotificationOff_whenNoticeWasSet_shouldDeleteNotice(){
+    public void birthdayNotificationOff_whenNoticeWasSet_shouldDeleteNotice() {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 9);
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         Contact contact = new Contact(
@@ -95,7 +92,7 @@ public class NotificationModelTest {
     }
 
     @Test
-    public void birthdayNotificationOn_whenBirthdayOf29thFebruary_andBirthdayHasPassed_andNextYearIsLeap_shouldSetNoticeNextYear(){
+    public void birthdayNotificationOn_whenBirthdayOf29thFebruary_andBirthdayHasPassed_andNextYearIsLeap_shouldSetNoticeNextYear() {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 7);
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         GregorianCalendar testTriggerDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 8);
@@ -127,9 +124,8 @@ public class NotificationModelTest {
     }
 
 
-
     @Test
-    public void birthdayNotificationOn_whenBirthdayHasNotPassed_shouldSetThisYearNotice(){
+    public void birthdayNotificationOn_whenBirthdayHasNotPassed_shouldSetThisYearNotice() {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.MARCH, 2);
         GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
         GregorianCalendar testTriggerDate = new GregorianCalendar(2000, Calendar.FEBRUARY, 29);
@@ -161,7 +157,7 @@ public class NotificationModelTest {
     }
 
     @Test
-    public void birthdayNotificationOn_whenBirthdayHasPassed_andBirthdayOf29thFebruary_andNextLeapYearThroughFourYears_shouldSetNoticeAfterFourYears(){
+    public void birthdayNotificationOn_whenBirthdayHasPassed_andBirthdayOf29thFebruary_andNextLeapYearThroughFourYears_shouldSetNoticeAfterFourYears() {
         GregorianCalendar currentDate = new GregorianCalendar(2000, Calendar.MARCH, 1);
         GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
         GregorianCalendar testTriggerDate = new GregorianCalendar(2004, Calendar.FEBRUARY, 29);
@@ -191,5 +187,4 @@ public class NotificationModelTest {
         BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contact);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
-
 }

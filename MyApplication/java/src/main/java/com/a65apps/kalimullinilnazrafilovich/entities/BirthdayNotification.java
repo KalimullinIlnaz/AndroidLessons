@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.entities;
 
+
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class BirthdayNotification {
     @Nullable
     private final GregorianCalendar notificationTriggerDate;
 
-    public BirthdayNotification(@Nullable Contact contact, boolean notificationWorkStatus, @NonNull GregorianCalendar notificationTriggerDate){
+    public BirthdayNotification(@Nullable Contact contact, boolean notificationWorkStatus, @NonNull GregorianCalendar notificationTriggerDate) {
         this.contact = contact;
         this.notificationWorkStatus = notificationWorkStatus;
         this.notificationTriggerDate = notificationTriggerDate;

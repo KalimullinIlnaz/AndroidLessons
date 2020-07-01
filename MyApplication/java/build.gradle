@@ -3,19 +3,18 @@ apply plugin: 'java'
 repositories {
     jcenter()
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //RxJava
     implementation "io.reactivex.rxjava3:rxjava:3.0.4"
-    implementation 'junit:junit:4.12'
-
+    
     //JUnit
-    testImplementation 'junit:junit:4.12'
+    testImplementation('junit:junit:4.13')
 
     //Mockito
-    implementation 'org.mockito:mockito-core:2.28.2'
+    testImplementation('org.mockito:mockito-core:2.28.2')
+
 }
 
 sourceCompatibility = "1.8"
