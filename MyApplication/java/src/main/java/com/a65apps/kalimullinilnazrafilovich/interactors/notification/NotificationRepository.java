@@ -10,6 +10,6 @@ public interface NotificationRepository {
 
     BirthdayNotification removeBirthdayReminder(Contact contact);
 
-    BirthdayNotification getBirthdayNotificationEntity(Contact contact);
+    BirthdayNotification getBirthdayNotificationEntity(Contact contact, GregorianCalendar gregorianCalendar);
 
 }

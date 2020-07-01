@@ -11,10 +11,7 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 
 public class NotificationAlarmManagerRepository implements NotificationRepository {
@@ -28,14 +25,14 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    //unit
+
     @Override
     public BirthdayNotification setBirthdayReminder(Contact contact, GregorianCalendar gregorianCalendar) {
         PendingIntent alarmPendingIntent = createPendingIntentForContact(contact);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar.getTimeInMillis(), alarmPendingIntent);
 
-        return getBirthdayNotificationEntity(contact);
+        return getBirthdayNotificationEntity(contact, gregorianCalendar);
     }
 
     @Override
@@ -45,19 +42,16 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
         alarmManager.cancel(alarmPendingIntent);
         alarmPendingIntent.cancel();
 
-        return getBirthdayNotificationEntity(contact);
+        return getBirthdayNotificationEntity(contact, null);
     }
 
     @Override
-    public BirthdayNotification getBirthdayNotificationEntity(Contact contact) {
+    public BirthdayNotification getBirthdayNotificationEntity(Contact contact, GregorianCalendar gregorianCalendar) {
         boolean status = PendingIntent.getBroadcast(context, contact.getId().hashCode(),
                 new Intent(Constants.BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null;
 
-        GregorianCalendar gregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
-        gregorianCalendar.setTimeInMillis(alarmManager.getNextAlarmClock().getTriggerTime());
-
-        return new BirthdayNotification(contact, status,null);
+        return new BirthdayNotification(contact, status, gregorianCalendar);
     }
 
     private PendingIntent createPendingIntentForContact(Contact contact) {
@@ -68,7 +62,6 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
 
         return PendingIntent.getBroadcast(context, contact.getId().hashCode(), intent, 0);
     }
-
 
 
 }
