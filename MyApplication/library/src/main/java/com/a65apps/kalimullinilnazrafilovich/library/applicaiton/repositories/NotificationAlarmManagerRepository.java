@@ -11,7 +11,10 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class NotificationAlarmManagerRepository implements NotificationRepository {
@@ -51,7 +54,10 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
                 new Intent(Constants.BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null;
 
-        return new BirthdayNotification(contact, status);
+        GregorianCalendar gregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
+        gregorianCalendar.setTimeInMillis(alarmManager.getNextAlarmClock().getTriggerTime());
+
+        return new BirthdayNotification(contact, status,null);
     }
 
     private PendingIntent createPendingIntentForContact(Contact contact) {
@@ -62,5 +68,7 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
 
         return PendingIntent.getBroadcast(context, contact.getId().hashCode(), intent, 0);
     }
+
+
 
 }

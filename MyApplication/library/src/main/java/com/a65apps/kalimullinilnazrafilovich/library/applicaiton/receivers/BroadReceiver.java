@@ -21,7 +21,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BroadReceiver extends BroadcastReceiver {
@@ -90,14 +89,15 @@ public class BroadReceiver extends BroadcastReceiver {
     private void repeatAlarm(String id) {
         PendingResult result = goAsync();
 
-        Disposable disposable = contactDetailsInteractor.loadDetailsContact(id)
+        contactDetailsInteractor.loadDetailsContact(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        contact -> {
-                            notificationInteractor.onBirthdayNotification(contact);
-                            result.finish();
-                        }
-                );
+                .flatMap( contact -> {
+                    notificationInteractor.onBirthdayNotification(contact);
+                    result.finish();
+                    return null;
+                });
+
+
     }
 }
