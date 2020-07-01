@@ -23,13 +23,12 @@ public class NotificationModel implements NotificationInteractor {
         this.birthdayGregorianCalendar = birthdayCalendar.getBirthdayCalendar();
     }
 
-    //unit + интегрц
     @Override
     public BirthdayNotification onBirthdayNotification(Contact contact) {
-        if (!contact.getDateOfBirth().isLeapYear(Calendar.YEAR)) {
-            return setBirthdayReminder(contact);
-        } else {
+        if (birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
             return setBirthdayReminderForLeapYear(contact);
+        } else {
+            return setBirthdayReminder(contact);
         }
     }
 
@@ -46,9 +45,15 @@ public class NotificationModel implements NotificationInteractor {
     private BirthdayNotification setBirthdayReminder(Contact contact) {
         GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contact);
 
-        long b = currentTime.now();
-
         if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
+            if (!(gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY &&
+                    gregorianCalendar.get(Calendar.DATE) == 29)) {
+                gregorianCalendar.add(Calendar.YEAR, 1);
+            }
+        }
+
+
+    /*    if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
             if (gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY &&
                     gregorianCalendar.get(Calendar.DATE) == 29) {
                 while (!gregorianCalendar.isLeapYear(Calendar.YEAR)) {
@@ -57,7 +62,7 @@ public class NotificationModel implements NotificationInteractor {
             } else {
                 gregorianCalendar.add(Calendar.YEAR, 1);
             }
-        }
+        }*/
 
         return notificationRepository.setBirthdayReminder(contact, gregorianCalendar);
     }
@@ -65,7 +70,7 @@ public class NotificationModel implements NotificationInteractor {
     private BirthdayNotification setBirthdayReminderForLeapYear(Contact contact) {
         GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contact);
 
-        if (currentTime.now() > gregorianCalendar.getTimeInMillis()) {
+        if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
             gregorianCalendar.add(Calendar.YEAR, 4);
         }
 
@@ -74,9 +79,17 @@ public class NotificationModel implements NotificationInteractor {
 
 
     private GregorianCalendar createGregorianCalendarForContact(Contact contact) {
+        if (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == 29){
+            birthdayGregorianCalendar.set(GregorianCalendar.YEAR,birthdayGregorianCalendar.get(Calendar.YEAR));
+            while (!birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
+                birthdayGregorianCalendar.add(Calendar.YEAR, 1);
+            }
+        }else {
+            birthdayGregorianCalendar.set(GregorianCalendar.YEAR,birthdayGregorianCalendar.get(Calendar.YEAR));
+        }
+
         birthdayGregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH, contact.getDateOfBirth().get(GregorianCalendar.DAY_OF_MONTH));
         birthdayGregorianCalendar.set(GregorianCalendar.MONTH, contact.getDateOfBirth().get(GregorianCalendar.MONTH));
-        birthdayGregorianCalendar.set(GregorianCalendar.YEAR,birthdayGregorianCalendar.get(Calendar.YEAR));
 
         return birthdayGregorianCalendar;
     }

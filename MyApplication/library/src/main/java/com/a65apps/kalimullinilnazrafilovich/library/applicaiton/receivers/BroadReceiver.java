@@ -92,12 +92,8 @@ public class BroadReceiver extends BroadcastReceiver {
         contactDetailsInteractor.loadDetailsContact(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap( contact -> {
-                    notificationInteractor.onBirthdayNotification(contact);
-                    result.finish();
-                    return null;
-                });
-
-
+                .doOnSuccess( contact -> notificationInteractor.onBirthdayNotification(contact))
+                .doFinally(result::finish)
+                .subscribe();
     }
 }
