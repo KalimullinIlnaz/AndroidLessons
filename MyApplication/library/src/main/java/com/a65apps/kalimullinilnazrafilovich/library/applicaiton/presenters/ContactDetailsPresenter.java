@@ -46,7 +46,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
         return notificationInteractor.offBirthdayNotification(contact);
     }
 
-    public BirthdayNotification getStatusToggleButton(Contact contact) {
+    public BirthdayNotification getActualStateBirthdayNotification(Contact contact) {
         return notificationInteractor.getNotificationWorkStatus(contact);
     }
 

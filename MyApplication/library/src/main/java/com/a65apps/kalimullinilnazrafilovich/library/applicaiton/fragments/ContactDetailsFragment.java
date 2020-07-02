@@ -121,7 +121,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     }
 
     private void setStatusToggleButton(ToggleButton toggleButton){
-        birthdayNotification = contactDetailsPresenter.getStatusToggleButton(contact);
+        birthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contact);
 
         toggleButton.setChecked(birthdayNotification.getNotificationWorkStatusBoolean());
         toggleButton.setOnCheckedChangeListener(this);

@@ -3,14 +3,11 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar;
-import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendarModel;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
-import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTimeModel;
+import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,35 +23,31 @@ import java.util.GregorianCalendar;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContactDetailsPresenterTest {
-
     private ContactDetailsPresenter contactDetailsPresenter;
 
     @Mock
-    private ContactDetailsRepository contactDetailsRepository;
+    private BirthdayCalendar birthdayCalendar;
+    @Mock
+    private CurrentTime currentTime;
     @Mock
     private NotificationRepository notificationRepository;
+    @Mock
+    private ContactDetailsInteractor contactDetailsInteractor;
 
-    BirthdayCalendar birthdayCalendar = new BirthdayCalendarModel();
+    private NotificationInteractor notificationInteractor;
+
+    private GregorianCalendar currentDate;
+    private GregorianCalendar birthdayDate;
+    private GregorianCalendar testTriggerDate;
+    private Contact contact;
 
     @Before
     public void setUp() {
-        ContactDetailsInteractor contactDetailsInteractor = new ContactDetailsModel(contactDetailsRepository);
-        NotificationInteractor notificationInteractor = new NotificationModel(notificationRepository,
-                new CurrentTimeModel(),
-                birthdayCalendar);
+        currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 9);
+        birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
+        testTriggerDate = new GregorianCalendar(2000, Calendar.SEPTEMBER, 8);
 
-        contactDetailsPresenter = new ContactDetailsPresenter(
-                contactDetailsInteractor,
-                notificationInteractor
-        );
-    }
-
-    //er
-    @Test
-    public void setNotification() {
-        GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
-        GregorianCalendar testTriggerDate = new GregorianCalendar(2020, Calendar.SEPTEMBER, 8);
-        Contact contact = new Contact(
+        contact = new Contact(
                 "id",
                 "name",
                 birthdayDate,
@@ -64,6 +57,24 @@ public class ContactDetailsPresenterTest {
                 "e2",
                 "описание",
                 null);
+
+        Mockito.when(birthdayCalendar.getBirthdayCalendar()).thenReturn(currentDate);
+        Mockito.when(currentTime.now()).thenReturn(currentDate.getTime().getTime());
+
+        notificationInteractor = new NotificationModel(
+                notificationRepository,
+                currentTime,
+                birthdayCalendar
+        );
+
+        contactDetailsPresenter = new ContactDetailsPresenter(
+                contactDetailsInteractor,
+                notificationInteractor
+        );
+    }
+
+    @Test
+    public void setNotification_whenCallPresenterMethodSetNotification_shouldReturnBirthdayNotificationEntityWithTrueStatus() {
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
                 contact,
                 true,
@@ -78,7 +89,7 @@ public class ContactDetailsPresenterTest {
 
 
     @Test
-    public void getStatusToggleButton() {
+    public void getActualStateBirthdayNotification_whenCallPresenterMethodGetActualStateBirthdayNotification_shouldReturnBirthdayNotification() {
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         Contact contact = new Contact(
                 "id",
@@ -96,14 +107,16 @@ public class ContactDetailsPresenterTest {
                 null
         );
 
+
         Mockito.when(notificationRepository.getBirthdayNotificationEntity(contact, null)).thenReturn(expectedBirthdayNotification);
 
-        BirthdayNotification actualBirthdayNotification = contactDetailsPresenter.getStatusToggleButton(contact);
+        BirthdayNotification actualBirthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contact);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 
+    
     @Test
-    public void removeNotification() {
+    public void removeNotification_whenCallPresenterMethodRemoveNotification_shouldReturnBirthdayNotificationWithStatusFalse(){
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         Contact contact = new Contact(
                 "id",

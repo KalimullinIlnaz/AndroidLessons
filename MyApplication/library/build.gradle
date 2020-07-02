@@ -45,7 +45,7 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-android:3.3.3'
 
     //JUnit
-    implementation('junit:junit:4.13')
+    testImplementation('junit:junit:4.13')
     testImplementation 'androidx.test.ext:junit:1.1.1'
 
 
