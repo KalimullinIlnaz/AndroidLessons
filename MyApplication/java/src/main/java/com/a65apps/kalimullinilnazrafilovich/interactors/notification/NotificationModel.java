@@ -39,7 +39,7 @@ public class NotificationModel implements NotificationInteractor {
 
     @Override
     public BirthdayNotification getNotificationWorkStatus(Contact contact) {
-        return notificationRepository.getBirthdayNotificationEntity(contact, birthdayGregorianCalendar);
+        return notificationRepository.getBirthdayNotificationEntity(contact, null);
     }
 
     private BirthdayNotification setBirthdayReminder(Contact contact) {

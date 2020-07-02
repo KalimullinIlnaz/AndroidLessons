@@ -15,10 +15,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private CompositeDisposable compositeDisposable;
-
     private final ContactDetailsInteractor contactDetailsInteractor;
     private final NotificationInteractor notificationInteractor;
+    private CompositeDisposable compositeDisposable;
 
     public ContactDetailsPresenter(ContactDetailsInteractor contactDetailsInteractor,
                                    NotificationInteractor notificationInteractor) {

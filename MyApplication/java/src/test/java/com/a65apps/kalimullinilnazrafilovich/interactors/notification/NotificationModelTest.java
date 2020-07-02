@@ -91,9 +91,10 @@ public class NotificationModelTest {
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 
+
     @Test
-    public void birthdayNotificationOn_whenBirthdayOf29thFebruary_andBirthdayHasPassed_andNextYearIsLeap_shouldSetNoticeNextYear() {
-        GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 7);
+    public void birthdayNotificationOn_whenBirthdayHasNotPassed_shouldSetThisYearNotice() {
+        GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.AUGUST, 7);
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         GregorianCalendar testTriggerDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 8);
         Contact contact = new Contact(
@@ -125,7 +126,7 @@ public class NotificationModelTest {
 
 
     @Test
-    public void birthdayNotificationOn_whenBirthdayHasNotPassed_shouldSetThisYearNotice() {
+    public void birthdayNotificationOn_whenBirthdayOf29thFebruary_andBirthdayHasPassed_andNextYearIsLeap_shouldSetNoticeNextYear() {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.MARCH, 2);
         GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
         GregorianCalendar testTriggerDate = new GregorianCalendar(2000, Calendar.FEBRUARY, 29);
