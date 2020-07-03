@@ -8,13 +8,14 @@ import android.content.Intent;
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
 import java.util.GregorianCalendar;
 
 
 public class NotificationAlarmManagerRepository implements NotificationRepository {
+    private static final String BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplication";
+
     private final Context context;
 
     private final AlarmManager alarmManager;
@@ -48,14 +49,14 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
     @Override
     public BirthdayNotification getBirthdayNotificationEntity(Contact contact, GregorianCalendar gregorianCalendar) {
         boolean status = PendingIntent.getBroadcast(context, contact.getId().hashCode(),
-                new Intent(Constants.BROAD_ACTION),
+                new Intent(BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null;
 
         return new BirthdayNotification(contact, status, gregorianCalendar);
     }
 
     private PendingIntent createPendingIntentForContact(Contact contact) {
-        Intent intent = new Intent(Constants.BROAD_ACTION);
+        Intent intent = new Intent(BROAD_ACTION);
 
         intent.putExtra("id", contact.getId());
         intent.putExtra("textReminder", contact.getName() + " " + context.getString(R.string.text_notification));

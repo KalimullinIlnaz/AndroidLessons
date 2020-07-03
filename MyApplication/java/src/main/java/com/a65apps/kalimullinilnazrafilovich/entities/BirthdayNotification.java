@@ -16,7 +16,9 @@ public class BirthdayNotification {
     @Nullable
     private final GregorianCalendar notificationTriggerDate;
 
-    public BirthdayNotification(@Nullable Contact contact, boolean notificationWorkStatus, @NonNull GregorianCalendar notificationTriggerDate) {
+    public BirthdayNotification(@Nullable Contact contact,
+                                boolean notificationWorkStatus,
+                                @NonNull GregorianCalendar notificationTriggerDate) {
         this.contact = contact;
         this.notificationWorkStatus = notificationWorkStatus;
         this.notificationTriggerDate = notificationTriggerDate;
@@ -37,12 +39,16 @@ public class BirthdayNotification {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         BirthdayNotification that = (BirthdayNotification) o;
-        return notificationWorkStatus == that.notificationWorkStatus &&
-                Objects.equals(contact, that.contact) &&
-                notificationTriggerDate.equals(that.notificationTriggerDate);
+        return notificationWorkStatus == that.notificationWorkStatus
+                && Objects.equals(contact, that.contact)
+                && notificationTriggerDate.equals(that.notificationTriggerDate);
     }
 
     @Override

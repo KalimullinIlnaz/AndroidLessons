@@ -9,6 +9,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class NotificationModel implements NotificationInteractor {
+    private static final int FEBRUARY_29 = 29;
+    private static final int NEXT_LEAP_YEAR = 4;
+
     private final NotificationRepository notificationRepository;
 
     private final CurrentTime currentTime;
@@ -46,8 +49,8 @@ public class NotificationModel implements NotificationInteractor {
         GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contact);
 
         if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
-            if (!(gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY &&
-                    gregorianCalendar.get(Calendar.DATE) == 29)) {
+            if (!(gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY
+                    && gregorianCalendar.get(Calendar.DATE) == FEBRUARY_29)) {
                 gregorianCalendar.add(Calendar.YEAR, 1);
             }
         }
@@ -59,9 +62,9 @@ public class NotificationModel implements NotificationInteractor {
         GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contact);
 
         if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
-            if ((contact.getDateOfBirth().get(Calendar.MONTH) == Calendar.FEBRUARY) &&
-                    (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == 29)) {
-                gregorianCalendar.add(Calendar.YEAR, 4);
+            if ((contact.getDateOfBirth().get(Calendar.MONTH) == Calendar.FEBRUARY)
+                    && (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == FEBRUARY_29)) {
+                gregorianCalendar.add(Calendar.YEAR, NEXT_LEAP_YEAR);
             } else {
                 gregorianCalendar.add(Calendar.YEAR, 1);
             }
@@ -73,7 +76,7 @@ public class NotificationModel implements NotificationInteractor {
 
 
     private GregorianCalendar createGregorianCalendarForContact(Contact contact) {
-        if (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == 29) {
+        if (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == FEBRUARY_29) {
             birthdayGregorianCalendar.set(GregorianCalendar.YEAR, birthdayGregorianCalendar.get(Calendar.YEAR));
             while (!birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
                 birthdayGregorianCalendar.add(Calendar.YEAR, 1);
@@ -82,8 +85,10 @@ public class NotificationModel implements NotificationInteractor {
             birthdayGregorianCalendar.set(GregorianCalendar.YEAR, birthdayGregorianCalendar.get(Calendar.YEAR));
         }
 
-        birthdayGregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH, contact.getDateOfBirth().get(GregorianCalendar.DAY_OF_MONTH));
-        birthdayGregorianCalendar.set(GregorianCalendar.MONTH, contact.getDateOfBirth().get(GregorianCalendar.MONTH));
+        birthdayGregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH,
+                contact.getDateOfBirth().get(GregorianCalendar.DAY_OF_MONTH));
+        birthdayGregorianCalendar.set(GregorianCalendar.MONTH,
+                contact.getDateOfBirth().get(GregorianCalendar.MONTH));
 
         return birthdayGregorianCalendar;
     }

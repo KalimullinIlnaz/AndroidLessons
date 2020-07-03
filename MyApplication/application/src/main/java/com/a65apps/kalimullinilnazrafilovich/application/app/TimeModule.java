@@ -12,7 +12,7 @@ import dagger.Provides;
 public class TimeModule {
     @Provides
     @Singleton
-    public CurrentTime provideCurrentTime(){
+    public CurrentTime provideCurrentTime() {
         return new CurrentTimeModel();
     }
 }

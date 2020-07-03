@@ -15,7 +15,7 @@ public class Location {
 
     public Location(@Nullable Contact contact,
                     @Nullable String address,
-                    @Nullable Point point){
+                    @Nullable Point point) {
         this.contact = contact;
         this.address = address;
         this.point = point;

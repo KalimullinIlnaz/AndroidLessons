@@ -10,7 +10,7 @@ import io.reactivex.rxjava3.core.Single;
 public class ContactLocationModel implements ContactLocationInteractor {
     private final LocationRepository locationRepository;
 
-    public ContactLocationModel(LocationRepository locationRepository){
+    public ContactLocationModel(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 
@@ -25,7 +25,12 @@ public class ContactLocationModel implements ContactLocationInteractor {
     }
 
     @Override
-    public Single<Location> createOrUpdateContactLocationByCoordinate(Contact contact, double latitude, double longitude) {
-        return locationRepository.createOrUpdateContactLocationByCoordinate(contact,latitude, longitude);
+    public Single<Location> createOrUpdateContactLocationByCoordinate(Contact contact,
+                                                                      double latitude,
+                                                                      double longitude) {
+        return locationRepository.createOrUpdateContactLocationByCoordinate(
+                contact,
+                latitude,
+                longitude);
     }
 }

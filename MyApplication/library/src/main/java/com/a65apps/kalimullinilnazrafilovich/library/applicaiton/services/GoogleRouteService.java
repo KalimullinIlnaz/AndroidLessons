@@ -9,9 +9,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GoogleRouteService {
-    private static GoogleRouteService mInstance;
+public final class GoogleRouteService {
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/directions/";
+    private static GoogleRouteService mInstance;
     private Retrofit mRetrofit;
 
     private GoogleRouteService() {

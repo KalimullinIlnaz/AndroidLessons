@@ -7,7 +7,6 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,12 +16,13 @@ public class BirthdayNotificationModule {
     @Provides
     public NotificationInteractor provideNotificationInteractor(NotificationRepository notificationRepository,
                                                                 CurrentTime currentTime,
-                                                                BirthdayCalendar birthdayCalendar){
+                                                                BirthdayCalendar birthdayCalendar) {
         return new NotificationModel(notificationRepository, currentTime, birthdayCalendar);
     }
 
     @Provides
-    public BirthdayCalendar provideBirthdayCalendar(){
+    public BirthdayCalendar provideBirthdayCalendar() {
         return new BirthdayCalendarModel();
+
     }
 }

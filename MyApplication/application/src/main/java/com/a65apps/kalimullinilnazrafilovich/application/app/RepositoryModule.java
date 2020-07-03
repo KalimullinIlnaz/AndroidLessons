@@ -23,33 +23,35 @@ import dagger.Provides;
 public class RepositoryModule {
     @Provides
     @Singleton
-    public ContactDetailsRepository provideContactDetailsContentResolverRepository(Context context, AppDatabase database) {
-        return new ContactDetailsContentResolverAndDBRepository(context, database);
+    public ContactDetailsRepository provideContactDetailsContentResolverRepository(Context context,
+                                                                                   AppDatabase db) {
+        return new ContactDetailsContentResolverAndDBRepository(context, db);
     }
 
     @Provides
     @Singleton
     public LocationRepository provideContactLocationRepository(AppDatabase database,
-                                                               Context context,
-                                                               ContactDetailsRepository contactDetailsContentResolverRepository){
-        return new ContactLocationRepository(database, context, contactDetailsContentResolverRepository);
+             Context context, ContactDetailsRepository contactDetailsContentResolverRepository) {
+        return new ContactLocationRepository(database,
+                context,
+                contactDetailsContentResolverRepository);
     }
 
     @Provides
     @Singleton
-    public ContactListRepository provideContactListContentResolverRepository(Context context){
+    public ContactListRepository provideContactListContentResolverRepository(Context context) {
         return new ContactListContentResolverRepository(context);
     }
 
     @Provides
     @Singleton
-    public GeocodeRepository provideGeocodeRouteRepository(Context context){
+    public GeocodeRepository provideGeocodeRouteRepository(Context context) {
         return new GeocodeRouteRepository(context);
     }
 
     @Provides
     @Singleton
-    public NotificationRepository provideNotificationRepository(Context context){
+    public NotificationRepository provideNotificationRepository(Context context) {
         return new NotificationAlarmManagerRepository(context);
     }
 }

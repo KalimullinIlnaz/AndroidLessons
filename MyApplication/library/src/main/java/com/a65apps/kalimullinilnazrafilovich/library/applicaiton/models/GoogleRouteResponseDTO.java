@@ -9,37 +9,49 @@ public class GoogleRouteResponseDTO {
 
     @SerializedName("routes")
     @Expose
-    public List<Route> routes;
+    private List<Route> routes;
 
     @SerializedName("status")
     @Expose
-    public String status;
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    private String status;
 
     public String getStatus() {
         return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private List<Route> getRoutes() {
+        return routes;
+    }
+
+    public String getPoints() {
+        try {
+            return this.routes.get(0).overviewPolyline.points;
+        } catch (IndexOutOfBoundsException e) {
+            return "";
+        }
+    }
+
     class Route {
         @SerializedName("overview_polyline")
         @Expose
-        OverviewPolyline overview_polyline;
+        private OverviewPolyline overviewPolyline;
+
+        public OverviewPolyline getOverviewPolyline() {
+            return overviewPolyline;
+        }
     }
 
     class OverviewPolyline {
         @SerializedName("points")
         @Expose
-        String points;
-    }
+        private String points;
 
-    public String getPoints() {
-        try {
-            return this.routes.get(0).overview_polyline.points;
-        }catch (IndexOutOfBoundsException e){
-            return "";
+        public void setPoints(String points) {
+            this.points = points;
         }
     }
 }

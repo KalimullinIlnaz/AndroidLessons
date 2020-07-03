@@ -1,7 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services;
 
 
-
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.interfaces.YandexGeocodeApi;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
@@ -10,9 +9,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class YandexGeocodeService {
-    private static YandexGeocodeService mInstance;
+public final class YandexGeocodeService {
     private static final String BASE_URL = "https://geocode-maps.yandex.ru/";
+    private static YandexGeocodeService mInstance;
     private Retrofit mRetrofit;
 
     private YandexGeocodeService() {

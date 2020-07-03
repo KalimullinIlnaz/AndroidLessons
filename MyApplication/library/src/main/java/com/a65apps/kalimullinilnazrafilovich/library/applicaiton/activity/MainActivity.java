@@ -11,7 +11,7 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
 
-public class MainActivity extends MvpAppCompatActivity  {
+public class MainActivity extends MvpAppCompatActivity {
     private boolean firstCreateMainActivity;
 
     @Override
@@ -28,20 +28,22 @@ public class MainActivity extends MvpAppCompatActivity  {
         String details = getIntent().getStringExtra("contactDetail");
         String id = getIntent().getStringExtra("id");
 
-        if (firstCreateMainActivity) addFragmentListContact();
-        if (details != null){
+        if (firstCreateMainActivity) {
+            addFragmentListContact();
+        }
+        if (details != null) {
             addFragmentContactDetail(id);
         }
     }
 
-    private void addFragmentListContact(){
+    private void addFragmentListContact() {
         ContactListFragment contactListFragment = new ContactListFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.content,contactListFragment).commit();
+        fragmentTransaction.add(R.id.content, contactListFragment).commit();
     }
 
-    private void addFragmentContactDetail(String id){
+    private void addFragmentContactDetail(String id) {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(id);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

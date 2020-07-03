@@ -11,22 +11,22 @@ import java.util.List;
 
 public class GoogleDTOMapper {
 
-    public Route transform(GoogleRouteResponseDTO googleRouteResponseDTO){
+    public Route transform(GoogleRouteResponseDTO googleRouteResponseDTO) {
         return new Route(getRoutePoints(googleRouteResponseDTO));
     }
 
 
-    private List<Point> getRoutePoints(GoogleRouteResponseDTO googleRouteResponseDTO){
+    private List<Point> getRoutePoints(GoogleRouteResponseDTO googleRouteResponseDTO) {
         String points = googleRouteResponseDTO.getPoints();
 
-        if (!googleRouteResponseDTO.status.equals("")){
+        if (!googleRouteResponseDTO.getStatus().equals("")) {
             List<Point> routes = new ArrayList<>();
-            List<LatLng> latLngs =  PolyUtil.decode(points);
-            for (LatLng point: latLngs) {
+            List<LatLng> latLngs = PolyUtil.decode(points);
+            for (LatLng point : latLngs) {
                 routes.add(new Point(point.latitude, point.longitude));
             }
             return routes;
-        }else {
+        } else {
             return new ArrayList<>();
         }
     }

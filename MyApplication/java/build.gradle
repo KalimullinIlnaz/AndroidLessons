@@ -1,8 +1,25 @@
 apply plugin: 'java'
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion = '8.1'
+}
+
+task checkstyle(type: Checkstyle) {
+    configFile = rootProject.file('/config/check/rules-checkstyle.xml')
+
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    // empty classpath
+    classpath = files()
+}
 
 repositories {
     jcenter()
 }
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -13,7 +30,7 @@ dependencies {
     testImplementation('junit:junit:4.13')
 
     //Mockito
-    testImplementation('org.mockito:mockito-core:2.28.2')
+    testImplementation('org.mockito:mockito-core:3.3.3')
 
 }
 

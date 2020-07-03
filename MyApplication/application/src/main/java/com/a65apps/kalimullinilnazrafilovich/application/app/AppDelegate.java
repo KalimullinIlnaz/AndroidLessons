@@ -5,7 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.AppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 
@@ -30,7 +29,7 @@ public class AppDelegate extends Application implements HasAppContainer {
     @NonNull
     @Override
     public AppContainer appContainer() {
-        if (appComponent == null){
+        if (appComponent == null) {
             initDependencies();
         }
         return appComponent;

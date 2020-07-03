@@ -7,13 +7,13 @@ public class GeoObject {
 
     @SerializedName("metaDataProperty")
     @Expose
-    private MetaDataProperty_ metaDataProperty;
+    private MetaDataPropertyDTO metaDataProperty;
 
-    public MetaDataProperty_ getMetaDataProperty() {
+    public MetaDataPropertyDTO getMetaDataProperty() {
         return metaDataProperty;
     }
 
-    public void setMetaDataProperty(MetaDataProperty_ metaDataProperty) {
+    public void setMetaDataProperty(MetaDataPropertyDTO metaDataProperty) {
         this.metaDataProperty = metaDataProperty;
     }
 

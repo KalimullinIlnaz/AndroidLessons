@@ -36,33 +36,30 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class MapRouteFragment extends MvpAppCompatFragment implements FullMapView, OnMapReadyCallback {
+    private static final int ZOOM = 25;
+    @Inject
+    public Provider<MapRoutePresenter> fullMapPresenterProvider;
+    @InjectPresenter
+    MapRoutePresenter mapRoutePresenter;
     private View view;
     private GoogleMap map;
-
     private boolean fromMarker = false;
     private boolean toMarker = false;
-
     private Point from = null;
     private Point to = null;
 
-    @InjectPresenter
-    MapRoutePresenter mapRoutePresenter;
-
-    @Inject
-    public Provider<MapRoutePresenter> fullMapPresenterProvider;
-
     @ProvidePresenter
-    MapRoutePresenter provideFullMapPresenter(){
+    MapRoutePresenter provideFullMapPresenter() {
         return fullMapPresenterProvider.get();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         Application app = requireActivity().getApplication();
-        if (!(app instanceof HasAppContainer)){
+        if (!(app instanceof HasAppContainer)) {
             throw new IllegalStateException();
         }
-        MapRouteContainer mapRouteComponent = ((HasAppContainer)app).appContainer()
+        MapRouteContainer mapRouteComponent = ((HasAppContainer) app).appContainer()
                 .plusMapRouteContainer();
 
         mapRouteComponent.inject(this);
@@ -83,8 +80,8 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
         return view;
     }
 
-    private void initMap(){
-        SupportMapFragment mapFragment = (SupportMapFragment)getChildFragmentManager()
+    private void initMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -97,7 +94,7 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
         mapRoutePresenter.showMarkers();
 
         map.setOnMarkerClickListener(marker -> {
-            if ((!fromMarker) && (!toMarker)){
+            if ((!fromMarker) && (!toMarker)) {
                 from = new Point(
                         marker.getPosition().latitude,
                         marker.getPosition().longitude);
@@ -123,7 +120,7 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
     @Override
     public void showMarkers(List<Location> locations) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Location curLocation:locations) {
+        for (Location curLocation : locations) {
             setMarker(new LatLng(curLocation.getPoint().getLatitude(),
                     curLocation.getPoint().getLongitude()));
             builder.include(new LatLng(curLocation.getPoint().getLatitude(),
@@ -141,10 +138,10 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
     //FullMapView
     @Override
     public void showMessageNoRoute() {
-        Toast.makeText(getContext(),R.string.no_route_message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.no_route_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void drawRoute(List<LatLng> mPoints){
+    private void drawRoute(List<LatLng> mPoints) {
         PolylineOptions line = new PolylineOptions();
         LatLngBounds.Builder latLngBuilder = new LatLngBounds.Builder();
 
@@ -161,12 +158,12 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
     }
 
     private void setMarker(LatLng marker) {
-       map.addMarker(new MarkerOptions().position(marker));
+        map.addMarker(new MarkerOptions().position(marker));
     }
 
-    private void setCamOnMarkers(LatLngBounds bounds){
+    private void setCamOnMarkers(LatLngBounds bounds) {
         int size = getResources().getDisplayMetrics().widthPixels;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,size,size,25);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, size, size, ZOOM);
         map.moveCamera(cameraUpdate);
     }
 
@@ -176,3 +173,4 @@ public class MapRouteFragment extends MvpAppCompatFragment implements FullMapVie
         view = null;
     }
 }
+

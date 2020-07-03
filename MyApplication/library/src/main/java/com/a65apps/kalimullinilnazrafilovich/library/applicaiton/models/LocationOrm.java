@@ -11,7 +11,18 @@ import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 
 @Entity
 public class LocationOrm {
-    public LocationOrm(Contact contact, Location location){
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "contact_id")
+    private String contactID;
+    @ColumnInfo(name = "latitude")
+    private double latitude;
+    @ColumnInfo(name = "longitude")
+    private double longitude;
+    @ColumnInfo(name = "address")
+    private String address;
+
+    public LocationOrm(Contact contact, Location location) {
         this.contactID = contact.getId();
         this.address = location.getAddress();
         this.latitude = location.getPoint().getLatitude();
@@ -21,40 +32,10 @@ public class LocationOrm {
     public LocationOrm(String contactID,
                        double latitude,
                        double longitude,
-                       String address){
+                       String address) {
         this.contactID = contactID;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.address = address;
-    }
-
-    @NonNull
-    @PrimaryKey
-    @ColumnInfo(name = "contact_id")
-    private String contactID;
-
-    @ColumnInfo(name = "latitude")
-    private double latitude;
-
-    @ColumnInfo(name = "longitude")
-    private double longitude;
-
-    @ColumnInfo(name = "address")
-    private String address;
-
-    public void setContactID(String contactID) {
-        this.contactID = contactID;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -63,15 +44,31 @@ public class LocationOrm {
         return contactID;
     }
 
+    public void setContactID(String contactID) {
+        this.contactID = contactID;
+    }
+
     public String getAddress() {
         return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public double getLongitude() {
         return longitude;
     }
 
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

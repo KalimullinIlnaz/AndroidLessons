@@ -34,7 +34,7 @@ public class BroadReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!(context.getApplicationContext() instanceof HasAppContainer)){
+        if (!(context.getApplicationContext() instanceof HasAppContainer)) {
             throw new IllegalStateException();
         }
 
@@ -51,8 +51,8 @@ public class BroadReceiver extends BroadcastReceiver {
 
     private void showNotification(Context context, String text, String id) {
         Intent resultIntent = new Intent(context, MainActivity.class);
-        resultIntent.putExtra("contactDetail","details");
-        resultIntent.putExtra("id",id);
+        resultIntent.putExtra("contactDetail", "details");
+        resultIntent.putExtra("id", id);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntent(resultIntent);
@@ -61,7 +61,7 @@ public class BroadReceiver extends BroadcastReceiver {
                 stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notification =
-                new NotificationCompat.Builder(context,CHANNEL_ID)
+                new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(android.R.drawable.ic_dialog_email)
                         .setContentTitle(context.getString(R.string.title_notification))
                         .setContentText(text)
@@ -81,7 +81,7 @@ public class BroadReceiver extends BroadcastReceiver {
         }
 
         assert notificationManager != null;
-        notificationManager.notify(1,  notification.build());
+        notificationManager.notify(1, notification.build());
 
         repeatAlarm(id);
     }
@@ -92,7 +92,7 @@ public class BroadReceiver extends BroadcastReceiver {
         contactDetailsInteractor.loadDetailsContact(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess( contact -> notificationInteractor.onBirthdayNotification(contact))
+                .doOnSuccess(contact -> notificationInteractor.onBirthdayNotification(contact))
                 .doFinally(result::finish)
                 .subscribe();
     }

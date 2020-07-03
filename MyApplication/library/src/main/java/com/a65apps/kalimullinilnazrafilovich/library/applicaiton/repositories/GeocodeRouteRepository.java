@@ -8,7 +8,6 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper.GoogleDTOMapper;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services.GoogleRouteService;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class GeocodeRouteRepository implements GeocodeRepository {
     private Context context;
 
-    public GeocodeRouteRepository(Context context){
+    public GeocodeRouteRepository(Context context) {
         this.context = context;
     }
 
@@ -40,10 +39,11 @@ public class GeocodeRouteRepository implements GeocodeRepository {
 
     @Override
     public List<Point> routeToPoints(Route route) {
-        if (route.getPoints().isEmpty()) return new ArrayList<>();
-            else {
+        if (route.getPoints().isEmpty()) {
+            return new ArrayList<>();
+        } else {
             List<Point> points = new ArrayList<>();
-            for (Point point: route.getPoints()) {
+            for (Point point : route.getPoints()) {
                 points.add(new Point(point.getLatitude(), point.getLongitude()));
             }
             return points;

@@ -3,7 +3,7 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MetaDataProperty_ {
+public class MetaDataPropertyDTO {
 
     @SerializedName("GeocoderMetaData")
     @Expose
@@ -18,3 +18,4 @@ public class MetaDataProperty_ {
     }
 
 }
+

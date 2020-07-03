@@ -8,7 +8,7 @@ public class Route {
     @Nullable
     private final List<Point> points;
 
-    public Route(@Nullable List<Point> points){
+    public Route(@Nullable List<Point> points) {
         this.points = points;
     }
 

@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
@@ -21,30 +20,28 @@ import java.util.GregorianCalendar;
 import io.reactivex.rxjava3.core.Single;
 
 public class ContactDetailsContentResolverAndDBRepository implements ContactDetailsRepository {
-    private String TAG = "ContactDetailsRepository";
     private final ContentResolver contentResolver;
-
     private final AppDatabase database;
 
-    public ContactDetailsContentResolverAndDBRepository(Context context, AppDatabase database){
+    public ContactDetailsContentResolverAndDBRepository(Context context, AppDatabase database) {
         contentResolver = context.getContentResolver();
         this.database = database;
     }
 
     @Override
     public Single<Contact> getDetailsContact(String id) {
-        return Single.fromCallable( () -> getDataFromDB(getDetails(id)));
+        return Single.fromCallable(() -> getDataFromDB(getDetails(id)));
     }
 
-    private Contact getDetails(String id){
+    private Contact getDetails(String id) {
         Contact contact = null;
         Cursor cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
                 null,
                 ContactsContract.Contacts._ID + " = " + id,
-                null ,
+                null,
                 null);
-        try{
+        try {
             if (cursor != null) {
                 cursor.moveToNext();
 
@@ -54,13 +51,22 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
                 String[] emails = readEmails(id);
                 String birthOfDay = readDataOfBirth(id);
 
+                Contact contactInfo = new Contact(
+                        id,
+                        name,
+                        telephoneNumbers[0]);
 
-                contact = new Contact(id,name,parseStringToGregorianCalendar(birthOfDay),
-                        telephoneNumbers[0],telephoneNumbers[1],
-                        emails[0],emails[1],new String(),null);
+                contact = new Contact(
+                        contactInfo,
+                        parseStringToGregorianCalendar(birthOfDay),
+                        telephoneNumbers[1],
+                        emails[0],
+                        emails[1],
+                        "",
+                        null);
 
             }
-        }finally {
+        } finally {
             if (cursor != null) {
                 cursor.close();
             }
@@ -79,27 +85,25 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         try {
             assert pCur != null;
             while (pCur.moveToNext()) {
-                if (countTelephoneNumbers == 0){
+                if (countTelephoneNumbers == 0) {
                     telephoneNumbers[countTelephoneNumbers] = pCur.getString(
                             pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    Log.d(TAG, "telephoneNumber " + telephoneNumbers[countTelephoneNumbers]);
                 }
-                if (countTelephoneNumbers == 1){
+                if (countTelephoneNumbers == 1) {
                     telephoneNumbers[countTelephoneNumbers] = pCur.getString(
                             pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    Log.d(TAG, "telephoneNumber2 " + telephoneNumbers[countTelephoneNumbers]);
                 }
                 countTelephoneNumbers++;
             }
-        }finally {
-            if (pCur != null){
+        } finally {
+            if (pCur != null) {
                 pCur.close();
             }
         }
         return telephoneNumbers;
     }
 
-    private String[] readEmails(String id){
+    private String[] readEmails(String id) {
         String[] emails = new String[2];
         int countEmail = 0;
         Cursor emailCur = contentResolver.query(
@@ -107,50 +111,47 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
                 null,
                 ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + id,
                 null, null);
-        try{
-            if (emailCur != null){
+        try {
+            if (emailCur != null) {
                 while (emailCur.moveToNext()) {
-                    if (countEmail == 0){
+                    if (countEmail == 0) {
                         emails[countEmail] = emailCur.getString(
                                 emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        Log.d(TAG, "email " + emails[countEmail]);
                     }
-                    if (countEmail == 1){
+                    if (countEmail == 1) {
                         emails[countEmail] = emailCur.getString(
                                 emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        Log.d(TAG, "email 2 " + emails[countEmail]);
                     }
                     countEmail++;
                 }
             }
-        }finally {
-            if (emailCur != null){
+        } finally {
+            if (emailCur != null) {
                 emailCur.close();
             }
         }
-        return  emails;
+        return emails;
     }
 
-    private String readDataOfBirth(String id){
+    private String readDataOfBirth(String id) {
         String birthOfDay = null;
         Cursor dOfBirthCur = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
                 null,
-                ContactsContract.CommonDataKinds.Event.TYPE + "=" +
-                        ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " AND " +
-                        ContactsContract.CommonDataKinds.Event.CONTACT_ID + " = " + id,
+                ContactsContract.CommonDataKinds.Event.TYPE + "="
+                        + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " AND "
+                        + ContactsContract.CommonDataKinds.Event.CONTACT_ID + " = " + id,
                 null, null);
 
         try {
-            if (dOfBirthCur != null){
-                while (dOfBirthCur.moveToNext()){
+            if (dOfBirthCur != null) {
+                while (dOfBirthCur.moveToNext()) {
                     birthOfDay = dOfBirthCur.getString(
                             dOfBirthCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
-                    Log.d(TAG, "birthOfDay" + birthOfDay);
                 }
             }
-        }finally {
-            if (dOfBirthCur != null){
+        } finally {
+            if (dOfBirthCur != null) {
                 dOfBirthCur.close();
             }
         }
@@ -158,9 +159,14 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
     }
 
 
-    private Contact getDataFromDB(Contact contact){
+    private Contact getDataFromDB(Contact contact) {
+        Contact contactInfo = new Contact(
+                contact.getId(),
+                contact.getName(),
+                contact.getTelephoneNumber()
+        );
 
-        if (database.locationDao().isExists(contact.getId()) == 1){
+        if (database.locationDao().isExists(contact.getId()) == 1) {
             Point point = new Point(
                     database.locationDao().getById(contact.getId()).getLatitude(),
                     database.locationDao().getById(contact.getId()).getLongitude());
@@ -169,41 +175,40 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
                     database.locationDao().getById(contact.getId()).getAddress(),
                     point);
 
-            return createNewContact(contact,location);
-        }else {
+
+            return createNewContact(contactInfo, contact, location);
+        } else {
             Point point = new Point(
                     0,
                     0);
-            Location location= new Location(contact,
+            Location location = new Location(contact,
                     "",
                     point);
 
-            return createNewContact(contact,location);
+            return createNewContact(contactInfo, contact, location);
         }
     }
 
-    private GregorianCalendar parseStringToGregorianCalendar(String birthOfDay){
+    private GregorianCalendar parseStringToGregorianCalendar(String birthOfDay) {
         @SuppressLint("SimpleDateFormat")
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         try {
             gregorianCalendar.setTime(df.parse(birthOfDay));
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return gregorianCalendar;
     }
 
-    private Contact createNewContact(Contact contact,Location location){
+    private Contact createNewContact(Contact contactInfo, Contact contactDetails, Location location) {
         return new Contact(
-                contact.getId(),
-                contact.getName(),
-                contact.getDateOfBirth(),
-                contact.getTelephoneNumber(),
-                contact.getTelephoneNumber2(),
-                contact.getEmail(),
-                contact.getEmail2(),
-                contact.getDescription(),
+                contactInfo,
+                contactDetails.getDateOfBirth(),
+                contactDetails.getTelephoneNumber2(),
+                contactDetails.getEmail(),
+                contactDetails.getEmail2(),
+                contactDetails.getDescription(),
                 location);
     }
 }

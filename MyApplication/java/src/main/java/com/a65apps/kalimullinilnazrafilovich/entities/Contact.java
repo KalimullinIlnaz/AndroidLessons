@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.entities;
 
-
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
@@ -36,7 +35,9 @@ public class Contact {
     @Nullable
     private final Location location;
 
-    public Contact(@NonNull String id, @NonNull String name, @NonNull String telephoneNumber) {
+    public Contact(@NonNull String id,
+                   @NonNull String name,
+                   @NonNull String telephoneNumber) {
         this.id = id;
         this.name = name;
         this.telephoneNumber = telephoneNumber;
@@ -48,13 +49,17 @@ public class Contact {
         this.location = null;
     }
 
-    public Contact(@NonNull String id, @NonNull String name, @NonNull GregorianCalendar dateOfBirth, @NonNull String telephoneNumber,
-                   @NonNull String telephoneNumber2, @NonNull String email, @NonNull String email2, @NonNull String description,
+    public Contact(@NonNull Contact contact,
+                   @NonNull GregorianCalendar dateOfBirth,
+                   @NonNull String telephoneNumber2,
+                   @NonNull String email,
+                   @NonNull String email2,
+                   @NonNull String description,
                    @Nullable Location location) {
-        this.id = id;
-        this.name = name;
+        this.id = contact.getId();
+        this.name = contact.getName();
         this.dateOfBirth = dateOfBirth;
-        this.telephoneNumber = telephoneNumber;
+        this.telephoneNumber = contact.getTelephoneNumber();
         this.email = email;
         this.telephoneNumber2 = telephoneNumber2;
         this.email2 = email2;
@@ -109,22 +114,36 @@ public class Contact {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Contact contact = (Contact) o;
-        return id.equals(contact.id) &&
-                name.equals(contact.name) &&
-                telephoneNumber.equals(contact.telephoneNumber) &&
-                telephoneNumber2.equals(contact.telephoneNumber2) &&
-                email.equals(contact.email) &&
-                email2.equals(contact.email2) &&
-                description.equals(contact.description) &&
-                Objects.equals(dateOfBirth, contact.dateOfBirth) &&
-                Objects.equals(location, contact.location);
+        return id.equals(contact.id)
+                && name.equals(contact.name)
+                && telephoneNumber.equals(contact.telephoneNumber)
+                && telephoneNumber2.equals(contact.telephoneNumber2)
+                && email.equals(contact.email)
+                && email2.equals(contact.email2)
+                && description.equals(contact.description)
+                && Objects.equals(dateOfBirth, contact.dateOfBirth)
+                && Objects.equals(location, contact.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, telephoneNumber, telephoneNumber2, email, email2, description, dateOfBirth, location);
+        return Objects.hash(
+                id,
+                name,
+                telephoneNumber,
+                telephoneNumber2,
+                email,
+                email2,
+                description,
+                dateOfBirth,
+                location);
     }
 }
+

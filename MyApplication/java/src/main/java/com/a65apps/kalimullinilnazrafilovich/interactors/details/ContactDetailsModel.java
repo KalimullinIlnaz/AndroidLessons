@@ -7,7 +7,7 @@ import io.reactivex.rxjava3.core.Single;
 public class ContactDetailsModel implements ContactDetailsInteractor {
     private final ContactDetailsRepository contactDetailsRepository;
 
-    public ContactDetailsModel(ContactDetailsRepository contactDetailsRepository){
+    public ContactDetailsModel(ContactDetailsRepository contactDetailsRepository) {
         this.contactDetailsRepository = contactDetailsRepository;
     }
 

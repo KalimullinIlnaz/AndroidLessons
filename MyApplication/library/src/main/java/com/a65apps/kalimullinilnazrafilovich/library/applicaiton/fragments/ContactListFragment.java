@@ -24,9 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactAdapter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactsListContainer;
@@ -40,28 +38,35 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 
-public class ContactListFragment extends MvpAppCompatFragment implements ContactListView, ContactAdapter.onContactListener {
-    private RecyclerView recyclerView;
-    private ContactAdapter contactAdapter;
+public class ContactListFragment extends MvpAppCompatFragment implements
+        ContactListView,
+        ContactAdapter.OnContactListener {
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private final int offsetDP = 6;
+
+    @Inject
+    public Provider<ContactListPresenter> contactListPresenterProvider;
+    @InjectPresenter
+    ContactListPresenter contactListPresenter;
+
+    private RecyclerView recyclerView;
+
+    private ContactAdapter contactAdapter;
 
     private CircularProgressView circularProgressView;
 
     private List<Contact> contactEntities;
+
     private View view;
 
-    @InjectPresenter
-    ContactListPresenter contactListPresenter;
-    @Inject
-    public Provider<ContactListPresenter> contactListPresenterProvider;
-
     @ProvidePresenter
-    ContactListPresenter providePresenter(){
+    ContactListPresenter providePresenter() {
         return contactListPresenterProvider.get();
     }
 
@@ -87,10 +92,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onAttach(@NonNull Context context) {
         Application app = requireActivity().getApplication();
-        if (!(app instanceof HasAppContainer)){
+        if (!(app instanceof HasAppContainer)) {
             throw new IllegalStateException();
         }
-        ContactsListContainer contactListComponent = ((HasAppContainer)app).appContainer()
+        ContactsListContainer contactListComponent = ((HasAppContainer) app).appContainer()
                 .plusContactListContainer();
         contactListComponent.inject(this);
 
@@ -105,13 +110,19 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
 
         circularProgressView = view.findViewById(R.id.circular_progress_view);
         recyclerView = view.findViewById(R.id.contact_recycler_view);
-        recyclerView.addItemDecoration(new ItemDecoration(dpToPx(offsetDP),dpToPx(8),dpToPx(offsetDP),dpToPx(offsetDP)));
+        recyclerView.addItemDecoration(new ItemDecoration(
+                dpToPx(offsetDP),
+                dpToPx(offsetDP),
+                dpToPx(offsetDP),
+                dpToPx(offsetDP)));
 
         contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
@@ -119,7 +130,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         return view;
     }
 
-    private int dpToPx(int dp){
+    private int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         return (int) (dp * displayMetrics.density);
     }
@@ -130,20 +141,24 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         requestPermission();
     }
 
-    private void requestPermission(){
-        int permissionStatus = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+    private void requestPermission() {
+        int permissionStatus = ContextCompat.checkSelfPermission(
+                Objects.requireNonNull(getActivity()),
+                Manifest.permission.READ_CONTACTS);
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
             contactListPresenter.showContactList();
-        }else {
+        } else {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+                    PERMISSIONS_REQUEST_READ_CONTACTS);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-        if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 contactListPresenter.showContactList();
@@ -156,13 +171,13 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_item,menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_item, menu);
         initSearchView(menu);
     }
 
-    private void initSearchView(Menu menu){
+    private void initSearchView(Menu menu) {
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setQueryHint(getString(R.string.tittle_menu));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -171,6 +186,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
                 contactListPresenter.showContactList(query);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 contactListPresenter.showContactList(newText);
@@ -181,13 +197,13 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.map){
+        if (item.getItemId() == R.id.map) {
             openFullMapFragment();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void openFullMapFragment(){
+    private void openFullMapFragment() {
         MapRouteFragment mapRouteFragment = new MapRouteFragment();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -196,7 +212,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void onContactClick(int position) {
-        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(contactEntities.get(position).getId());
+        ContactDetailsFragment contactDetailsFragment =
+                ContactDetailsFragment.newInstance(contactEntities.get(position).getId());
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
@@ -205,6 +222,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         view = null;
         recyclerView = null;
         circularProgressView = null;
