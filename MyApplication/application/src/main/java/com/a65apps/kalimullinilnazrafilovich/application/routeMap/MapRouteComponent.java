@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.application;
+package com.a65apps.kalimullinilnazrafilovich.application.routeMap;
 
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.MapRouteContainer;

@@ -5,4 +5,5 @@ public interface AppContainer {
     ContactDetailsContainer plusContactDetailsContainer();
     ContactMapContainer plusContactMapContainer();
     MapRouteContainer plusMapRouteContainer();
+    BirthdayNotificationContainer plusBirthdayNotificationContainer();
 }

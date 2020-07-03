@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.receivers;
 
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,30 +8,43 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
+import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.activity.MainActivity;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.BirthdayNotificationContainer;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import javax.inject.Inject;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BroadReceiver extends BroadcastReceiver {
-    private final String TAG_LOG = "BroadCast";
-    private static String CHANNEL_ID = "BirthDay";
+    private final String CHANNEL_ID = "BirthDay";
+
+    @Inject
+    NotificationInteractor notificationInteractor;
+
+    @Inject
+    ContactDetailsInteractor contactDetailsInteractor;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG_LOG, "OnReceive context = " + context.toString());
-        Log.d(TAG_LOG, "Receive action: " + intent.getAction());
+        if (!(context.getApplicationContext() instanceof HasAppContainer)){
+            throw new IllegalStateException();
+        }
+
+        BirthdayNotificationContainer birthdayNotificationComponent =
+                ((HasAppContainer) context.getApplicationContext()).appContainer().plusBirthdayNotificationContainer();
+        birthdayNotificationComponent.inject(this);
+
 
         String id = intent.getStringExtra("id");
         String textReminder = intent.getStringExtra("textReminder");
-
-        Log.d(TAG_LOG, "id + text = " + id + " " +  textReminder);
 
         showNotification(context, textReminder, id);
     }
@@ -46,7 +58,7 @@ public class BroadReceiver extends BroadcastReceiver {
         stackBuilder.addNextIntent(resultIntent);
 
         PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(context,CHANNEL_ID)
@@ -71,21 +83,17 @@ public class BroadReceiver extends BroadcastReceiver {
         assert notificationManager != null;
         notificationManager.notify(1,  notification.build());
 
-        repeatAlarm(context,id,text);
+        repeatAlarm(id);
     }
 
-    private void repeatAlarm(Context context,String id,String text) {
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+    private void repeatAlarm(String id) {
+        PendingResult result = goAsync();
 
-        Intent intent = new Intent(Constants.BROAD_ACTION);
-        intent.putExtra("id",id);
-        intent.putExtra("textReminder", text);
-
-        Calendar birthOfDay = new GregorianCalendar();
-        birthOfDay.add(Calendar.YEAR,1);
-
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context,0,intent,0);
-        alarmManager.set(AlarmManager.RTC, birthOfDay.getTimeInMillis(),alarmIntent);
+        contactDetailsInteractor.loadDetailsContact(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess( contact -> notificationInteractor.onBirthdayNotification(contact))
+                .doFinally(result::finish)
+                .subscribe();
     }
-
 }

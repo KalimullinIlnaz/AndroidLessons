@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +12,11 @@ import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
 import io.reactivex.rxjava3.core.Single;
 
@@ -48,7 +54,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
                 String[] emails = readEmails(id);
                 String birthOfDay = readDataOfBirth(id);
 
-                contact = new Contact(id,name,birthOfDay,
+
+                contact = new Contact(id,name,parseStringToGregorianCalendar(birthOfDay),
                         telephoneNumbers[0],telephoneNumbers[1],
                         emails[0],emails[1],new String(),null);
 
@@ -150,6 +157,7 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         return birthOfDay;
     }
 
+
     private Contact getDataFromDB(Contact contact){
 
         if (database.locationDao().isExists(contact.getId()) == 1){
@@ -172,6 +180,18 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
 
             return createNewContact(contact,location);
         }
+    }
+
+    private GregorianCalendar parseStringToGregorianCalendar(String birthOfDay){
+        @SuppressLint("SimpleDateFormat")
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        try {
+            gregorianCalendar.setTime(df.parse(birthOfDay));
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        return gregorianCalendar;
     }
 
     private Contact createNewContact(Contact contact,Location location){

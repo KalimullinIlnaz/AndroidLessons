@@ -6,14 +6,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.AlarmManager;
+import android.annotation.SuppressLint;
 import android.app.Application;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.Constants;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactDetailsContainer;
@@ -34,20 +32,14 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements CompoundButton.OnCheckedChangeListener, ContactDetailsView {
-    private final String TAG = "ContactDetailsFragment";
-
     @InjectPresenter
     public ContactDetailsPresenter contactDetailsPresenter;
     @Inject
@@ -58,7 +50,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     }
 
     private View view;
-    private AlarmManager alarmManager;
 
     private Contact contact;
     private String id;
@@ -73,6 +64,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
     private TextView dataOfBirth;
 
     private Button btnLocationOnMap;
+    private ToggleButton btnBirthdayNotification;
+
+    private BirthdayNotification birthdayNotification;
 
     public static ContactDetailsFragment newInstance(String id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
@@ -108,21 +102,28 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
         btnLocationOnMap.setOnClickListener(v -> openMapFragment());
 
-        ToggleButton toggleButton = view.findViewById(R.id.btnBirthdayReminder);
-        setStatusToggleButton(toggleButton);
-
         checkPermissions();
+
         return view;
     }
 
+    private void initViews(){
+        name = view.findViewById(R.id.name);
+        dataOfBirth = view.findViewById(R.id.DayOfBirth);
+        address = view.findViewById(R.id.address);
+        telephoneNumber = view.findViewById(R.id.firstTelephoneNumber);
+        telephoneNumber2 = view.findViewById(R.id.secondTelephoneNumber);
+        email = view.findViewById(R.id.firstEmail);
+        email2 = view.findViewById(R.id.secondEmail);
+        description = view.findViewById(R.id.description);
+        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
+        btnBirthdayNotification = view.findViewById(R.id.btnBirthdayReminder);
+    }
+
     private void setStatusToggleButton(ToggleButton toggleButton){
-        if (PendingIntent.getBroadcast(getActivity(), 0,
-                new Intent(Constants.BROAD_ACTION),
-                PendingIntent.FLAG_NO_CREATE) != null){
-            toggleButton.setChecked(false);
-        }else {
-            toggleButton.setChecked(true);
-        }
+        birthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contact);
+
+        toggleButton.setChecked(birthdayNotification.getNotificationWorkStatusBoolean());
         toggleButton.setOnCheckedChangeListener(this);
     }
 
@@ -165,56 +166,13 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         fragmentTransaction.replace(R.id.content, contactMapFragment).addToBackStack(null).commit();
     }
 
-    private void initViews(){
-        name = view.findViewById(R.id.name);
-        dataOfBirth = view.findViewById(R.id.DayOfBirth);
-        address = view.findViewById(R.id.address);
-        telephoneNumber = view.findViewById(R.id.firstTelephoneNumber);
-        telephoneNumber2 = view.findViewById(R.id.secondTelephoneNumber);
-        email = view.findViewById(R.id.firstEmail);
-        email2 = view.findViewById(R.id.secondEmail);
-        description = view.findViewById(R.id.description);
-        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
-    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(Constants.BROAD_ACTION);
-        intent.putExtra("id",id);
-        intent.putExtra("textReminder", contact.getName() + " " + getActivity().getString(R.string.text_notification));
-
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(getActivity(),0,intent,0);
         if (isChecked){
-            Log.d(TAG, "Alarm on");
-
-            Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
-
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            Calendar cal  = Calendar.getInstance();
-
-            try {
-                cal.setTime(df.parse(contact.getDateOfBirth()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            calendar.set(Calendar.DATE,cal.get(Calendar.DAY_OF_MONTH));
-            calendar.set(Calendar.MONTH,cal.get(Calendar.MONTH));
-            calendar.set(Calendar.YEAR,cal.get(Calendar.YEAR));
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-
-            if (System.currentTimeMillis() > calendar.getTimeInMillis()){
-                calendar.add(Calendar.YEAR,1);
-            }
-
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),alarmIntent);
+            birthdayNotification = contactDetailsPresenter.setNotification(contact);
         }else {
-            Log.d(TAG, "Alarm off");
-            alarmManager.cancel(alarmIntent);
+            birthdayNotification = contactDetailsPresenter.removeNotification(contact);
         }
     }
 
@@ -231,6 +189,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         email2 = null;
         description = null;
         btnLocationOnMap = null;
+        btnBirthdayNotification = null;
     }
 
     @Override
@@ -239,7 +198,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
 
         if (name == null) return;
         name.setText(contact.getName());
-        dataOfBirth.setText(contact.getDateOfBirth());
+        dataOfBirth.setText(parseDateToString(contact.getDateOfBirth()));
         address.setText(contact.getLocation().getAddress());
         telephoneNumber.setText(contact.getTelephoneNumber());
         telephoneNumber2.setText(contact.getTelephoneNumber2());
@@ -248,5 +207,14 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Comp
         description.setText(contact.getDescription());
 
         setStatusLocationBtn(contact.getLocation().getAddress());
+        setStatusToggleButton(btnBirthdayNotification);
     }
+
+    private String parseDateToString(GregorianCalendar gregorianCalendar){
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        df.setCalendar(gregorianCalendar);
+        return df.format(gregorianCalendar.getTime());
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.a65apps.kalimullinilnazrafilovich.entities;
 
 
+import java.util.GregorianCalendar;
+import java.util.Objects;
+
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.annotations.Nullable;
 
@@ -28,26 +31,26 @@ public class Contact {
     private final String description;
 
     @NonNull
-    private final String dateOfBirth;
+    private final GregorianCalendar dateOfBirth;
 
     @Nullable
     private final Location location;
 
-    public Contact(@NonNull String id, @NonNull String name, @NonNull String telephoneNumber){
+    public Contact(@NonNull String id, @NonNull String name, @NonNull String telephoneNumber) {
         this.id = id;
         this.name = name;
         this.telephoneNumber = telephoneNumber;
         this.email = " ";
-        this.telephoneNumber2  = " ";
+        this.telephoneNumber2 = " ";
         this.email2 = " ";
         this.description = " ";
-        this.dateOfBirth = " ";
+        dateOfBirth = null;
         this.location = null;
     }
 
-    public Contact(@NonNull String id, @NonNull String name, @NonNull String dateOfBirth, @NonNull String telephoneNumber,
+    public Contact(@NonNull String id, @NonNull String name, @NonNull GregorianCalendar dateOfBirth, @NonNull String telephoneNumber,
                    @NonNull String telephoneNumber2, @NonNull String email, @NonNull String email2, @NonNull String description,
-                   @Nullable Location location){
+                   @Nullable Location location) {
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
@@ -70,7 +73,7 @@ public class Contact {
     }
 
     @NonNull
-    public String getDateOfBirth() {
+    public GregorianCalendar getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -104,4 +107,24 @@ public class Contact {
         return location;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contact contact = (Contact) o;
+        return id.equals(contact.id) &&
+                name.equals(contact.name) &&
+                telephoneNumber.equals(contact.telephoneNumber) &&
+                telephoneNumber2.equals(contact.telephoneNumber2) &&
+                email.equals(contact.email) &&
+                email2.equals(contact.email2) &&
+                description.equals(contact.description) &&
+                Objects.equals(dateOfBirth, contact.dateOfBirth) &&
+                Objects.equals(location, contact.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, telephoneNumber, telephoneNumber2, email, email2, description, dateOfBirth, location);
+    }
 }
