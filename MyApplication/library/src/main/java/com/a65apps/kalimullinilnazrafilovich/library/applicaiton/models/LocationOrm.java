@@ -22,17 +22,18 @@ public class LocationOrm {
     @ColumnInfo(name = "address")
     private String address;
 
-    public LocationOrm(Contact contact, Location location) {
+    public LocationOrm(@NonNull Contact contact,
+                       @NonNull Location location) {
         this.contactID = contact.getId();
         this.address = location.getAddress();
         this.latitude = location.getPoint().getLatitude();
         this.longitude = location.getPoint().getLongitude();
     }
 
-    public LocationOrm(String contactID,
+    public LocationOrm(@NonNull String contactID,
                        double latitude,
                        double longitude,
-                       String address) {
+                       @NonNull String address) {
         this.contactID = contactID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -44,15 +45,16 @@ public class LocationOrm {
         return contactID;
     }
 
-    public void setContactID(String contactID) {
+    public void setContactID(@NonNull String contactID) {
         this.contactID = contactID;
     }
 
+    @NonNull
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(@NonNull String address) {
         this.address = address;
     }
 

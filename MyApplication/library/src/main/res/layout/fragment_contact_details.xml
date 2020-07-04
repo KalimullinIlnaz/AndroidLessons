@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.ContactListFragment"
-    android:background="@android:color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -20,7 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:src="@drawable/ic_launcher_background">
+            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="@string/contact_photo">
         </ImageView>
 
         <LinearLayout
@@ -104,8 +104,8 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_show_all_markers"
-            android:text="@string/show_all_markers">
+            android:id="@+id/btn_show_contact_location"
+            android:text="@string/status_btn_location_check">
         </Button>
     </LinearLayout>
 

@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
@@ -7,8 +9,9 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.YandexAd
 
 public class YandexDTOMapper {
 
-    public Location transform(Contact contact,
-                              YandexAddressResponseDTO yandexAddressResponseDTO,
+    @NonNull
+    public Location transform(@NonNull Contact contact,
+                              @NonNull YandexAddressResponseDTO yandexAddressResponseDTO,
                               double latitude, double longitude) {
         return new Location(
                 contact,
@@ -17,7 +20,8 @@ public class YandexDTOMapper {
         );
     }
 
-    private String getFullAddress(YandexAddressResponseDTO yandexAddressResponseDTO) {
+    @NonNull
+    private String getFullAddress(@NonNull YandexAddressResponseDTO yandexAddressResponseDTO) {
         try {
             return yandexAddressResponseDTO.getResponse()
                     .getGeoObjectCollection().getFeatureMember().get(0).getGeoObject()

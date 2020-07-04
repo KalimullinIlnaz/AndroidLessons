@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services;
 
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.interfaces.GoogleRouteApi;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
@@ -29,13 +31,14 @@ public final class GoogleRouteService {
                 .build();
     }
 
+    @NonNull
     public static GoogleRouteService getInstance() {
         if (mInstance == null) {
             mInstance = new GoogleRouteService();
         }
         return mInstance;
     }
-
+    @NonNull
     public GoogleRouteApi getJSONApi() {
         return mRetrofit.create(GoogleRouteApi.class);
     }

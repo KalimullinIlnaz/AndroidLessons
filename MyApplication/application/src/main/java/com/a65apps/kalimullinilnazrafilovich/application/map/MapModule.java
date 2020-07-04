@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.application.map;
 
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.application.scope.MapScope;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
@@ -18,21 +20,25 @@ public class MapModule {
 
     @Provides
     @MapScope
-    public MapPresenter provideMapPresenter(ContactLocationInteractor contactLocationModel,
-                                            ContactDetailsInteractor contactDetailsModel) {
+    @NonNull
+    public MapPresenter provideMapPresenter(@NonNull ContactLocationInteractor contactLocationModel,
+                                            @NonNull ContactDetailsInteractor contactDetailsModel) {
         return new MapPresenter(contactLocationModel, contactDetailsModel);
     }
 
     @Provides
     @MapScope
-    public ContactLocationInteractor provideContactLocationModel(LocationRepository contactLocationRepository) {
+    @NonNull
+    public ContactLocationInteractor provideContactLocationModel(
+            @NonNull LocationRepository contactLocationRepository) {
         return new ContactLocationModel(contactLocationRepository);
     }
 
     @Provides
     @MapScope
+    @NonNull
     public ContactDetailsInteractor provideContactDetailsModel(
-            ContactDetailsRepository contactDetailsContentResolverRepository) {
+            @NonNull ContactDetailsRepository contactDetailsContentResolverRepository) {
         return new ContactDetailsModel(contactDetailsContentResolverRepository);
     }
 }

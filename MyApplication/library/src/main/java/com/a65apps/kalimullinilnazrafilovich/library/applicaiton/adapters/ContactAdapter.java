@@ -32,7 +32,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
             };
     private OnContactListener onContactListener;
 
-    public ContactAdapter(OnContactListener onContactListener) {
+    public ContactAdapter(@NonNull OnContactListener onContactListener) {
         super(DIFF_CALLBACK);
         this.onContactListener = onContactListener;
     }
@@ -42,11 +42,10 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.contact_item, parent, false);
-        ContactViewHolder contactViewHolder = new ContactViewHolder(view, onContactListener);
-        return contactViewHolder;
+        return new ContactViewHolder(view, onContactListener);
     }
 
-    public void setData(List<Contact> contactEntities) {
+    public void setData(@NonNull List<Contact> contactEntities) {
         submitList(contactEntities);
     }
 
@@ -64,24 +63,25 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
         private TextView telephoneNumber;
         private OnContactListener onContactListener;
 
-        public ContactViewHolder(View itemView, OnContactListener onContactListener) {
+        public ContactViewHolder(@NonNull View itemView,
+                                 @NonNull OnContactListener onContactListener) {
             super(itemView);
 
-            name = (TextView) itemView.findViewById(R.id.namePerson);
-            telephoneNumber = (TextView) itemView.findViewById(R.id.telephoneNumberPerson);
+            name = itemView.findViewById(R.id.namePerson);
+            telephoneNumber = itemView.findViewById(R.id.telephoneNumberPerson);
 
             this.onContactListener = onContactListener;
 
             itemView.setOnClickListener(this);
         }
 
-        public void bindView(Contact contact) {
+        public void bindView(@NonNull Contact contact) {
             name.setText(contact.getName());
             telephoneNumber.setText(contact.getTelephoneNumber());
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(@NonNull View v) {
             if (onContactListener != null) {
                 if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                     onContactListener.onContactClick(getAdapterPosition());

@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,43 +17,52 @@ public class GoogleRouteResponseDTO {
     @Expose
     private String status;
 
+    @NonNull
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(@NonNull String status) {
         this.status = status;
     }
 
+    @NonNull
     private List<Route> getRoutes() {
         return routes;
     }
 
+    @NonNull
     public String getPoints() {
         try {
-            return this.routes.get(0).overviewPolyline.points;
+            return this.routes.get(0).getOverviewPolyline().getPoints();
         } catch (IndexOutOfBoundsException e) {
             return "";
         }
     }
 
-    class Route {
+    static class Route {
         @SerializedName("overview_polyline")
         @Expose
         private OverviewPolyline overviewPolyline;
 
+        @NonNull
         public OverviewPolyline getOverviewPolyline() {
             return overviewPolyline;
         }
     }
 
-    class OverviewPolyline {
+    static class OverviewPolyline {
         @SerializedName("points")
         @Expose
         private String points;
 
-        public void setPoints(String points) {
+        public void setPoints(@NonNull String points) {
             this.points = points;
+        }
+
+        @NonNull
+        public String getPoints() {
+            return points;
         }
     }
 }

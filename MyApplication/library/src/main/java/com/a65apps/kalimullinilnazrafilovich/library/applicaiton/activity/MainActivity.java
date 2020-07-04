@@ -2,20 +2,22 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.activity;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactDetailsFragment;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactListFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
-import com.arellomobile.mvp.MvpAppCompatActivity;
 
+import moxy.MvpAppCompatActivity;
 
 public class MainActivity extends MvpAppCompatActivity {
     private boolean firstCreateMainActivity;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -43,7 +45,7 @@ public class MainActivity extends MvpAppCompatActivity {
         fragmentTransaction.add(R.id.content, contactListFragment).commit();
     }
 
-    private void addFragmentContactDetail(String id) {
+    private void addFragmentContactDetail(@NonNull String id) {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(id);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

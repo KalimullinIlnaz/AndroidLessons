@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListRepository;
 
@@ -16,17 +18,18 @@ import io.reactivex.rxjava3.core.Single;
 public class ContactListContentResolverRepository implements ContactListRepository {
     private final ContentResolver contentResolver;
 
-    public ContactListContentResolverRepository(Context context) {
+    public ContactListContentResolverRepository(@NonNull Context context) {
         contentResolver = context.getContentResolver();
     }
 
     @Override
-    public Single<List<Contact>> getContactsOnRequest(String query) {
+    @NonNull
+    public Single<List<Contact>> getContactsOnRequest(@NonNull String query) {
         return Single.fromCallable(() -> getContacts(query));
     }
 
-
-    private ArrayList<Contact> getContacts(String query) {
+    @NonNull
+    private ArrayList<Contact> getContacts(@NonNull String query) {
         final ArrayList<Contact> contactEntities = new ArrayList<>();
         Cursor cursor;
         if (query == null) {
@@ -63,7 +66,8 @@ public class ContactListContentResolverRepository implements ContactListReposito
         return contactEntities;
     }
 
-    private String[] readTelephoneNumbers(String id) {
+    @NonNull
+    private String[] readTelephoneNumbers(@NonNull String id) {
         int countTelephoneNumbers = 0;
         String[] telephoneNumbers = new String[2];
         Cursor pCur = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,

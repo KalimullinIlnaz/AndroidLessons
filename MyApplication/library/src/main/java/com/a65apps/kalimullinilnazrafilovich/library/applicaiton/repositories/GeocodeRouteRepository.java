@@ -2,6 +2,8 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.entities.Route;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository;
@@ -18,12 +20,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class GeocodeRouteRepository implements GeocodeRepository {
     private Context context;
 
-    public GeocodeRouteRepository(Context context) {
+    public GeocodeRouteRepository(@NonNull Context context) {
         this.context = context;
     }
 
     @Override
-    public Single<Route> getRoute(Point fromPoint, Point toPoint) {
+    @NonNull
+    public Single<Route> getRoute(@NonNull Point fromPoint, @NonNull Point toPoint) {
         String from = fromPoint.getLatitude() + "," + fromPoint.getLongitude();
         String to = toPoint.getLatitude() + "," + toPoint.getLongitude();
         return GoogleRouteService.getInstance()
@@ -38,7 +41,8 @@ public class GeocodeRouteRepository implements GeocodeRepository {
     }
 
     @Override
-    public List<Point> routeToPoints(Route route) {
+    @NonNull
+    public List<Point> routeToPoints(@NonNull Route route) {
         if (route.getPoints().isEmpty()) {
             return new ArrayList<>();
         } else {

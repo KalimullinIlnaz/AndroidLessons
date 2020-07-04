@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.application.contacts;
 
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.application.scope.ContactsListScope;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListModel;
@@ -15,13 +17,15 @@ public class ContactsListModule {
 
     @Provides
     @ContactsListScope
-    public ContactListPresenter provideContactListPresenter(ContactListInteractor contactListModel) {
+    @NonNull
+    public ContactListPresenter provideContactListPresenter(@NonNull ContactListInteractor contactListModel) {
         return new ContactListPresenter(contactListModel);
     }
 
     @Provides
     @ContactsListScope
-    public ContactListInteractor provideContactListInteractor(ContactListRepository contactListRepository) {
+    @NonNull
+    public ContactListInteractor provideContactListInteractor(@NonNull ContactListRepository contactListRepository) {
         return new ContactListModel(contactListRepository);
     }
 }

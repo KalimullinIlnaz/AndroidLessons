@@ -1,17 +1,19 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView;
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import moxy.InjectViewState;
+import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
@@ -19,15 +21,15 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private final NotificationInteractor notificationInteractor;
     private CompositeDisposable compositeDisposable;
 
-    public ContactDetailsPresenter(ContactDetailsInteractor contactDetailsInteractor,
-                                   NotificationInteractor notificationInteractor) {
+    public ContactDetailsPresenter(@NonNull NotificationInteractor notificationInteractor,
+                                   @NonNull ContactDetailsInteractor contactDetailsInteractor) {
         compositeDisposable = new CompositeDisposable();
 
         this.contactDetailsInteractor = contactDetailsInteractor;
         this.notificationInteractor = notificationInteractor;
     }
 
-    public void showDetails(String id) {
+    public void showDetails(@NonNull String id) {
         compositeDisposable
                 .add(contactDetailsInteractor.loadDetailsContact(id)
                         .subscribeOn(Schedulers.io())
@@ -38,15 +40,18 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                         ));
     }
 
-    public BirthdayNotification setNotification(Contact contact) {
+    @NonNull
+    public BirthdayNotification setNotification(@NonNull Contact contact) {
         return notificationInteractor.onBirthdayNotification(contact);
     }
 
-    public BirthdayNotification removeNotification(Contact contact) {
+    @NonNull
+    public BirthdayNotification removeNotification(@NonNull Contact contact) {
         return notificationInteractor.offBirthdayNotification(contact);
     }
 
-    public BirthdayNotification getActualStateBirthdayNotification(Contact contact) {
+    @NonNull
+    public BirthdayNotification getActualStateBirthdayNotification(@NonNull Contact contact) {
         return notificationInteractor.getNotificationWorkStatus(contact);
     }
 

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,15 +28,16 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.H
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactDetailsPresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
-import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import moxy.MvpAppCompatFragment;
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements
@@ -44,8 +46,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     @InjectPresenter
+    @NonNull
     public ContactDetailsPresenter contactDetailsPresenter;
     @Inject
+    @NonNull
     public Provider<ContactDetailsPresenter> contactDetailsPresenterProvider;
     private View view;
 
@@ -66,7 +70,8 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
 
     private BirthdayNotification birthdayNotification;
 
-    public static ContactDetailsFragment newInstance(String id) {
+    @NonNull
+    public static ContactDetailsFragment newInstance(@NonNull String id) {
         ContactDetailsFragment fragment = new ContactDetailsFragment();
         Bundle args = new Bundle();
         args.putString("id", id);
@@ -74,6 +79,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
         return fragment;
     }
 
+    @NonNull
     @ProvidePresenter
     ContactDetailsPresenter providePresenter() {
         return contactDetailsPresenterProvider.get();
@@ -94,8 +100,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
+    @NonNull
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_contact_details, container, false);
         getActivity().setTitle(getString(R.string.title_toolbar_contact_details));
 
@@ -119,18 +126,18 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
         email = view.findViewById(R.id.firstEmail);
         email2 = view.findViewById(R.id.secondEmail);
         description = view.findViewById(R.id.description);
-        btnLocationOnMap = view.findViewById(R.id.btn_show_all_markers);
+        btnLocationOnMap = view.findViewById(R.id.btn_show_contact_location);
         btnBirthdayNotification = view.findViewById(R.id.btnBirthdayReminder);
     }
 
-    private void setStatusToggleButton(ToggleButton toggleButton) {
+    private void setStatusToggleButton(@NonNull ToggleButton toggleButton) {
         birthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contact);
 
         toggleButton.setChecked(birthdayNotification.getNotificationWorkStatusBoolean());
         toggleButton.setOnCheckedChangeListener(this);
     }
 
-    private void setStatusLocationBtn(String address) {
+    private void setStatusLocationBtn(@NonNull String address) {
         if (address.equals("")) {
             btnLocationOnMap.setText(R.string.status_btn_location_add);
         } else {
@@ -173,7 +180,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
 
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             birthdayNotification = contactDetailsPresenter.setNotification(contact);
         } else {
@@ -182,23 +189,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        view = null;
-        name = null;
-        dataOfBirth = null;
-        telephoneNumber = null;
-        telephoneNumber2 = null;
-        email = null;
-        email2 = null;
-        description = null;
-        btnLocationOnMap = null;
-        btnBirthdayNotification = null;
-    }
-
-    @Override
-    public void showContactDetail(Contact contact) {
+    public void showContactDetail(@NonNull Contact contact) {
         this.contact = contact;
 
         if (name == null) {
@@ -218,11 +209,28 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
         setStatusToggleButton(btnBirthdayNotification);
     }
 
-    private String parseDateToString(GregorianCalendar gregorianCalendar) {
+    @NonNull
+    private String parseDateToString(@NonNull GregorianCalendar gregorianCalendar) {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         df.setCalendar(gregorianCalendar);
         return df.format(gregorianCalendar.getTime());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        view = null;
+        name = null;
+        dataOfBirth = null;
+        telephoneNumber = null;
+        telephoneNumber2 = null;
+        email = null;
+        email2 = null;
+        description = null;
+        btnLocationOnMap = null;
+        btnBirthdayNotification = null;
     }
 
 }

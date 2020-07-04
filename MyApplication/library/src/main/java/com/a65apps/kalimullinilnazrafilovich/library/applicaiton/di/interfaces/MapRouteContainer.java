@@ -1,7 +1,9 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces;
 
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.MapRouteFragment;
+import androidx.annotation.NonNull;
+
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.RouteMapFragment;
 
 public interface MapRouteContainer {
-    void inject(MapRouteFragment mapRouteFragment);
+    void inject(@NonNull RouteMapFragment routeMapFragment);
 }

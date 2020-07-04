@@ -6,6 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
@@ -23,17 +25,19 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
     private final ContentResolver contentResolver;
     private final AppDatabase database;
 
-    public ContactDetailsContentResolverAndDBRepository(Context context, AppDatabase database) {
+    public ContactDetailsContentResolverAndDBRepository(@NonNull Context context,
+                                                        @NonNull AppDatabase database) {
         contentResolver = context.getContentResolver();
         this.database = database;
     }
 
     @Override
-    public Single<Contact> getDetailsContact(String id) {
+    @NonNull
+    public Single<Contact> getDetailsContact(@NonNull String id) {
         return Single.fromCallable(() -> getDataFromDB(getDetails(id)));
     }
 
-    private Contact getDetails(String id) {
+    private Contact getDetails(@NonNull String id) {
         Contact contact = null;
         Cursor cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -74,7 +78,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         return contact;
     }
 
-    private String[] readTelephoneNumbers(String id) {
+    @NonNull
+    private String[] readTelephoneNumbers(@NonNull String id) {
         int countTelephoneNumbers = 0;
         String[] telephoneNumbers = new String[2];
         Cursor pCur = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -103,7 +108,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         return telephoneNumbers;
     }
 
-    private String[] readEmails(String id) {
+    @NonNull
+    private String[] readEmails(@NonNull String id) {
         String[] emails = new String[2];
         int countEmail = 0;
         Cursor emailCur = contentResolver.query(
@@ -133,7 +139,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         return emails;
     }
 
-    private String readDataOfBirth(String id) {
+    @NonNull
+    private String readDataOfBirth(@NonNull String id) {
         String birthOfDay = null;
         Cursor dOfBirthCur = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
@@ -158,8 +165,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         return birthOfDay;
     }
 
-
-    private Contact getDataFromDB(Contact contact) {
+    @NonNull
+    private Contact getDataFromDB(@NonNull Contact contact) {
         Contact contactInfo = new Contact(
                 contact.getId(),
                 contact.getName(),
@@ -189,7 +196,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         }
     }
 
-    private GregorianCalendar parseStringToGregorianCalendar(String birthOfDay) {
+    @NonNull
+    private GregorianCalendar parseStringToGregorianCalendar(@NonNull String birthOfDay) {
         @SuppressLint("SimpleDateFormat")
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
@@ -201,7 +209,10 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         return gregorianCalendar;
     }
 
-    private Contact createNewContact(Contact contactInfo, Contact contactDetails, Location location) {
+    @NonNull
+    private Contact createNewContact(@NonNull Contact contactInfo,
+                                     @NonNull Contact contactDetails,
+                                     @NonNull Location location) {
         return new Contact(
                 contactInfo,
                 contactDetails.getDateOfBirth(),

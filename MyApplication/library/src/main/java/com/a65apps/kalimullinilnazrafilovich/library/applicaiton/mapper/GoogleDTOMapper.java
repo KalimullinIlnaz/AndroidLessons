@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.entities.Route;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.GoogleRouteResponseDTO;
@@ -11,12 +13,14 @@ import java.util.List;
 
 public class GoogleDTOMapper {
 
-    public Route transform(GoogleRouteResponseDTO googleRouteResponseDTO) {
+    @NonNull
+    public Route transform(@NonNull GoogleRouteResponseDTO googleRouteResponseDTO) {
         return new Route(getRoutePoints(googleRouteResponseDTO));
     }
 
 
-    private List<Point> getRoutePoints(GoogleRouteResponseDTO googleRouteResponseDTO) {
+    @NonNull
+    private List<Point> getRoutePoints(@NonNull GoogleRouteResponseDTO googleRouteResponseDTO) {
         String points = googleRouteResponseDTO.getPoints();
 
         if (!googleRouteResponseDTO.getStatus().equals("")) {

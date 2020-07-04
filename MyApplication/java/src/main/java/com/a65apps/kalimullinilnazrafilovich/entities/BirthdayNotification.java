@@ -33,6 +33,7 @@ public class BirthdayNotification {
         return notificationWorkStatus;
     }
 
+    @NonNull
     public GregorianCalendar getNotificationTriggerDate() {
         return notificationTriggerDate;
     }

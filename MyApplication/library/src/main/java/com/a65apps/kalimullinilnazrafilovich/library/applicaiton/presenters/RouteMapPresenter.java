@@ -1,11 +1,11 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteInteractor;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.FullMapView;
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.RouteMapView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -14,14 +14,17 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import moxy.InjectViewState;
+import moxy.MvpPresenter;
 
 @InjectViewState
-public class MapRoutePresenter extends MvpPresenter<FullMapView> {
+public class RouteMapPresenter extends MvpPresenter<RouteMapView> {
     private final ContactLocationInteractor contactLocationInteractor;
     private final RouteInteractor routeInteractor;
     private CompositeDisposable compositeDisposable;
 
-    public MapRoutePresenter(ContactLocationInteractor contactLocationInteractor, RouteInteractor routeInteractor) {
+    public RouteMapPresenter(@NonNull ContactLocationInteractor contactLocationInteractor,
+                             @NonNull RouteInteractor routeInteractor) {
         compositeDisposable = new CompositeDisposable();
 
         this.contactLocationInteractor = contactLocationInteractor;
@@ -39,7 +42,7 @@ public class MapRoutePresenter extends MvpPresenter<FullMapView> {
                         ));
     }
 
-    public void showRoute(Point from, Point to) {
+    public void showRoute(@NonNull Point from, @NonNull Point to) {
         compositeDisposable
                 .add(routeInteractor.loadRoute(from, to)
                         .subscribeOn(Schedulers.io())
@@ -58,7 +61,8 @@ public class MapRoutePresenter extends MvpPresenter<FullMapView> {
                 );
     }
 
-    private List<LatLng> getListLatLng(List<Point> points) {
+    @NonNull
+    private List<LatLng> getListLatLng(@NonNull List<Point> points) {
         if (points.isEmpty()) {
             return new ArrayList<>();
         } else {

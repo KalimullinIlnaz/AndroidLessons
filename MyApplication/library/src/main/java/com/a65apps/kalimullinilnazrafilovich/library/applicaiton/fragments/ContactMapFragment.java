@@ -8,15 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactMapContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.MapPresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.MapView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
-import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,16 +24,26 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import moxy.MvpAppCompatFragment;
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 public class ContactMapFragment extends MvpAppCompatFragment implements MapView, OnMapReadyCallback {
     private static final int ZOOM = 15;
     private static final int TILT = 20;
 
     @Inject
+    @NonNull
     public Provider<MapPresenter> mapPresenterProvider;
     @InjectPresenter
+    @NonNull
     MapPresenter mapPresenter;
 
     private String id;
@@ -44,7 +52,8 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
 
     private GoogleMap map;
 
-    public static ContactMapFragment newInstance(String id) {
+    @NonNull
+    public static ContactMapFragment newInstance(@NonNull String id) {
         ContactMapFragment fragment = new ContactMapFragment();
         Bundle args = new Bundle();
         args.putString("id", id);
@@ -72,10 +81,11 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    @NonNull
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_map, container, false);
-        getActivity().setTitle(R.string.title_toolbar_map);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.title_toolbar_map);
 
         id = getArguments().getString("id");
 
@@ -92,7 +102,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
 
     //MapView
     @Override
-    public void showMapMarker(LatLng coordinate) {
+    public void showMapMarker(@NotNull @NonNull LatLng coordinate) {
         if (!(coordinate.latitude == 0 && coordinate.longitude == 0)) {
             setMarker(coordinate);
             setCamOnMarker(coordinate);
@@ -101,7 +111,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
 
     //OnMapReadyCallback
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
         mapPresenter.showMarker(id);
 
@@ -112,11 +122,11 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
         });
     }
 
-    private void setMarker(LatLng marker) {
+    private void setMarker(@NonNull LatLng marker) {
         map.addMarker(new MarkerOptions().position(marker));
     }
 
-    private void setCamOnMarker(LatLng coordinate) {
+    private void setCamOnMarker(@NonNull LatLng coordinate) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(coordinate)
                 .zoom(ZOOM)

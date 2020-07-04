@@ -32,9 +32,6 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.H
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactListPresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactListView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
-import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.List;
@@ -42,6 +39,10 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import moxy.MvpAppCompatFragment;
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 
 public class ContactListFragment extends MvpAppCompatFragment implements
@@ -51,8 +52,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     private final int offsetDP = 6;
 
     @Inject
+    @NonNull
     public Provider<ContactListPresenter> contactListPresenterProvider;
     @InjectPresenter
+    @NonNull
     ContactListPresenter contactListPresenter;
 
     private RecyclerView recyclerView;
@@ -66,13 +69,14 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     private View view;
 
     @ProvidePresenter
+    @NonNull
     ContactListPresenter providePresenter() {
         return contactListPresenterProvider.get();
     }
 
 
     @Override
-    public void showContactList(List<Contact> contactEntities) {
+    public void showContactList(@NonNull List<Contact> contactEntities) {
         this.contactEntities = contactEntities;
         contactAdapter.setData(contactEntities);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -103,7 +107,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -131,7 +135,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     }
 
     private int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = Objects.requireNonNull(getContext()).getResources().getDisplayMetrics();
         return (int) (dp * displayMetrics.density);
     }
 
@@ -204,10 +208,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     }
 
     private void openFullMapFragment() {
-        MapRouteFragment mapRouteFragment = new MapRouteFragment();
+        RouteMapFragment routeMapFragment = new RouteMapFragment();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, mapRouteFragment).addToBackStack(null).commit();
+        fragmentTransaction.replace(R.id.content, routeMapFragment).addToBackStack(null).commit();
     }
 
     @Override

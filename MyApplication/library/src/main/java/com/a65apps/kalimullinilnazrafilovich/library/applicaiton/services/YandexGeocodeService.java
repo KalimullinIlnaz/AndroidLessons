@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services;
 
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.interfaces.YandexGeocodeApi;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
@@ -30,6 +32,7 @@ public final class YandexGeocodeService {
                 .build();
     }
 
+    @NonNull
     public static YandexGeocodeService getInstance() {
         if (mInstance == null) {
             mInstance = new YandexGeocodeService();
@@ -37,6 +40,7 @@ public final class YandexGeocodeService {
         return mInstance;
     }
 
+    @NonNull
     public YandexGeocodeApi getJSONApi() {
         return mRetrofit.create(YandexGeocodeApi.class);
     }

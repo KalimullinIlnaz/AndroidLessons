@@ -2,6 +2,8 @@ package com.a65apps.kalimullinilnazrafilovich.application.app;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
@@ -23,15 +25,20 @@ import dagger.Provides;
 public class RepositoryModule {
     @Provides
     @Singleton
-    public ContactDetailsRepository provideContactDetailsContentResolverRepository(Context context,
-                                                                                   AppDatabase db) {
+    @NonNull
+    public ContactDetailsRepository provideContactDetailsContentResolverRepository(
+            @NonNull Context context,
+            @NonNull AppDatabase db) {
         return new ContactDetailsContentResolverAndDBRepository(context, db);
     }
 
     @Provides
     @Singleton
-    public LocationRepository provideContactLocationRepository(AppDatabase database,
-             Context context, ContactDetailsRepository contactDetailsContentResolverRepository) {
+    @NonNull
+    public LocationRepository provideContactLocationRepository(
+            @NonNull AppDatabase database,
+            @NonNull Context context,
+            @NonNull ContactDetailsRepository contactDetailsContentResolverRepository) {
         return new ContactLocationRepository(database,
                 context,
                 contactDetailsContentResolverRepository);
@@ -39,19 +46,22 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    public ContactListRepository provideContactListContentResolverRepository(Context context) {
+    @NonNull
+    public ContactListRepository provideContactListContentResolverRepository(@NonNull Context context) {
         return new ContactListContentResolverRepository(context);
     }
 
     @Provides
     @Singleton
-    public GeocodeRepository provideGeocodeRouteRepository(Context context) {
+    @NonNull
+    public GeocodeRepository provideGeocodeRouteRepository(@NonNull Context context) {
         return new GeocodeRouteRepository(context);
     }
 
     @Provides
     @Singleton
-    public NotificationRepository provideNotificationRepository(Context context) {
+    @NonNull
+    public NotificationRepository provideNotificationRepository(@NonNull Context context) {
         return new NotificationAlarmManagerRepository(context);
     }
 }

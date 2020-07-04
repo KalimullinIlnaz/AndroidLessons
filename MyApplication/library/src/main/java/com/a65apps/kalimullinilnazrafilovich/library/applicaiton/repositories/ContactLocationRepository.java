@@ -3,6 +3,8 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories;
 import android.content.Context;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
@@ -24,21 +26,22 @@ public class ContactLocationRepository implements LocationRepository {
     private final Context context;
     private final ContactDetailsRepository contactDetailsContentResolverRepository;
 
-    public ContactLocationRepository(AppDatabase database,
-                                     Context context,
-                                     ContactDetailsRepository contactDetailsContentResolverRepository) {
+    public ContactLocationRepository(@NonNull AppDatabase database,
+                                     @NonNull Context context,
+                                     @NonNull ContactDetailsRepository contactDetailsContentResolverRepository) {
         this.database = database;
         this.context = context;
         this.contactDetailsContentResolverRepository = contactDetailsContentResolverRepository;
     }
 
     @Override
-    public void insertContactLocation(Location location, Contact contact) {
+    public void insertContactLocation(@NonNull Location location, @NonNull Contact contact) {
         LocationOrm locationORM = new LocationOrm(contact, location);
         database.locationDao().insert(locationORM);
     }
 
     @Override
+    @NonNull
     public Single<List<Location>> getAllContactLocations() {
         return Single.fromCallable(() -> database.locationDao().getAll())
                 .flatMapObservable(Observable::fromIterable)
@@ -53,7 +56,8 @@ public class ContactLocationRepository implements LocationRepository {
     }
 
     @Override
-    public Single<Location> createOrUpdateContactLocationByCoordinate(Contact contact,
+    @NonNull
+    public Single<Location> createOrUpdateContactLocationByCoordinate(@NonNull Contact contact,
                                                                       double latitude,
                                                                       double longitude) {
         String coordinate = latitude + "," + longitude;

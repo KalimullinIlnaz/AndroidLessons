@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.application.contactDetails;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.application.scope.ContactDetailsScope;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
@@ -15,15 +17,19 @@ public class ContactDetailsModule {
 
     @Provides
     @ContactDetailsScope
-    public ContactDetailsPresenter provideContactDetailsPresenter(ContactDetailsInteractor contactDetailsInteractor,
-                                                                  NotificationInteractor notificationInteractor) {
-        return new ContactDetailsPresenter(contactDetailsInteractor, notificationInteractor);
+    @NonNull
+    public ContactDetailsInteractor provideContactDetailsInteractor(
+            @NonNull ContactDetailsRepository contactDetailsRepository) {
+        return new ContactDetailsModel(contactDetailsRepository);
     }
 
     @Provides
     @ContactDetailsScope
-    public ContactDetailsInteractor provideContactDetailsInteractor(ContactDetailsRepository contactDetailsRepository) {
-        return new ContactDetailsModel(contactDetailsRepository);
+    @NonNull
+    public ContactDetailsPresenter provideContactDetailsPresenter(
+            @NonNull NotificationInteractor notificationInteractor,
+            @NonNull ContactDetailsInteractor contactDetailsInteractor) {
+        return new ContactDetailsPresenter(notificationInteractor, contactDetailsInteractor);
     }
 }
 

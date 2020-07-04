@@ -2,6 +2,7 @@ package com.a65apps.kalimullinilnazrafilovich.application.app;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
@@ -16,7 +17,8 @@ public class DataBaseModule {
 
     @Provides
     @Singleton
-    public AppDatabase provideDataBase(Context context) {
+    @NonNull
+    public AppDatabase provideDataBase(@NonNull Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, "user_location")
                 .build();
     }

@@ -21,10 +21,11 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BroadReceiver extends BroadcastReceiver {
-    private final String CHANNEL_ID = "BirthDay";
+    private static final String CHANNEL_ID = "BirthDay";
 
     @Inject
     NotificationInteractor notificationInteractor;
@@ -33,7 +34,8 @@ public class BroadReceiver extends BroadcastReceiver {
     ContactDetailsInteractor contactDetailsInteractor;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context,
+                          @NonNull Intent intent) {
         if (!(context.getApplicationContext() instanceof HasAppContainer)) {
             throw new IllegalStateException();
         }
@@ -49,7 +51,9 @@ public class BroadReceiver extends BroadcastReceiver {
         showNotification(context, textReminder, id);
     }
 
-    private void showNotification(Context context, String text, String id) {
+    private void showNotification(@NonNull Context context,
+                                  @NonNull String text,
+                                  @NonNull String id) {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.putExtra("contactDetail", "details");
         resultIntent.putExtra("id", id);
@@ -86,7 +90,7 @@ public class BroadReceiver extends BroadcastReceiver {
         repeatAlarm(id);
     }
 
-    private void repeatAlarm(String id) {
+    private void repeatAlarm(@NonNull String id) {
         PendingResult result = goAsync();
 
         contactDetailsInteractor.loadDetailsContact(id)

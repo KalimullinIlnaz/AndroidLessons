@@ -5,13 +5,13 @@ import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactListView;
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import moxy.InjectViewState;
+import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
@@ -48,7 +48,7 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
         subject.onNext("");
     }
 
-    public void showContactList(String query) {
+    public void showContactList(@NonNull String query) {
         subject.onNext(query);
     }
 

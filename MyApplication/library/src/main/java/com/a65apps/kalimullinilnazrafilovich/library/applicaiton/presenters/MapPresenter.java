@@ -1,15 +1,17 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
+import androidx.annotation.NonNull;
+
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.MapView;
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import moxy.InjectViewState;
+import moxy.MvpPresenter;
 
 @InjectViewState
 public class MapPresenter extends MvpPresenter<MapView> {
@@ -17,15 +19,15 @@ public class MapPresenter extends MvpPresenter<MapView> {
     private final ContactDetailsInteractor contactDetailsInteractor;
     private CompositeDisposable compositeDisposable;
 
-    public MapPresenter(ContactLocationInteractor contactLocationInteractor,
-                        ContactDetailsInteractor contactDetailsInteractor) {
+    public MapPresenter(@NonNull ContactLocationInteractor contactLocationInteractor,
+                        @NonNull ContactDetailsInteractor contactDetailsInteractor) {
         compositeDisposable = new CompositeDisposable();
 
         this.contactLocationInteractor = contactLocationInteractor;
         this.contactDetailsInteractor = contactDetailsInteractor;
     }
 
-    public void showMarker(String id) {
+    public void showMarker(@NonNull String id) {
         compositeDisposable
                 .add(contactDetailsInteractor.loadDetailsContact(id)
                         .subscribeOn(Schedulers.io())
@@ -45,7 +47,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                 );
     }
 
-    public void getLocationMapClick(String id, LatLng point) {
+    public void getLocationMapClick(@NonNull String id, @NonNull LatLng point) {
         compositeDisposable.add(
                 contactDetailsInteractor.loadDetailsContact(id)
                         .flatMap(contact -> contactLocationInteractor.
