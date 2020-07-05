@@ -1,10 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments;
 
-import android.Manifest;
 import android.app.Application;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -14,24 +12,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.ItemDecoration;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ItemDecoration;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactAdapter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactsListContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactListPresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactListView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
+import com.a65apps.kalimullinilnazrafilovich.myapplication.R2;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
 import java.util.List;
@@ -40,6 +37,9 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
@@ -48,25 +48,25 @@ import moxy.presenter.ProvidePresenter;
 public class ContactListFragment extends MvpAppCompatFragment implements
         ContactListView,
         ContactAdapter.OnContactListener {
-    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    private final int offsetDP = 6;
+    private final static transient int OFFSET_DP = 6;
 
     @Inject
     @NonNull
-    public Provider<ContactListPresenter> contactListPresenterProvider;
+    public transient Provider<ContactListPresenter> contactListPresenterProvider;
     @InjectPresenter
     @NonNull
-    ContactListPresenter contactListPresenter;
+    public ContactListPresenter contactListPresenter;
 
-    private RecyclerView recyclerView;
 
-    private ContactAdapter contactAdapter;
+    @BindView(R2.id.contact_recycler_view)
+    transient RecyclerView recyclerView;
+    @BindView(R2.id.circular_progress_view)
+    transient CircularProgressView circularProgressView;
 
-    private CircularProgressView circularProgressView;
+    private transient ContactAdapter contactAdapter;
+    private transient List<ContactShortInfo> contactDetailsInfoEntities;
 
-    private List<Contact> contactEntities;
-
-    private View view;
+    private transient Unbinder unbinder;
 
     @ProvidePresenter
     @NonNull
@@ -74,11 +74,10 @@ public class ContactListFragment extends MvpAppCompatFragment implements
         return contactListPresenterProvider.get();
     }
 
-
     @Override
-    public void showContactList(@NonNull List<Contact> contactEntities) {
-        this.contactEntities = contactEntities;
-        contactAdapter.setData(contactEntities);
+    public void showContactList(@NonNull List<ContactShortInfo> contactShortInfoList) {
+        this.contactDetailsInfoEntities = contactShortInfoList;
+        contactAdapter.setData(contactShortInfoList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
     }
@@ -117,21 +116,24 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        getActivity().setTitle(getString(R.string.tittle_toolbar_contact_list));
+        View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
+        Objects.requireNonNull(getActivity()).setTitle(getString(R.string.tittle_toolbar_contact_list));
 
-        circularProgressView = view.findViewById(R.id.circular_progress_view);
-        recyclerView = view.findViewById(R.id.contact_recycler_view);
-        recyclerView.addItemDecoration(new ItemDecoration(
-                dpToPx(offsetDP),
-                dpToPx(offsetDP),
-                dpToPx(offsetDP),
-                dpToPx(offsetDP)));
+        unbinder = ButterKnife.bind(this, view);
+
+        recyclerView.addItemDecoration(
+                new ItemDecoration(dpToPx(OFFSET_DP), dpToPx(OFFSET_DP), dpToPx(OFFSET_DP), dpToPx(OFFSET_DP)));
 
         contactAdapter = new ContactAdapter(this);
         recyclerView.setAdapter(contactAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        contactListPresenter.showContactList("");
     }
 
     private int dpToPx(int dp) {
@@ -140,47 +142,14 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        requestPermission();
-    }
-
-    private void requestPermission() {
-        int permissionStatus = ContextCompat.checkSelfPermission(
-                Objects.requireNonNull(getActivity()),
-                Manifest.permission.READ_CONTACTS);
-        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            contactListPresenter.showContactList();
-        } else {
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                    PERMISSIONS_REQUEST_READ_CONTACTS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                contactListPresenter.showContactList();
-            } else {
-                Toast message = Toast.makeText(getContext(), R.string.deny_permission_message, Toast.LENGTH_LONG);
-                message.show();
-            }
-        }
-    }
-
-    @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_item, menu);
+        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.menu_item, menu);
         initSearchView(menu);
     }
 
-    private void initSearchView(Menu menu) {
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+    private void initSearchView(@NonNull Menu menu) {
+        SearchManager searchManager = (SearchManager)
+                Objects.requireNonNull(getActivity()).getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setQueryHint(getString(R.string.tittle_menu));
@@ -202,14 +171,14 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.map) {
-            openFullMapFragment();
+            openRouteMapFragment();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void openFullMapFragment() {
+    private void openRouteMapFragment() {
         RouteMapFragment routeMapFragment = new RouteMapFragment();
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, routeMapFragment).addToBackStack(null).commit();
     }
@@ -217,8 +186,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     @Override
     public void onContactClick(int position) {
         ContactDetailsFragment contactDetailsFragment =
-                ContactDetailsFragment.newInstance(contactEntities.get(position).getId());
-        FragmentManager fragmentManager = getFragmentManager();
+                ContactDetailsFragment.newInstance(contactDetailsInfoEntities.get(position).getId());
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
     }
@@ -226,9 +195,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        view = null;
-        recyclerView = null;
-        circularProgressView = null;
+        unbinder.unbind();
     }
 }

@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactMapContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.MapPresenter;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.MapView;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactMapPresenter;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactMapView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,8 +24,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -35,22 +33,20 @@ import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-public class ContactMapFragment extends MvpAppCompatFragment implements MapView, OnMapReadyCallback {
+public class ContactMapFragment extends MvpAppCompatFragment implements ContactMapView, OnMapReadyCallback {
     private static final int ZOOM = 15;
     private static final int TILT = 20;
 
     @Inject
     @NonNull
-    public Provider<MapPresenter> mapPresenterProvider;
+    public transient Provider<ContactMapPresenter> mapPresenterProvider;
     @InjectPresenter
     @NonNull
-    MapPresenter mapPresenter;
+    public ContactMapPresenter contactMapPresenter;
 
-    private String id;
+    private transient String id;
 
-    private View view;
-
-    private GoogleMap map;
+    private transient GoogleMap map;
 
     @NonNull
     public static ContactMapFragment newInstance(@NonNull String id) {
@@ -62,7 +58,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
     }
 
     @ProvidePresenter
-    MapPresenter provideMapPresenter() {
+    ContactMapPresenter provideMapPresenter() {
         return mapPresenterProvider.get();
     }
 
@@ -84,7 +80,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         Objects.requireNonNull(getActivity()).setTitle(R.string.title_toolbar_map);
 
         id = getArguments().getString("id");
@@ -102,7 +98,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
 
     //MapView
     @Override
-    public void showMapMarker(@NotNull @NonNull LatLng coordinate) {
+    public void showMapMarker(@NonNull LatLng coordinate) {
         if (!(coordinate.latitude == 0 && coordinate.longitude == 0)) {
             setMarker(coordinate);
             setCamOnMarker(coordinate);
@@ -113,12 +109,12 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-        mapPresenter.showMarker(id);
+        contactMapPresenter.showMarker(id);
 
         //Узнать координаты нажатия.
         map.setOnMapClickListener(point -> {
             map.clear();
-            mapPresenter.getLocationMapClick(id, point);
+            contactMapPresenter.getLocationMapClick(id, point);
         });
     }
 
@@ -134,13 +130,6 @@ public class ContactMapFragment extends MvpAppCompatFragment implements MapView,
                 .build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         map.animateCamera(cameraUpdate);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
-        map = null;
     }
 }
 

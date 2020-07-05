@@ -10,7 +10,7 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsR
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationModel;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.MapPresenter;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactMapPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,9 +21,9 @@ public class MapModule {
     @Provides
     @MapScope
     @NonNull
-    public MapPresenter provideMapPresenter(@NonNull ContactLocationInteractor contactLocationModel,
-                                            @NonNull ContactDetailsInteractor contactDetailsModel) {
-        return new MapPresenter(contactLocationModel, contactDetailsModel);
+    public ContactMapPresenter provideMapPresenter(@NonNull ContactLocationInteractor contactLocationModel,
+                                                   @NonNull ContactDetailsInteractor contactDetailsModel) {
+        return new ContactMapPresenter(contactLocationModel, contactDetailsModel);
     }
 
     @Provides

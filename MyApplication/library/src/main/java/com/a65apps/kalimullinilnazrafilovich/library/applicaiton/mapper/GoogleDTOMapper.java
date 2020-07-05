@@ -18,14 +18,11 @@ public class GoogleDTOMapper {
         return new Route(getRoutePoints(googleRouteResponseDTO));
     }
 
-
     @NonNull
     private List<Point> getRoutePoints(@NonNull GoogleRouteResponseDTO googleRouteResponseDTO) {
-        String points = googleRouteResponseDTO.getPoints();
-
         if (!googleRouteResponseDTO.getStatus().equals("")) {
             List<Point> routes = new ArrayList<>();
-            List<LatLng> latLngs = PolyUtil.decode(points);
+            List<LatLng> latLngs = PolyUtil.decode(googleRouteResponseDTO.getPoints());
             for (LatLng point : latLngs) {
                 routes.add(new Point(point.latitude, point.longitude));
             }

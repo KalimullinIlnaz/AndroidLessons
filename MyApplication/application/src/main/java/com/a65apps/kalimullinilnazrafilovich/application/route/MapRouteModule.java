@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.application.routeMap;
+package com.a65apps.kalimullinilnazrafilovich.application.route;
 
 import androidx.annotation.NonNull;
 

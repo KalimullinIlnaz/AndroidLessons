@@ -6,21 +6,21 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
 import java.util.GregorianCalendar;
 
-
 public class NotificationAlarmManagerRepository implements NotificationRepository {
     private static final String BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplication";
 
-    private final Context context;
+    private final transient Context context;
 
-    private final AlarmManager alarmManager;
+    private final transient AlarmManager alarmManager;
 
     public NotificationAlarmManagerRepository(@NonNull Context context) {
         this.context = context;
@@ -31,45 +31,47 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
 
     @Override
     @NonNull
-    public BirthdayNotification setBirthdayReminder(@NonNull Contact contact,
+    public BirthdayNotification setBirthdayReminder(@NonNull ContactDetailsInfo contactDetailsInfo,
                                                     @NonNull GregorianCalendar gregorianCalendar) {
-        PendingIntent alarmPendingIntent = createPendingIntentForContact(contact);
+        PendingIntent alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar.getTimeInMillis(), alarmPendingIntent);
 
-        return getBirthdayNotificationEntity(contact, gregorianCalendar);
+        return getBirthdayNotificationEntity(contactDetailsInfo, gregorianCalendar);
     }
 
     @Override
     @NonNull
-    public BirthdayNotification removeBirthdayReminder(@NonNull Contact contact) {
-        PendingIntent alarmPendingIntent = createPendingIntentForContact(contact);
+    public BirthdayNotification removeBirthdayReminder(@NonNull ContactDetailsInfo contactDetailsInfo) {
+        PendingIntent alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo);
 
         alarmManager.cancel(alarmPendingIntent);
         alarmPendingIntent.cancel();
 
-        return getBirthdayNotificationEntity(contact, null);
+        return getBirthdayNotificationEntity(contactDetailsInfo, null);
     }
 
     @Override
     @NonNull
-    public BirthdayNotification getBirthdayNotificationEntity(@NonNull Contact contact,
-                                                              @NonNull GregorianCalendar gregorianCalendar) {
-        boolean status = PendingIntent.getBroadcast(context, contact.getId().hashCode(),
+    public BirthdayNotification getBirthdayNotificationEntity(@NonNull ContactDetailsInfo contactDetailsInfo,
+                                                              @Nullable GregorianCalendar gregorianCalendar) {
+        boolean status = PendingIntent.getBroadcast(context, contactDetailsInfo.getId().hashCode(),
                 new Intent(BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null;
 
-        return new BirthdayNotification(contact, status, gregorianCalendar);
+        return new BirthdayNotification(contactDetailsInfo, status, gregorianCalendar);
     }
 
     @NonNull
-    private PendingIntent createPendingIntentForContact(@NonNull Contact contact) {
+    private PendingIntent createPendingIntentForContact(@NonNull ContactDetailsInfo contactDetailsInfo) {
         Intent intent = new Intent(BROAD_ACTION);
 
-        intent.putExtra("id", contact.getId());
-        intent.putExtra("textReminder", contact.getName() + " " + context.getString(R.string.text_notification));
+        intent.putExtra("id", contactDetailsInfo.getId());
+        intent.putExtra("textReminder", contactDetailsInfo.getName()
+                + " "
+                + context.getString(R.string.text_notification));
 
-        return PendingIntent.getBroadcast(context, contact.getId().hashCode(), intent, 0);
+        return PendingIntent.getBroadcast(context, contactDetailsInfo.getId().hashCode(), intent, 0);
     }
 
 

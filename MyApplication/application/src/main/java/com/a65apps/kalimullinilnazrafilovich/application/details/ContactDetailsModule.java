@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.application.contactDetails;
+package com.a65apps.kalimullinilnazrafilovich.application.details;
 
 import androidx.annotation.NonNull;
 

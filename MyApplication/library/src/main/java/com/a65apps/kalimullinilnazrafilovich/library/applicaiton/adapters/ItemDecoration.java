@@ -1,4 +1,4 @@
-package com.a65apps.kalimullinilnazrafilovich.library.applicaiton;
+package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemDecoration extends RecyclerView.ItemDecoration {
-    private int offsetLeftPx;
-    private int offsetRightPx;
-    private int offsetTopPx;
-    private int offsetBottomPx;
+    private final transient int  offsetLeftPx;
+    private final transient int offsetRightPx;
+    private final transient int offsetTopPx;
+    private final transient int offsetBottomPx;
 
     public ItemDecoration(int offsetLeftPx,
                           int offsetRightPx,

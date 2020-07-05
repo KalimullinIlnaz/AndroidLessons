@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 
 
@@ -22,9 +22,9 @@ public class LocationOrm {
     @ColumnInfo(name = "address")
     private String address;
 
-    public LocationOrm(@NonNull Contact contact,
+    public LocationOrm(@NonNull ContactDetailsInfo contactDetailsInfo,
                        @NonNull Location location) {
-        this.contactID = contact.getId();
+        this.contactID = contactDetailsInfo.getId();
         this.address = location.getAddress();
         this.latitude = location.getPoint().getLatitude();
         this.longitude = location.getPoint().getLongitude();

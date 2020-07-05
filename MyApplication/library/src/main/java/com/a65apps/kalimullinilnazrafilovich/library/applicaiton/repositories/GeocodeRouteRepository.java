@@ -18,7 +18,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class GeocodeRouteRepository implements GeocodeRepository {
-    private Context context;
+    private final transient Context context;
 
     public GeocodeRouteRepository(@NonNull Context context) {
         this.context = context;

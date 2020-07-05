@@ -1,13 +1,13 @@
 package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 
 public interface NotificationInteractor {
-    BirthdayNotification onBirthdayNotification(Contact contact);
+    BirthdayNotification onBirthdayNotification(ContactDetailsInfo contactDetailsInfo);
 
-    BirthdayNotification offBirthdayNotification(Contact contact);
+    BirthdayNotification offBirthdayNotification(ContactDetailsInfo contactDetailsInfo);
 
-    BirthdayNotification getNotificationWorkStatus(Contact contact);
+    BirthdayNotification getNotificationWorkStatus(ContactDetailsInfo contactDetailsInfo);
 
 }

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.MapView;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactMapView;
 import com.google.android.gms.maps.model.LatLng;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -14,13 +14,13 @@ import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
 @InjectViewState
-public class MapPresenter extends MvpPresenter<MapView> {
-    private final ContactLocationInteractor contactLocationInteractor;
-    private final ContactDetailsInteractor contactDetailsInteractor;
-    private CompositeDisposable compositeDisposable;
+public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
+    private final transient ContactLocationInteractor contactLocationInteractor;
+    private final transient ContactDetailsInteractor contactDetailsInteractor;
+    private final transient CompositeDisposable compositeDisposable;
 
-    public MapPresenter(@NonNull ContactLocationInteractor contactLocationInteractor,
-                        @NonNull ContactDetailsInteractor contactDetailsInteractor) {
+    public ContactMapPresenter(@NonNull ContactLocationInteractor contactLocationInteractor,
+                               @NonNull ContactDetailsInteractor contactDetailsInteractor) {
         compositeDisposable = new CompositeDisposable();
 
         this.contactLocationInteractor = contactLocationInteractor;
@@ -43,7 +43,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                                                 new LatLng(contact.getLocation().getPoint().getLatitude(),
                                                         contact.getLocation().getPoint().getLongitude()));
                                     }
-                                }, (Throwable::printStackTrace))
+                                }, Throwable::printStackTrace)
                 );
     }
 
@@ -57,7 +57,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (address) -> getViewState().showMapMarker(point),
-                                (Throwable::printStackTrace)
+                                Throwable::printStackTrace
                         )
         );
     }

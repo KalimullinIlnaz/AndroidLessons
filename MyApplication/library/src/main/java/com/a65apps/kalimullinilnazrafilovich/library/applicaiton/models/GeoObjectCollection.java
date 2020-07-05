@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class GeoObjectCollection {
-
     @SerializedName("metaDataProperty")
     @Expose
     private MetaDataProperty metaDataProperty;

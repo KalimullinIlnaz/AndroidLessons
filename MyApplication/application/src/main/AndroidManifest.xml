@@ -16,7 +16,7 @@
             android:value="@string/google_maps_key" />
 
         <receiver
-            android:name="com.a65apps.kalimullinilnazrafilovich.library.applicaiton.receivers.BroadReceiver"
+            android:name="com.a65apps.kalimullinilnazrafilovich.library.applicaiton.receivers.NotificationReceiver"
             android:permission="android.permission.INSTALL_PACKAGES"
             android:enabled="true"
             android:exported="true">

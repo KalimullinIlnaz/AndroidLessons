@@ -1,7 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar;
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
@@ -33,7 +33,7 @@ public class NotificationModelTest {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 9);
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         GregorianCalendar testTriggerDate = new GregorianCalendar(2000, Calendar.SEPTEMBER, 8);
-        Contact contact = new Contact(
+        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
                 "id",
                 "name",
                 birthdayDate,
@@ -43,13 +43,13 @@ public class NotificationModelTest {
                 "описание",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
-                contact,
+                contactDetailsInfo,
                 true,
                 testTriggerDate);
 
         Mockito.when(birthdayCalendar.getBirthdayCalendar()).thenReturn(currentDate);
         Mockito.when(currentTime.now()).thenReturn(currentDate.getTime().getTime());
-        Mockito.when(notificationRepository.setBirthdayReminder(contact, testTriggerDate))
+        Mockito.when(notificationRepository.setBirthdayReminder(contactDetailsInfo, testTriggerDate))
                 .thenReturn(expectedBirthdayNotification);
 
 
@@ -57,7 +57,7 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contact);
+        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 
@@ -65,7 +65,7 @@ public class NotificationModelTest {
     public void birthdayNotificationOff_whenNoticeWasSet_shouldDeleteNotice() {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 9);
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
-        Contact contact = new Contact(
+        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
                 "id",
                 "name",
                 birthdayDate,
@@ -75,11 +75,11 @@ public class NotificationModelTest {
                 "описание",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
-                contact,
+                contactDetailsInfo,
                 false,
                 null);
 
-        Mockito.when(notificationRepository.removeBirthdayReminder(contact))
+        Mockito.when(notificationRepository.removeBirthdayReminder(contactDetailsInfo))
                 .thenReturn(expectedBirthdayNotification);
         Mockito.when(birthdayCalendar.getBirthdayCalendar()).thenReturn(currentDate);
 
@@ -87,7 +87,7 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.offBirthdayNotification(contact);
+        BirthdayNotification actualBirthdayNotification = notificationInteractor.offBirthdayNotification(contactDetailsInfo);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 
@@ -97,7 +97,7 @@ public class NotificationModelTest {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.AUGUST, 7);
         GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
         GregorianCalendar testTriggerDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 8);
-        Contact contact = new Contact(
+        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
                 "id",
                 "name",
                 birthdayDate,
@@ -107,20 +107,20 @@ public class NotificationModelTest {
                 "описание",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
-                contact,
+                contactDetailsInfo,
                 true,
                 testTriggerDate);
 
         Mockito.when(currentTime.now()).thenReturn(currentDate.getTime().getTime());
         Mockito.when(birthdayCalendar.getBirthdayCalendar()).thenReturn(currentDate);
-        Mockito.when(notificationRepository.setBirthdayReminder(contact, testTriggerDate))
+        Mockito.when(notificationRepository.setBirthdayReminder(contactDetailsInfo, testTriggerDate))
                 .thenReturn(expectedBirthdayNotification);
 
         notificationInteractor = new NotificationModel(
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contact);
+        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 
@@ -130,7 +130,7 @@ public class NotificationModelTest {
         GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.MARCH, 2);
         GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
         GregorianCalendar testTriggerDate = new GregorianCalendar(2000, Calendar.FEBRUARY, 29);
-        Contact contact = new Contact(
+        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
                 "id",
                 "name",
                 birthdayDate,
@@ -140,20 +140,20 @@ public class NotificationModelTest {
                 "описание",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
-                contact,
+                contactDetailsInfo,
                 true,
                 testTriggerDate);
 
         Mockito.when(currentTime.now()).thenReturn(currentDate.getTime().getTime());
         Mockito.when(birthdayCalendar.getBirthdayCalendar()).thenReturn(currentDate);
-        Mockito.when(notificationRepository.setBirthdayReminder(contact, testTriggerDate))
+        Mockito.when(notificationRepository.setBirthdayReminder(contactDetailsInfo, testTriggerDate))
                 .thenReturn(expectedBirthdayNotification);
 
         notificationInteractor = new NotificationModel(
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contact);
+        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 
@@ -162,7 +162,7 @@ public class NotificationModelTest {
         GregorianCalendar currentDate = new GregorianCalendar(2000, Calendar.MARCH, 1);
         GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
         GregorianCalendar testTriggerDate = new GregorianCalendar(2004, Calendar.FEBRUARY, 29);
-        Contact contact = new Contact(
+        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
                 "id",
                 "name",
                 birthdayDate,
@@ -172,20 +172,20 @@ public class NotificationModelTest {
                 "описание",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
-                contact,
+                contactDetailsInfo,
                 true,
                 testTriggerDate);
 
         Mockito.when(currentTime.now()).thenReturn(currentDate.getTime().getTime());
         Mockito.when(birthdayCalendar.getBirthdayCalendar()).thenReturn(currentDate);
-        Mockito.when(notificationRepository.setBirthdayReminder(contact, testTriggerDate))
+        Mockito.when(notificationRepository.setBirthdayReminder(contactDetailsInfo, testTriggerDate))
                 .thenReturn(expectedBirthdayNotification);
 
         notificationInteractor = new NotificationModel(
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contact);
+        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
         Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
     }
 }

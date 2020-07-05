@@ -28,9 +28,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -44,16 +43,18 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
 
     @Inject
     @NonNull
-    public Provider<RouteMapPresenter> fullMapPresenterProvider;
+    public transient Provider<RouteMapPresenter> fullMapPresenterProvider;
     @InjectPresenter
     @NonNull
-    RouteMapPresenter routeMapPresenter;
-    private View view;
-    private GoogleMap map;
-    private boolean fromMarker = false;
-    private boolean toMarker = false;
-    private Point from = null;
-    private Point to = null;
+    public RouteMapPresenter routeMapPresenter;
+
+    private transient GoogleMap map;
+
+    private transient boolean fromMarker = false;
+    private transient boolean toMarker = false;
+
+    private transient Point from = null;
+    private transient Point to = null;
 
     @ProvidePresenter
     @NonNull
@@ -79,10 +80,8 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_map_route, container, false);
-        getActivity().setTitle(R.string.title_toolbar_map);
-        fromMarker = false;
-        toMarker = false;
+        View view = inflater.inflate(R.layout.fragment_map_route, container, false);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.title_toolbar_map);
 
         initMap();
 
@@ -103,20 +102,20 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
         routeMapPresenter.showMarkers();
 
         map.setOnMarkerClickListener(marker -> {
-            if ((!fromMarker) && (!toMarker)) {
+            if (!fromMarker && !toMarker) {
                 from = new Point(
                         marker.getPosition().latitude,
                         marker.getPosition().longitude);
                 fromMarker = true;
             } else {
-                if ((fromMarker) && (!toMarker)) {
+                if (fromMarker && !toMarker) {
                     to = new Point(
                             marker.getPosition().latitude,
                             marker.getPosition().longitude);
                     toMarker = true;
                 }
             }
-            if ((fromMarker) && (toMarker)) {
+            if (fromMarker && toMarker) {
                 routeMapPresenter.showRoute(from, to);
                 fromMarker = false;
                 toMarker = false;
@@ -127,7 +126,7 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
 
     //FullMapView
     @Override
-    public void showMarkers(@NotNull @NonNull List<Location> locations) {
+    public void showMarkers(@NonNull List<Location> locations) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Location curLocation : locations) {
             setMarker(new LatLng(curLocation.getPoint().getLatitude(),
@@ -140,7 +139,7 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
 
     //FullMapView
     @Override
-    public void showRoute(@NotNull @NonNull List<LatLng> points) {
+    public void showRoute(@NonNull List<LatLng> points) {
         drawRoute(points);
     }
 
@@ -174,12 +173,6 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
         int size = getResources().getDisplayMetrics().widthPixels;
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, size, size, ZOOM);
         map.moveCamera(cameraUpdate);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
     }
 }
 

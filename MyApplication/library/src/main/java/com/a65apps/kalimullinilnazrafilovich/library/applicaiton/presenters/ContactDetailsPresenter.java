@@ -4,7 +4,7 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView;
@@ -17,9 +17,9 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private final ContactDetailsInteractor contactDetailsInteractor;
-    private final NotificationInteractor notificationInteractor;
-    private CompositeDisposable compositeDisposable;
+    private final transient ContactDetailsInteractor contactDetailsInteractor;
+    private final transient NotificationInteractor notificationInteractor;
+    private final transient CompositeDisposable compositeDisposable;
 
     public ContactDetailsPresenter(@NonNull NotificationInteractor notificationInteractor,
                                    @NonNull ContactDetailsInteractor contactDetailsInteractor) {
@@ -36,23 +36,23 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (contact) -> getViewState().showContactDetail(contact),
-                                (Throwable::printStackTrace)
+                                Throwable::printStackTrace
                         ));
     }
 
     @NonNull
-    public BirthdayNotification setNotification(@NonNull Contact contact) {
-        return notificationInteractor.onBirthdayNotification(contact);
+    public BirthdayNotification setNotification(@NonNull ContactDetailsInfo contactDetailsInfo) {
+        return notificationInteractor.onBirthdayNotification(contactDetailsInfo);
     }
 
     @NonNull
-    public BirthdayNotification removeNotification(@NonNull Contact contact) {
-        return notificationInteractor.offBirthdayNotification(contact);
+    public BirthdayNotification removeNotification(@NonNull ContactDetailsInfo contactDetailsInfo) {
+        return notificationInteractor.offBirthdayNotification(contactDetailsInfo);
     }
 
     @NonNull
-    public BirthdayNotification getActualStateBirthdayNotification(@NonNull Contact contact) {
-        return notificationInteractor.getNotificationWorkStatus(contact);
+    public BirthdayNotification getActualStateBirthdayNotification(@NonNull ContactDetailsInfo contactDetailsInfo) {
+        return notificationInteractor.getNotificationWorkStatus(contactDetailsInfo);
     }
 
     @Override

@@ -6,8 +6,7 @@ import java.util.Objects;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.annotations.Nullable;
 
-public class Contact {
-
+public class ContactDetailsInfo {
     @NonNull
     private final String id;
 
@@ -35,33 +34,19 @@ public class Contact {
     @Nullable
     private final Location location;
 
-    public Contact(@NonNull String id,
-                   @NonNull String name,
-                   @NonNull String telephoneNumber) {
-        this.id = id;
-        this.name = name;
-        this.telephoneNumber = telephoneNumber;
-        this.email = " ";
-        this.telephoneNumber2 = " ";
-        this.email2 = " ";
-        this.description = " ";
-        dateOfBirth = null;
-        this.location = null;
-    }
-
-    public Contact(@NonNull Contact contact,
-                   @NonNull GregorianCalendar dateOfBirth,
-                   @NonNull String telephoneNumber2,
-                   @NonNull String email,
-                   @NonNull String email2,
-                   @NonNull String description,
-                   @Nullable Location location) {
-        this.id = contact.getId();
-        this.name = contact.getName();
+    public ContactDetailsInfo(@NonNull ContactShortInfo contactShortInfo,
+                              @NonNull GregorianCalendar dateOfBirth,
+                              @NonNull String telephoneNumber2,
+                              @NonNull String email,
+                              @NonNull String email2,
+                              @NonNull String description,
+                              @Nullable Location location) {
+        this.id = contactShortInfo.getId();
+        this.name = contactShortInfo.getName();
+        this.telephoneNumber = contactShortInfo.getTelephoneNumber();
         this.dateOfBirth = dateOfBirth;
-        this.telephoneNumber = contact.getTelephoneNumber();
-        this.email = email;
         this.telephoneNumber2 = telephoneNumber2;
+        this.email = email;
         this.email2 = email2;
         this.description = description;
         this.location = location;
@@ -120,16 +105,16 @@ public class Contact {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Contact contact = (Contact) o;
-        return id.equals(contact.id)
-                && name.equals(contact.name)
-                && telephoneNumber.equals(contact.telephoneNumber)
-                && telephoneNumber2.equals(contact.telephoneNumber2)
-                && email.equals(contact.email)
-                && email2.equals(contact.email2)
-                && description.equals(contact.description)
-                && Objects.equals(dateOfBirth, contact.dateOfBirth)
-                && Objects.equals(location, contact.location);
+        ContactDetailsInfo contactDetailsInfo = (ContactDetailsInfo) o;
+        return id.equals(contactDetailsInfo.id)
+                && name.equals(contactDetailsInfo.name)
+                && telephoneNumber.equals(contactDetailsInfo.telephoneNumber)
+                && telephoneNumber2.equals(contactDetailsInfo.telephoneNumber2)
+                && email.equals(contactDetailsInfo.email)
+                && email2.equals(contactDetailsInfo.email2)
+                && description.equals(contactDetailsInfo.description)
+                && Objects.equals(dateOfBirth, contactDetailsInfo.dateOfBirth)
+                && Objects.equals(location, contactDetailsInfo.location);
     }
 
     @Override

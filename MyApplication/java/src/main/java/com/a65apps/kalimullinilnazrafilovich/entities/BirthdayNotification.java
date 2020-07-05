@@ -9,27 +9,27 @@ import io.reactivex.rxjava3.annotations.Nullable;
 
 public class BirthdayNotification {
     @Nullable
-    private final Contact contact;
+    private final ContactDetailsInfo contactDetailsInfo;
 
-    private final boolean notificationWorkStatus;
+    private final transient boolean notificationWorkStatus;
 
     @Nullable
     private final GregorianCalendar notificationTriggerDate;
 
-    public BirthdayNotification(@Nullable Contact contact,
+    public BirthdayNotification(@Nullable ContactDetailsInfo contactDetailsInfo,
                                 boolean notificationWorkStatus,
                                 @NonNull GregorianCalendar notificationTriggerDate) {
-        this.contact = contact;
+        this.contactDetailsInfo = contactDetailsInfo;
         this.notificationWorkStatus = notificationWorkStatus;
         this.notificationTriggerDate = notificationTriggerDate;
     }
 
     @Nullable
-    public Contact getContact() {
-        return contact;
+    public ContactDetailsInfo getContactDetailsInfo() {
+        return contactDetailsInfo;
     }
 
-    public boolean getNotificationWorkStatusBoolean() {
+    public boolean isNotificationWorkStatusBoolean() {
         return notificationWorkStatus;
     }
 
@@ -48,12 +48,12 @@ public class BirthdayNotification {
         }
         BirthdayNotification that = (BirthdayNotification) o;
         return notificationWorkStatus == that.notificationWorkStatus
-                && Objects.equals(contact, that.contact)
+                && Objects.equals(contactDetailsInfo, that.contactDetailsInfo)
                 && notificationTriggerDate.equals(that.notificationTriggerDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contact, notificationWorkStatus, notificationTriggerDate);
+        return Objects.hash(contactDetailsInfo, notificationWorkStatus, notificationTriggerDate);
     }
 }

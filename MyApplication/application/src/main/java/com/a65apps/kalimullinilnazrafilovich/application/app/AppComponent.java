@@ -2,11 +2,11 @@ package com.a65apps.kalimullinilnazrafilovich.application.app;
 
 import androidx.annotation.NonNull;
 
-import com.a65apps.kalimullinilnazrafilovich.application.contactDetails.ContactDetailsComponent;
 import com.a65apps.kalimullinilnazrafilovich.application.contacts.ContactsListComponent;
+import com.a65apps.kalimullinilnazrafilovich.application.details.ContactDetailsComponent;
 import com.a65apps.kalimullinilnazrafilovich.application.map.ContactMapComponent;
 import com.a65apps.kalimullinilnazrafilovich.application.notification.BirthdayNotificationComponent;
-import com.a65apps.kalimullinilnazrafilovich.application.routeMap.MapRouteComponent;
+import com.a65apps.kalimullinilnazrafilovich.application.route.MapRouteComponent;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.AppContainer;
 
 import javax.inject.Singleton;

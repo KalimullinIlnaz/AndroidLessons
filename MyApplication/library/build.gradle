@@ -1,29 +1,15 @@
 apply plugin: 'com.android.library'
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
+apply plugin: 'com.jakewharton.butterknife'
 
 checkstyle {
     toolVersion = '8.1'
 }
 
-task checkstyle(type: Checkstyle) {
-    configFile = rootProject.file('/config/check/rules-checkstyle.xml')
-
-    source 'src/main/java'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    // empty classpath
-    classpath = files()
-}
-
-task pmd(type: Pmd) {
-    ruleSetFiles = files("$project.rootDir/rules-pmd.xml")
-    ignoreFailures = false
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
+pmd{
+    consoleOutput = true
+    toolVersion = "6.21.0"
 }
 
 repositories {
@@ -44,7 +30,7 @@ android {
     }
 
     lintOptions {
-        lintConfig file("lint.xml")
+        lintConfig file("$project.rootDir/config/lint/lint.xml")
         abortOnError false
         checkAllWarnings true
         warningsAsErrors true
@@ -56,9 +42,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+task checkstyle(type: Checkstyle) {
+    configFile = file("$project.rootDir/config/check_style/rules-checkstyle.xml")
+
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    // empty classpath
+    classpath = files()
+}
+
+task pmd(type: Pmd) {
+    source = fileTree('src/main/java/')
+    ruleSetFiles = files("$project.rootDir/config/pmd/rules-pmd.xml")
+    ignoreFailures = false
+    reports {
+        xml.enabled = false
+        html.enabled = true
     }
 }
 
@@ -74,6 +82,10 @@ dependencies {
     //JUnit
     testImplementation('junit:junit:4.13')
     testImplementation 'androidx.test.ext:junit:1.1.1'
+
+    //Butter Knife
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
     //Decode points
     implementation 'com.google.maps.android:android-maps-utils:2.0.1'

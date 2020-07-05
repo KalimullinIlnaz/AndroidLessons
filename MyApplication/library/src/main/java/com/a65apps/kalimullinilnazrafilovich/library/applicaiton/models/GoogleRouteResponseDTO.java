@@ -11,7 +11,7 @@ public class GoogleRouteResponseDTO {
 
     @SerializedName("routes")
     @Expose
-    private List<Route> routes;
+    private transient List<Route> routes;
 
     @SerializedName("status")
     @Expose
@@ -27,7 +27,7 @@ public class GoogleRouteResponseDTO {
     }
 
     @NonNull
-    private List<Route> getRoutes() {
+    public List<Route> getRoutes() {
         return routes;
     }
 
@@ -43,7 +43,7 @@ public class GoogleRouteResponseDTO {
     static class Route {
         @SerializedName("overview_polyline")
         @Expose
-        private OverviewPolyline overviewPolyline;
+        private transient OverviewPolyline overviewPolyline;
 
         @NonNull
         public OverviewPolyline getOverviewPolyline() {

@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -15,15 +16,14 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private CompositeDisposable compositeDisposable;
+    private final transient CompositeDisposable compositeDisposable;
 
-    private PublishSubject<String> subject;
+    private transient final PublishSubject<String> subject;
 
     public ContactListPresenter(@NonNull ContactListInteractor contactListInteractor) {
-
         compositeDisposable = new CompositeDisposable();
-        subject = PublishSubject.create();
 
+        subject = PublishSubject.create();
 
         compositeDisposable.add(
                 subject.switchMapSingle(
@@ -31,21 +31,17 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
                                 .subscribeOn(Schedulers.io())
                 )
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(__ -> getViewState().showLoadingIndicator())
+                        .doOnSubscribe(state -> getViewState().showLoadingIndicator())
                         .subscribe(
                                 (list) -> {
                                     getViewState().showContactList(list);
                                     getViewState().hideLoadingIndicator();
                                 },
                                 (throwable) -> {
-                                    throwable.printStackTrace();
+                                    Log.e(this.getClass().getName(), throwable.toString());
                                     getViewState().hideLoadingIndicator();
                                 }
                         ));
-    }
-
-    public void showContactList() {
-        subject.onNext("");
     }
 
     public void showContactList(@NonNull String query) {
@@ -58,4 +54,3 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
         compositeDisposable.dispose();
     }
 }
-

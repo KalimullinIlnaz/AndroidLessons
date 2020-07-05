@@ -24,14 +24,14 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class BroadReceiver extends BroadcastReceiver {
+public class NotificationReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "BirthDay";
 
     @Inject
-    NotificationInteractor notificationInteractor;
+    transient NotificationInteractor notificationInteractor;
 
     @Inject
-    ContactDetailsInteractor contactDetailsInteractor;
+    transient ContactDetailsInteractor contactDetailsInteractor;
 
     @Override
     public void onReceive(@NonNull Context context,

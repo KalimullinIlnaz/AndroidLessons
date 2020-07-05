@@ -5,7 +5,7 @@ import io.reactivex.rxjava3.annotations.Nullable;
 public class Location {
 
     @Nullable
-    private final Contact contact;
+    private final ContactDetailsInfo contactDetailsInfo;
 
     @Nullable
     private final String address;
@@ -13,10 +13,10 @@ public class Location {
     @Nullable
     private final Point point;
 
-    public Location(@Nullable Contact contact,
+    public Location(@Nullable ContactDetailsInfo contactDetailsInfo,
                     @Nullable String address,
                     @Nullable Point point) {
-        this.contact = contact;
+        this.contactDetailsInfo = contactDetailsInfo;
         this.address = address;
         this.point = point;
     }
@@ -27,8 +27,8 @@ public class Location {
     }
 
     @Nullable
-    public Contact getContact() {
-        return contact;
+    public ContactDetailsInfo getContactDetailsInfo() {
+        return contactDetailsInfo;
     }
 
     @Nullable

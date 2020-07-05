@@ -8,7 +8,7 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 
 public class RouteModel implements RouteInteractor {
-    private final GeocodeRepository geocodeRepository;
+    private final transient GeocodeRepository geocodeRepository;
 
     public RouteModel(GeocodeRepository geocodeRepository) {
         this.geocodeRepository = geocodeRepository;

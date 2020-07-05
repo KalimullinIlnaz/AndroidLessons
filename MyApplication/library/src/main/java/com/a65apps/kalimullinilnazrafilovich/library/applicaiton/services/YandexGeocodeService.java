@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services;
 
-
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.interfaces.YandexGeocodeApi;
@@ -14,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class YandexGeocodeService {
     private static final String BASE_URL = "https://geocode-maps.yandex.ru/";
     private static YandexGeocodeService mInstance;
-    private Retrofit mRetrofit;
+    private final transient Retrofit mRetrofit;
 
     private YandexGeocodeService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -22,7 +21,6 @@ public final class YandexGeocodeService {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor);
-
 
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)

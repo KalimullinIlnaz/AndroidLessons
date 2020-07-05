@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.interfaces;
 
-
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.YandexAddressResponseDTO;

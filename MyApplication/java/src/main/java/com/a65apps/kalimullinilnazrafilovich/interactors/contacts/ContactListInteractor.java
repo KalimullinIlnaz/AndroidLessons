@@ -1,11 +1,11 @@
 package com.a65apps.kalimullinilnazrafilovich.interactors.contacts;
 
-import java.util.List;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
 
 public interface ContactListInteractor {
-    Single<List<Contact>> loadContactsOnRequest(String query);
+    Single<List<ContactShortInfo>> loadContactsOnRequest(String query);
 }

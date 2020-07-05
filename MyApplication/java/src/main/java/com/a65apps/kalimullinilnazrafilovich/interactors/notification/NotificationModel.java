@@ -1,7 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar;
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
@@ -12,10 +12,10 @@ public class NotificationModel implements NotificationInteractor {
     private static final int FEBRUARY_29 = 29;
     private static final int NEXT_LEAP_YEAR = 4;
 
-    private final NotificationRepository notificationRepository;
+    private final transient NotificationRepository notificationRepository;
 
-    private final CurrentTime currentTime;
-    private GregorianCalendar birthdayGregorianCalendar;
+    private final transient CurrentTime currentTime;
+    private final transient GregorianCalendar birthdayGregorianCalendar;
 
     public NotificationModel(
             NotificationRepository notificationRepository,
@@ -27,56 +27,53 @@ public class NotificationModel implements NotificationInteractor {
     }
 
     @Override
-    public BirthdayNotification onBirthdayNotification(Contact contact) {
+    public BirthdayNotification onBirthdayNotification(ContactDetailsInfo contactDetailsInfo) {
         if (birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
-            return setBirthdayReminderForLeapYear(contact);
+            return setBirthdayReminderForLeapYear(contactDetailsInfo);
         } else {
-            return setBirthdayReminder(contact);
+            return setBirthdayReminder(contactDetailsInfo);
         }
     }
 
     @Override
-    public BirthdayNotification offBirthdayNotification(Contact contact) {
-        return notificationRepository.removeBirthdayReminder(contact);
+    public BirthdayNotification offBirthdayNotification(ContactDetailsInfo contactDetailsInfo) {
+        return notificationRepository.removeBirthdayReminder(contactDetailsInfo);
     }
 
     @Override
-    public BirthdayNotification getNotificationWorkStatus(Contact contact) {
-        return notificationRepository.getBirthdayNotificationEntity(contact, null);
+    public BirthdayNotification getNotificationWorkStatus(ContactDetailsInfo contactDetailsInfo) {
+        return notificationRepository.getBirthdayNotificationEntity(contactDetailsInfo, null);
     }
 
-    private BirthdayNotification setBirthdayReminder(Contact contact) {
-        GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contact);
+    private BirthdayNotification setBirthdayReminder(ContactDetailsInfo contactDetailsInfo) {
+        GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contactDetailsInfo);
 
-        if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
-            if (!(gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY
-                    && gregorianCalendar.get(Calendar.DATE) == FEBRUARY_29)) {
-                gregorianCalendar.add(Calendar.YEAR, 1);
-            }
+        if (currentTime.now() > gregorianCalendar.getTime().getTime()
+                && !(gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY
+                && gregorianCalendar.get(Calendar.DATE) == FEBRUARY_29)) {
+            gregorianCalendar.add(Calendar.YEAR, 1);
         }
 
-        return notificationRepository.setBirthdayReminder(contact, gregorianCalendar);
+        return notificationRepository.setBirthdayReminder(contactDetailsInfo, gregorianCalendar);
     }
 
-    private BirthdayNotification setBirthdayReminderForLeapYear(Contact contact) {
-        GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contact);
+    private BirthdayNotification setBirthdayReminderForLeapYear(ContactDetailsInfo contactDetailsInfo) {
+        GregorianCalendar gregorianCalendar = createGregorianCalendarForContact(contactDetailsInfo);
 
-        if (currentTime.now() > gregorianCalendar.getTime().getTime()) {
-            if ((contact.getDateOfBirth().get(Calendar.MONTH) == Calendar.FEBRUARY)
-                    && (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == FEBRUARY_29)) {
-                gregorianCalendar.add(Calendar.YEAR, NEXT_LEAP_YEAR);
-            } else {
-                gregorianCalendar.add(Calendar.YEAR, 1);
-            }
-
+        if (currentTime.now() > gregorianCalendar.getTime().getTime()
+                && contactDetailsInfo.getDateOfBirth().get(Calendar.MONTH) == Calendar.FEBRUARY
+                && contactDetailsInfo.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == FEBRUARY_29) {
+            gregorianCalendar.add(Calendar.YEAR, NEXT_LEAP_YEAR);
+        } else {
+            gregorianCalendar.add(Calendar.YEAR, 1);
         }
 
-        return notificationRepository.setBirthdayReminder(contact, gregorianCalendar);
+        return notificationRepository.setBirthdayReminder(contactDetailsInfo, gregorianCalendar);
     }
 
 
-    private GregorianCalendar createGregorianCalendarForContact(Contact contact) {
-        if (contact.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == FEBRUARY_29) {
+    private GregorianCalendar createGregorianCalendarForContact(ContactDetailsInfo contactDetailsInfo) {
+        if (contactDetailsInfo.getDateOfBirth().get(Calendar.DAY_OF_MONTH) == FEBRUARY_29) {
             birthdayGregorianCalendar.set(GregorianCalendar.YEAR, birthdayGregorianCalendar.get(Calendar.YEAR));
             while (!birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
                 birthdayGregorianCalendar.add(Calendar.YEAR, 1);
@@ -86,9 +83,9 @@ public class NotificationModel implements NotificationInteractor {
         }
 
         birthdayGregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH,
-                contact.getDateOfBirth().get(GregorianCalendar.DAY_OF_MONTH));
+                contactDetailsInfo.getDateOfBirth().get(GregorianCalendar.DAY_OF_MONTH));
         birthdayGregorianCalendar.set(GregorianCalendar.MONTH,
-                contact.getDateOfBirth().get(GregorianCalendar.MONTH));
+                contactDetailsInfo.getDateOfBirth().get(GregorianCalendar.MONTH));
 
         return birthdayGregorianCalendar;
     }

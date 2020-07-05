@@ -6,24 +6,9 @@ checkstyle {
     toolVersion = '8.1'
 }
 
-task checkstyle(type: Checkstyle) {
-    configFile = rootProject.file('/config/check/rules-checkstyle.xml')
-
-    source 'src/main/java'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    // empty classpath
-    classpath = files()
-}
-
-task pmd(type: Pmd) {
-    ruleSetFiles = files("$project.rootDir/rules-pmd.xml")
-    ignoreFailures = false
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
+pmd {
+    consoleOutput = true
+    toolVersion = "6.21.0"
 }
 
 android {
@@ -42,7 +27,7 @@ android {
     }
 
     lintOptions {
-        lintConfig file("lint.xml")
+        lintConfig file("$project.rootDir/config/lint/lint.xml")
         abortOnError false
         checkAllWarnings true
         warningsAsErrors true
@@ -57,6 +42,27 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+task checkstyle(type: Checkstyle) {
+    configFile = file("$project.rootDir/config/check_style/rules-checkstyle.xml")
+
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    // empty classpath
+    classpath = files()
+}
+
+task pmd(type: Pmd) {
+    source = fileTree('src/main/java/')
+    ruleSetFiles = files("$project.rootDir/config/pmd/rules-pmd.xml")
+    ignoreFailures = false
+    reports {
+        xml.enabled = false
+        html.enabled = true
     }
 }
 

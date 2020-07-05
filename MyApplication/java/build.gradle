@@ -6,24 +6,9 @@ checkstyle {
     toolVersion = '8.1'
 }
 
-task checkstyle(type: Checkstyle) {
-    configFile = rootProject.file('/config/check/rules-checkstyle.xml')
-
-    source 'src/main/java'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    // empty classpath
-    classpath = files()
-}
-
-task pmd(type: Pmd) {
-    ruleSetFiles = files("$project.rootDir/tools/rules-pmd.xml")
-    ignoreFailures = false
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
+pmd{
+    consoleOutput = true
+    toolVersion = "6.21.0"
 }
 
 repositories {
@@ -42,6 +27,18 @@ dependencies {
     //Mockito
     testImplementation('org.mockito:mockito-core:3.3.3')
 }
+
+task checkstyle(type: Checkstyle) {
+    configFile = file("$project.rootDir/config/check_style/rules-checkstyle.xml")
+
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    // empty classpath
+    classpath = files()
+}
+
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"

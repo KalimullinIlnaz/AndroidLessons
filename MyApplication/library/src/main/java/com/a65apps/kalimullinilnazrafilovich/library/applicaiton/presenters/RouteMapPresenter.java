@@ -19,9 +19,9 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class RouteMapPresenter extends MvpPresenter<RouteMapView> {
-    private final ContactLocationInteractor contactLocationInteractor;
-    private final RouteInteractor routeInteractor;
-    private CompositeDisposable compositeDisposable;
+    private final transient ContactLocationInteractor contactLocationInteractor;
+    private final transient RouteInteractor routeInteractor;
+    private final transient CompositeDisposable compositeDisposable;
 
     public RouteMapPresenter(@NonNull ContactLocationInteractor contactLocationInteractor,
                              @NonNull RouteInteractor routeInteractor) {
@@ -38,7 +38,7 @@ public class RouteMapPresenter extends MvpPresenter<RouteMapView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (list) -> getViewState().showMarkers(list),
-                                (Throwable::printStackTrace)
+                                Throwable::printStackTrace
                         ));
     }
 
@@ -56,7 +56,7 @@ public class RouteMapPresenter extends MvpPresenter<RouteMapView> {
                                         getViewState().showRoute(dots);
                                     }
                                 },
-                                (Throwable::printStackTrace)
+                                Throwable::printStackTrace
                         )
                 );
     }

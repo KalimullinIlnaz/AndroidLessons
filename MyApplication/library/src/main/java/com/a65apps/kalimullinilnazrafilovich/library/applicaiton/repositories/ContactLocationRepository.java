@@ -5,7 +5,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.Contact;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
@@ -22,9 +22,9 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 public class ContactLocationRepository implements LocationRepository {
-    private final AppDatabase database;
-    private final Context context;
-    private final ContactDetailsRepository contactDetailsContentResolverRepository;
+    private final transient AppDatabase database;
+    private final transient Context context;
+    private final transient ContactDetailsRepository contactDetailsContentResolverRepository;
 
     public ContactLocationRepository(@NonNull AppDatabase database,
                                      @NonNull Context context,
@@ -35,8 +35,8 @@ public class ContactLocationRepository implements LocationRepository {
     }
 
     @Override
-    public void insertContactLocation(@NonNull Location location, @NonNull Contact contact) {
-        LocationOrm locationORM = new LocationOrm(contact, location);
+    public void insertContactLocation(@NonNull Location location, @NonNull ContactDetailsInfo contactDetailsInfo) {
+        LocationOrm locationORM = new LocationOrm(contactDetailsInfo, location);
         database.locationDao().insert(locationORM);
     }
 
@@ -47,7 +47,7 @@ public class ContactLocationRepository implements LocationRepository {
                 .flatMapObservable(Observable::fromIterable)
                 .flatMapSingle(item ->
                         contactDetailsContentResolverRepository.getDetailsContact(item.getContactID())
-                                .map(contact -> new Pair<LocationOrm, Contact>(item, contact)))
+                                .map(contact -> new Pair<LocationOrm, ContactDetailsInfo>(item, contact)))
                 .map(pair -> new Location(
                         pair.second,
                         pair.first.getAddress(),
@@ -57,23 +57,21 @@ public class ContactLocationRepository implements LocationRepository {
 
     @Override
     @NonNull
-    public Single<Location> createOrUpdateContactLocationByCoordinate(@NonNull Contact contact,
+    public Single<Location> createOrUpdateContactLocationByCoordinate(@NonNull ContactDetailsInfo contactDetailsInfo,
                                                                       double latitude,
                                                                       double longitude) {
         String coordinate = latitude + "," + longitude;
 
-        Single<Location> locationSingle = YandexGeocodeService.getInstance()
+        return YandexGeocodeService.getInstance()
                 .getJSONApi()
                 .getLocation(
                         coordinate,
                         context.getResources().getString(R.string.yandex_maps_key))
                 .map((responseDTO) -> new YandexDTOMapper().transform(
-                        contact,
+                        contactDetailsInfo,
                         responseDTO,
                         latitude,
                         longitude))
-                .doOnSuccess(location -> insertContactLocation(location, contact));
-
-        return locationSingle;
+                .doOnSuccess(location -> insertContactLocation(location, contactDetailsInfo));
     }
 }
