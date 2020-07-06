@@ -73,14 +73,4 @@ public class LocationOrm {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
-
-    public LocationOrm createLocationOrmByLocationEntity(@NonNull ContactDetailsInfo contactDetailsInfo,
-                                                         @NonNull Location location){
-        return new LocationOrm(
-                contactDetailsInfo.getId(),
-                location.getPoint().getLatitude(),
-                location.getPoint().getLongitude(),
-                location.getAddress()
-        );
-    }
 }
