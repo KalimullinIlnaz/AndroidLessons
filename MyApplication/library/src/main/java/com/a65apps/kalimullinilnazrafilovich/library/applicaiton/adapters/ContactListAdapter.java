@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ContactAdapter extends ListAdapter<ContactShortInfo, ContactAdapter.ContactViewHolder> {
+public class ContactListAdapter extends ListAdapter<ContactShortInfo, ContactListAdapter.ContactListItemViewHolder> {
     public static final DiffUtil.ItemCallback<ContactShortInfo> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<ContactShortInfo>() {
                 @Override
@@ -39,17 +39,17 @@ public class ContactAdapter extends ListAdapter<ContactShortInfo, ContactAdapter
 
     private final OnContactListener onContactListener;
 
-    public ContactAdapter(@NonNull OnContactListener onContactListener) {
+    public ContactListAdapter(@NonNull OnContactListener onContactListener) {
         super(DIFF_CALLBACK);
         this.onContactListener = onContactListener;
     }
 
     @NonNull
     @Override
-    public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ContactListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.contact_item, parent, false);
-        return new ContactViewHolder(view, onContactListener);
+        return new ContactListItemViewHolder(view, onContactListener);
     }
 
     public void setData(@NonNull List<ContactShortInfo> contactShortInfoList) {
@@ -57,7 +57,7 @@ public class ContactAdapter extends ListAdapter<ContactShortInfo, ContactAdapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactListItemViewHolder holder, int position) {
         holder.bindView(getItem(position));
     }
 
@@ -65,15 +65,15 @@ public class ContactAdapter extends ListAdapter<ContactShortInfo, ContactAdapter
         void onContactClick(int position);
     }
 
-    public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ContactListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final OnContactListener onContactListener;
         @BindView(R2.id.namePerson)
         TextView name;
         @BindView(R2.id.telephoneNumberPerson)
         TextView telephoneNumber;
 
-        public ContactViewHolder(@NonNull View itemView,
-                                 @NonNull OnContactListener onContactListener) {
+        public ContactListItemViewHolder(@NonNull View itemView,
+                                         @NonNull OnContactListener onContactListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 

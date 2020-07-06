@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactListAdapter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ItemDecoration;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactAdapter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.ContactsListContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactListPresenter;
@@ -47,7 +47,7 @@ import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements
         ContactListView,
-        ContactAdapter.OnContactListener {
+        ContactListAdapter.OnContactListener {
     private final static int OFFSET_DP = 6;
 
     @Inject
@@ -58,12 +58,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     public ContactListPresenter contactListPresenter;
 
 
-    @BindView(R2.id.contact_recycler_view)
+    @BindView(R2.id.contact_list_recycler_view)
     RecyclerView recyclerView;
     @BindView(R2.id.circular_progress_view)
     CircularProgressView circularProgressView;
 
-    private ContactAdapter contactAdapter;
+    private ContactListAdapter contactListAdapter;
     private List<ContactShortInfo> contactDetailsInfoEntities;
 
     private Unbinder unbinder;
@@ -77,7 +77,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements
     @Override
     public void showContactList(@NonNull List<ContactShortInfo> contactShortInfoList) {
         this.contactDetailsInfoEntities = contactShortInfoList;
-        contactAdapter.setData(contactShortInfoList);
+        contactListAdapter.setData(contactShortInfoList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
     }
@@ -124,8 +124,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements
         recyclerView.addItemDecoration(
                 new ItemDecoration(dpToPx(OFFSET_DP), dpToPx(OFFSET_DP), dpToPx(OFFSET_DP), dpToPx(OFFSET_DP)));
 
-        contactAdapter = new ContactAdapter(this);
-        recyclerView.setAdapter(contactAdapter);
+        contactListAdapter = new ContactListAdapter(this);
+        recyclerView.setAdapter(contactListAdapter);
 
         return view;
     }

@@ -12,7 +12,6 @@ pmd {
     ruleSets = []
 }
 
-
 repositories {
     jcenter()
 }
@@ -67,6 +66,7 @@ task pmd(type: Pmd) {
     source = fileTree('src/main/java')
     include '**/*.java'
     exclude '**/gen/**'
+    ignoreFailures = false
 
     reports {
         xml.enabled = false

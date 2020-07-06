@@ -1,5 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
@@ -129,19 +130,39 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
     }
 
     @Override
+    public void showContactDetail(@NonNull ContactDetailsInfo contactDetailsInfo) {
+        this.contactDetailsInfo = contactDetailsInfo;
+
+        if (name != null) {
+            name.setText(contactDetailsInfo.getName());
+            dataOfBirth.setText(parseDateToString(contactDetailsInfo.getDateOfBirth()));
+            address.setText(contactDetailsInfo.getLocation().getAddress());
+            telephoneNumber.setText(contactDetailsInfo.getTelephoneNumber());
+            telephoneNumber2.setText(contactDetailsInfo.getTelephoneNumber2());
+            email.setText(contactDetailsInfo.getEmail());
+            email2.setText(contactDetailsInfo.getEmail2());
+            description.setText(contactDetailsInfo.getDescription());
+
+            setStatusLocationBtn(contactDetailsInfo.getLocation().getAddress());
+            setStatusToggleButton(btnBirthdayNotification);
+        }
+        setStatusLocationBtn(contactDetailsInfo.getLocation().getAddress());
+        setStatusToggleButton(btnBirthdayNotification);
+    }
+
+    private void setStatusToggleButton(@NonNull ToggleButton toggleButton) {
+        birthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo);
+        toggleButton.setChecked(birthdayNotification.isNotificationWorkStatusBoolean());
+        toggleButton.setOnCheckedChangeListener(this);
+    }
+
+    @Override
     public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             birthdayNotification = contactDetailsPresenter.setNotification(contactDetailsInfo);
         } else {
             birthdayNotification = contactDetailsPresenter.removeNotification(contactDetailsInfo);
         }
-    }
-
-    private void setStatusToggleButton(@NonNull ToggleButton toggleButton) {
-        birthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo);
-
-        toggleButton.setChecked(birthdayNotification.isNotificationWorkStatusBoolean());
-        toggleButton.setOnCheckedChangeListener(this);
     }
 
     private void setStatusLocationBtn(@NonNull String address) {
@@ -159,27 +180,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
         fragmentTransaction.replace(R.id.content, contactMapFragment).addToBackStack(null).commit();
     }
 
-    @Override
-    public void showContactDetail(@NonNull ContactDetailsInfo contactDetailsInfo) {
-        this.contactDetailsInfo = contactDetailsInfo;
-
-        if (name != null) {
-            name.setText(contactDetailsInfo.getName());
-            dataOfBirth.setText(gregorianCalendarToString(contactDetailsInfo.getDateOfBirth()));
-            address.setText(contactDetailsInfo.getLocation().getAddress());
-            telephoneNumber.setText(contactDetailsInfo.getTelephoneNumber());
-            telephoneNumber2.setText(contactDetailsInfo.getTelephoneNumber2());
-            email.setText(contactDetailsInfo.getEmail());
-            email2.setText(contactDetailsInfo.getEmail2());
-            description.setText(contactDetailsInfo.getDescription());
-
-            setStatusLocationBtn(contactDetailsInfo.getLocation().getAddress());
-            setStatusToggleButton(btnBirthdayNotification);
-        }
-    }
-
     @NonNull
-    private String gregorianCalendarToString(@NonNull GregorianCalendar gregorianCalendar) {
+    private String parseDateToString(@NonNull GregorianCalendar gregorianCalendar) {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         df.setCalendar(gregorianCalendar);
         return df.format(gregorianCalendar.getTime());

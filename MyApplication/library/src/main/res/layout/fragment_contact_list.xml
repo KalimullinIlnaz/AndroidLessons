@@ -22,7 +22,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/contact_recycler_view">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:id="@+id/contact_list_recycler_view" />
 
 </LinearLayout>
