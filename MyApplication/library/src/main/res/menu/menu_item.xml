@@ -15,5 +15,4 @@
         android:title="@string/tittle_menu"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always"/>
-
 </menu>

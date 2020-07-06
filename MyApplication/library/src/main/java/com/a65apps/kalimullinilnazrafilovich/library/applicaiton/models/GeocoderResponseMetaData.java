@@ -10,14 +10,6 @@ public class GeocoderResponseMetaData {
     @Expose
     private Point point;
     @SerializedName("request")
-    @Expose
-    private String request;
-    @SerializedName("results")
-    @Expose
-    private String results;
-    @SerializedName("found")
-    @Expose
-    private String found;
 
     @NonNull
     public Point getPoint() {
@@ -26,32 +18,5 @@ public class GeocoderResponseMetaData {
 
     public void setPoint(@NonNull Point point) {
         this.point = point;
-    }
-
-    @NonNull
-    public String getRequest() {
-        return request;
-    }
-
-    public void setRequest(@NonNull String request) {
-        this.request = request;
-    }
-
-    @NonNull
-    public String getResults() {
-        return results;
-    }
-
-    public void setResults(@NonNull String results) {
-        this.results = results;
-    }
-
-    @NonNull
-    public String getFound() {
-        return found;
-    }
-
-    public void setFound(@NonNull String found) {
-        this.found = found;
     }
 }

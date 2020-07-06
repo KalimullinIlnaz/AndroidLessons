@@ -76,7 +76,7 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
 
                 return new ContactDetailsInfo(
                         contactShortInfo,
-                        parseStringToGregorianCalendar(birthOfDay),
+                        stringToGregorianCalendar(birthOfDay),
                         secondTelephoneNumber,
                         firstEmail,
                         secondEmail,
@@ -195,7 +195,7 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
     }
 
     @NonNull
-    private GregorianCalendar parseStringToGregorianCalendar(@NonNull String birthOfDay) {
+    private GregorianCalendar stringToGregorianCalendar(@NonNull String birthOfDay) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         try {

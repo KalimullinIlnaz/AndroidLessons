@@ -14,13 +14,13 @@ public class LocationOrm {
     @NonNull
     @PrimaryKey
     @ColumnInfo(name = "contact_id")
-    private String contactID;
+    private final String contactID;
     @ColumnInfo(name = "latitude")
-    private double latitude;
+    private final double latitude;
     @ColumnInfo(name = "longitude")
-    private double longitude;
+    private final double longitude;
     @ColumnInfo(name = "address")
-    private String address;
+    private final String address;
 
     public LocationOrm(@NonNull ContactDetailsInfo contactDetailsInfo,
                        @NonNull Location location) {
@@ -45,32 +45,17 @@ public class LocationOrm {
         return contactID;
     }
 
-    public void setContactID(@NonNull String contactID) {
-        this.contactID = contactID;
-    }
-
     @NonNull
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(@NonNull String address) {
-        this.address = address;
     }
 
     public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
     public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
 }

@@ -53,8 +53,8 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     private boolean fromMarker = false;
     private boolean toMarker = false;
 
-    private Point from = null;
-    private Point to = null;
+    private Point from;
+    private Point to;
 
     @ProvidePresenter
     @NonNull
@@ -72,7 +72,6 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
                 .plusMapRouteContainer();
 
         mapRouteComponent.inject(this);
-
         super.onAttach(context);
     }
 

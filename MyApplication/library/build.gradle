@@ -51,7 +51,7 @@ android {
 }
 
 task checkstyle(type: Checkstyle) {
-    configFile = file("$project.rootDir/config/check_style/rules-checkstyle.xml")
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 
     source 'src/main/java'
     include '**/*.java'

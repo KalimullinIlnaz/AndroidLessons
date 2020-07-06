@@ -2,10 +2,12 @@ package com.a65apps.kalimullinilnazrafilovich.interactors.notification;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar;
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -17,6 +19,18 @@ import java.util.GregorianCalendar;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationModelTest {
+    public static final int YEAR_1999 = 1999;
+    public static final int YEAR_1990 = 1990;
+    public static final int YEAR_2000 = 2000;
+    public static final int YEAR_2004 = 2004;
+    public static final int YEAR_1992 = 1992;
+
+
+    public static final int DAY_OF_MONTH_7 = 7;
+    public static final int DAY_OF_MONTH_8 = 8;
+    public static final int DAY_OF_MONTH_9 = 9;
+    public static final int DAY_OF_MONTH_29 = 29;
+
     @Mock
     private CurrentTime currentTime;
 
@@ -28,19 +42,28 @@ public class NotificationModelTest {
 
     private NotificationInteractor notificationInteractor;
 
-    @Test
-    public void birthdayNotificationOn_whenBirthdayHasPassed_shouldSetNoticeNextYear() {
-        GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 9);
-        GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
-        GregorianCalendar testTriggerDate = new GregorianCalendar(2000, Calendar.SEPTEMBER, 8);
-        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
+    private ContactShortInfo contactShortInfo;
+
+    @Before
+    public void before() {
+        contactShortInfo = new ContactShortInfo(
                 "id",
                 "name",
+                "t"
+        );
+    }
+
+    @Test
+    public void birthdayNotificationOnWhenBirthdayHasPassedShouldSetNoticeNextYear() {
+        GregorianCalendar currentDate = new GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_9);
+        GregorianCalendar birthdayDate = new GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8);
+        GregorianCalendar testTriggerDate = new GregorianCalendar(YEAR_2000, Calendar.SEPTEMBER, DAY_OF_MONTH_8);
+        ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
+                contactShortInfo,
                 birthdayDate,
-                "t1",
                 "t2",
                 "e1", "e2",
-                "описание",
+                "",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
                 contactDetailsInfo,
@@ -57,22 +80,21 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
-        Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
+        BirthdayNotification actualBirthdayNotification =
+                notificationInteractor.onBirthdayNotification(contactDetailsInfo);
+        Assert.assertEquals(expectedBirthdayNotification, actualBirthdayNotification);
     }
 
     @Test
-    public void birthdayNotificationOff_whenNoticeWasSet_shouldDeleteNotice() {
-        GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 9);
-        GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
+    public void birthdayNotificationOffWhenNoticeWasSetShouldDeleteNotice() {
+        GregorianCalendar currentDate = new GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_9);
+        GregorianCalendar birthdayDate = new GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8);
         ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
-                "id",
-                "name",
+                contactShortInfo,
                 birthdayDate,
-                "t1",
                 "t2",
                 "e1", "e2",
-                "описание",
+                "",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
                 contactDetailsInfo,
@@ -87,24 +109,23 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.offBirthdayNotification(contactDetailsInfo);
-        Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
+        BirthdayNotification actualBirthdayNotification =
+                notificationInteractor.offBirthdayNotification(contactDetailsInfo);
+        Assert.assertEquals(expectedBirthdayNotification, actualBirthdayNotification);
     }
 
 
     @Test
-    public void birthdayNotificationOn_whenBirthdayHasNotPassed_shouldSetThisYearNotice() {
-        GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.AUGUST, 7);
-        GregorianCalendar birthdayDate = new GregorianCalendar(1990, Calendar.SEPTEMBER, 8);
-        GregorianCalendar testTriggerDate = new GregorianCalendar(1999, Calendar.SEPTEMBER, 8);
+    public void birthdayNotificationOnWhenBirthdayHasNotPassedShouldSetThisYearNotice() {
+        GregorianCalendar currentDate = new GregorianCalendar(YEAR_1999, Calendar.AUGUST, DAY_OF_MONTH_7);
+        GregorianCalendar birthdayDate = new GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8);
+        GregorianCalendar testTriggerDate = new GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_8);
         ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
-                "id",
-                "name",
+                contactShortInfo,
                 birthdayDate,
-                "t1",
                 "t2",
                 "e1", "e2",
-                "описание",
+                "",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
                 contactDetailsInfo,
@@ -120,24 +141,25 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
-        Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
+        BirthdayNotification actualBirthdayNotification =
+                notificationInteractor.onBirthdayNotification(contactDetailsInfo);
+        Assert.assertEquals(expectedBirthdayNotification, actualBirthdayNotification);
     }
 
 
+
+    @SuppressWarnings("LineLength")
     @Test
-    public void birthdayNotificationOn_whenBirthdayOf29thFebruary_andBirthdayHasPassed_andNextYearIsLeap_shouldSetNoticeNextYear() {
-        GregorianCalendar currentDate = new GregorianCalendar(1999, Calendar.MARCH, 2);
-        GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
-        GregorianCalendar testTriggerDate = new GregorianCalendar(2000, Calendar.FEBRUARY, 29);
+    public void birthdayNotificationOnWhenBirthdayOf29ThFebruaryAndBirthdayHasPassedAndNextYearIsLeapShouldSetNoticeNextYear() {
+        GregorianCalendar currentDate = new GregorianCalendar(YEAR_1999, Calendar.MARCH, DAY_OF_MONTH_7);
+        GregorianCalendar birthdayDate = new GregorianCalendar(YEAR_1992, Calendar.FEBRUARY, DAY_OF_MONTH_29);
+        GregorianCalendar testTriggerDate = new GregorianCalendar(YEAR_2000, Calendar.FEBRUARY, DAY_OF_MONTH_29);
         ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
-                "id",
-                "name",
+                contactShortInfo,
                 birthdayDate,
-                "t1",
                 "t2",
                 "e1", "e2",
-                "описание",
+                "",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
                 contactDetailsInfo,
@@ -153,23 +175,23 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
-        Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
+        BirthdayNotification actualBirthdayNotification =
+                notificationInteractor.onBirthdayNotification(contactDetailsInfo);
+        Assert.assertEquals(expectedBirthdayNotification, actualBirthdayNotification);
     }
 
+    @SuppressWarnings("LineLength")
     @Test
-    public void birthdayNotificationOn_whenBirthdayHasPassed_andBirthdayOf29thFebruary_andNextLeapYearThroughFourYears_shouldSetNoticeAfterFourYears() {
-        GregorianCalendar currentDate = new GregorianCalendar(2000, Calendar.MARCH, 1);
-        GregorianCalendar birthdayDate = new GregorianCalendar(1992, Calendar.FEBRUARY, 29);
-        GregorianCalendar testTriggerDate = new GregorianCalendar(2004, Calendar.FEBRUARY, 29);
+    public void birthdayNotificationOnWhenBirthdayHasPassedAndBirthdayOf29ThFebruaryAndNextLeapYearThroughFourYearsShouldSetNoticeAfterFourYears() {
+        GregorianCalendar currentDate = new GregorianCalendar(YEAR_2000, Calendar.MARCH, DAY_OF_MONTH_7);
+        GregorianCalendar birthdayDate = new GregorianCalendar(YEAR_1992, Calendar.FEBRUARY, DAY_OF_MONTH_29);
+        GregorianCalendar testTriggerDate = new GregorianCalendar(YEAR_2004, Calendar.FEBRUARY, DAY_OF_MONTH_29);
         ContactDetailsInfo contactDetailsInfo = new ContactDetailsInfo(
-                "id",
-                "name",
+                contactShortInfo,
                 birthdayDate,
-                "t1",
                 "t2",
                 "e1", "e2",
-                "описание",
+                "",
                 null);
         BirthdayNotification expectedBirthdayNotification = new BirthdayNotification(
                 contactDetailsInfo,
@@ -185,7 +207,8 @@ public class NotificationModelTest {
                 notificationRepository,
                 currentTime,
                 birthdayCalendar);
-        BirthdayNotification actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo);
-        Assert.assertEquals("Полученный объект не соответсвует ожидаемому", expectedBirthdayNotification, actualBirthdayNotification);
+        BirthdayNotification actualBirthdayNotification =
+                notificationInteractor.onBirthdayNotification(contactDetailsInfo);
+        Assert.assertEquals(expectedBirthdayNotification, actualBirthdayNotification);
     }
 }

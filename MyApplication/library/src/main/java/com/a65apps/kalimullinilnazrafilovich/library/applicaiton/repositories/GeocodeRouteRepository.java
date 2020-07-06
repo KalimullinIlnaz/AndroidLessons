@@ -34,8 +34,7 @@ public class GeocodeRouteRepository implements GeocodeRepository {
                 .getRoute(from,
                         to,
                         "walking",
-                        context.getResources().getString(R.string.google_maps_key),
-                        "ru")
+                        context.getResources().getString(R.string.google_maps_key))
                 .subscribeOn(Schedulers.io())
                 .map((dto) -> new GoogleDTOMapper().transform(dto));
     }

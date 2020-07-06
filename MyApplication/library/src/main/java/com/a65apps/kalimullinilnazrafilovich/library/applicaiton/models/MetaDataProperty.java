@@ -19,5 +19,4 @@ public class MetaDataProperty {
     public void setGeocoderResponseMetaData(@NonNull GeocoderResponseMetaData geocoderResponseMetaData) {
         this.geocoderResponseMetaData = geocoderResponseMetaData;
     }
-
 }

@@ -13,7 +13,6 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
@@ -155,8 +154,8 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
 
     private void openMapFragment() {
         ContactMapFragment contactMapFragment = ContactMapFragment.newInstance(id);
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = Objects.requireNonNull(getActivity()).
+                getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, contactMapFragment).addToBackStack(null).commit();
     }
 
@@ -166,7 +165,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
 
         if (name != null) {
             name.setText(contactDetailsInfo.getName());
-            dataOfBirth.setText(parseDateToString(contactDetailsInfo.getDateOfBirth()));
+            dataOfBirth.setText(gregorianCalendarToString(contactDetailsInfo.getDateOfBirth()));
             address.setText(contactDetailsInfo.getLocation().getAddress());
             telephoneNumber.setText(contactDetailsInfo.getTelephoneNumber());
             telephoneNumber2.setText(contactDetailsInfo.getTelephoneNumber2());
@@ -180,7 +179,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
     }
 
     @NonNull
-    private String parseDateToString(@NonNull GregorianCalendar gregorianCalendar) {
+    private String gregorianCalendarToString(@NonNull GregorianCalendar gregorianCalendar) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         df.setCalendar(gregorianCalendar);
         return df.format(gregorianCalendar.getTime());
