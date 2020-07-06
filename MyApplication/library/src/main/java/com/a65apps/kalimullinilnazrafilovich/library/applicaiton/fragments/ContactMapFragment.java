@@ -39,14 +39,14 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
 
     @Inject
     @NonNull
-    public transient Provider<ContactMapPresenter> mapPresenterProvider;
+    public Provider<ContactMapPresenter> mapPresenterProvider;
     @InjectPresenter
     @NonNull
     public ContactMapPresenter contactMapPresenter;
 
-    private transient String id;
+    private String id;
 
-    private transient GoogleMap map;
+    private GoogleMap map;
 
     @NonNull
     public static ContactMapFragment newInstance(@NonNull String id) {

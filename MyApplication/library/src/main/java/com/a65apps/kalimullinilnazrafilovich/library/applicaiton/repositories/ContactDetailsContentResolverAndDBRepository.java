@@ -30,8 +30,8 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
     private static final int INFO_EXISTS = 1;
     private static final String EQUAL = "=";
 
-    private final transient ContentResolver contentResolver;
-    private final transient AppDatabase database;
+    private final ContentResolver contentResolver;
+    private final AppDatabase database;
 
     public ContactDetailsContentResolverAndDBRepository(@NonNull Context context,
                                                         @NonNull AppDatabase database) {

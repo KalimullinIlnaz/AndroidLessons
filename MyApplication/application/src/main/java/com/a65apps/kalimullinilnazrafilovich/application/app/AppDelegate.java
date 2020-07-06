@@ -12,7 +12,7 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.H
 public class AppDelegate extends Application implements HasAppContainer {
 
     @Nullable
-    private transient AppComponent appComponent;
+    private AppComponent appComponent;
 
     @Override
     public void onCreate() {

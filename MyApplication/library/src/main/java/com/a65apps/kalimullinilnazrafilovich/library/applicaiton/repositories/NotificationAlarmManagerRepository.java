@@ -18,9 +18,9 @@ import java.util.GregorianCalendar;
 public class NotificationAlarmManagerRepository implements NotificationRepository {
     private static final String BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplication";
 
-    private final transient Context context;
+    private final Context context;
 
-    private final transient AlarmManager alarmManager;
+    private final AlarmManager alarmManager;
 
     public NotificationAlarmManagerRepository(@NonNull Context context) {
         this.context = context;

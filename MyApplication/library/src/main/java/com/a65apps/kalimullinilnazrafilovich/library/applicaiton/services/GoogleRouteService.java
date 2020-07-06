@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class GoogleRouteService {
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/directions/";
     private static GoogleRouteService mInstance;
-    private final transient Retrofit mRetrofit;
+    private final Retrofit mRetrofit;
 
     private GoogleRouteService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

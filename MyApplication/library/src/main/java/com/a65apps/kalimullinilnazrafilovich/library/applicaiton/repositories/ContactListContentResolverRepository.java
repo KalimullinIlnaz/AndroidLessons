@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 
 public class ContactListContentResolverRepository implements ContactListRepository {
-    private final transient ContentResolver contentResolver;
+    private final ContentResolver contentResolver;
 
     public ContactListContentResolverRepository(@NonNull Context context) {
         contentResolver = context.getContentResolver();

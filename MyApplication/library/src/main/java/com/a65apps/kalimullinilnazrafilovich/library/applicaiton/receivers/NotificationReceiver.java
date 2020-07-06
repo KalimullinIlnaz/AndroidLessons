@@ -28,10 +28,10 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "BirthDay";
 
     @Inject
-    transient NotificationInteractor notificationInteractor;
+    NotificationInteractor notificationInteractor;
 
     @Inject
-    transient ContactDetailsInteractor contactDetailsInteractor;
+    ContactDetailsInteractor contactDetailsInteractor;
 
     @Override
     public void onReceive(@NonNull Context context,

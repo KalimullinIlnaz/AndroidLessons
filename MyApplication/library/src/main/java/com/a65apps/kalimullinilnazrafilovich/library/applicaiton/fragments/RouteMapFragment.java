@@ -43,18 +43,18 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
 
     @Inject
     @NonNull
-    public transient Provider<RouteMapPresenter> fullMapPresenterProvider;
+    public Provider<RouteMapPresenter> fullMapPresenterProvider;
     @InjectPresenter
     @NonNull
     public RouteMapPresenter routeMapPresenter;
 
-    private transient GoogleMap map;
+    private GoogleMap map;
 
-    private transient boolean fromMarker = false;
-    private transient boolean toMarker = false;
+    private boolean fromMarker = false;
+    private boolean toMarker = false;
 
-    private transient Point from = null;
-    private transient Point to = null;
+    private Point from = null;
+    private Point to = null;
 
     @ProvidePresenter
     @NonNull

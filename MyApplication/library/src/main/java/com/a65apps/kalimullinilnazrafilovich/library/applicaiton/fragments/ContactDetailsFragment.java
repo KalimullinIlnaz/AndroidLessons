@@ -49,34 +49,34 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements
     public ContactDetailsPresenter contactDetailsPresenter;
     @Inject
     @NonNull
-    public transient Provider<ContactDetailsPresenter> contactDetailsPresenterProvider;
+    public Provider<ContactDetailsPresenter> contactDetailsPresenterProvider;
 
     @BindView(R2.id.name)
-    transient TextView name;
+    TextView name;
     @BindView(R2.id.address)
-    transient TextView address;
+    TextView address;
     @BindView(R2.id.firstTelephoneNumber)
-    transient TextView telephoneNumber;
+    TextView telephoneNumber;
     @BindView(R2.id.secondTelephoneNumber)
-    transient TextView telephoneNumber2;
+    TextView telephoneNumber2;
     @BindView(R2.id.firstEmail)
-    transient TextView email;
+    TextView email;
     @BindView(R2.id.secondEmail)
-    transient TextView email2;
+    TextView email2;
     @BindView(R2.id.description)
-    transient TextView description;
+    TextView description;
     @BindView(R2.id.DayOfBirth)
-    transient TextView dataOfBirth;
+    TextView dataOfBirth;
     @BindView(R2.id.btn_show_contact_location)
-    transient Button btnLocationOnMap;
+    Button btnLocationOnMap;
     @BindView(R2.id.btnBirthdayReminder)
-    transient ToggleButton btnBirthdayNotification;
+    ToggleButton btnBirthdayNotification;
 
-    private transient Unbinder unbinder;
+    private Unbinder unbinder;
 
-    private transient String id;
-    private transient ContactDetailsInfo contactDetailsInfo;
-    private transient BirthdayNotification birthdayNotification;
+    private String id;
+    private ContactDetailsInfo contactDetailsInfo;
+    private BirthdayNotification birthdayNotification;
 
     @NonNull
     public static ContactDetailsFragment newInstance(@NonNull String id) {

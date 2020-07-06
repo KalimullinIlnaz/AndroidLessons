@@ -16,9 +16,9 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private final transient CompositeDisposable compositeDisposable;
+    private final CompositeDisposable compositeDisposable;
 
-    private transient final PublishSubject<String> subject;
+    private final PublishSubject<String> subject;
 
     public ContactListPresenter(@NonNull ContactListInteractor contactListInteractor) {
         compositeDisposable = new CompositeDisposable();

@@ -17,9 +17,9 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private final transient ContactDetailsInteractor contactDetailsInteractor;
-    private final transient NotificationInteractor notificationInteractor;
-    private final transient CompositeDisposable compositeDisposable;
+    private final ContactDetailsInteractor contactDetailsInteractor;
+    private final NotificationInteractor notificationInteractor;
+    private final CompositeDisposable compositeDisposable;
 
     public ContactDetailsPresenter(@NonNull NotificationInteractor notificationInteractor,
                                    @NonNull ContactDetailsInteractor contactDetailsInteractor) {

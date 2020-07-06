@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemDecoration extends RecyclerView.ItemDecoration {
-    private final transient int  offsetLeftPx;
-    private final transient int offsetRightPx;
-    private final transient int offsetTopPx;
-    private final transient int offsetBottomPx;
+    private final int  offsetLeftPx;
+    private final int offsetRightPx;
+    private final int offsetTopPx;
+    private final int offsetBottomPx;
 
     public ItemDecoration(int offsetLeftPx,
                           int offsetRightPx,

@@ -19,9 +19,9 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class RouteMapPresenter extends MvpPresenter<RouteMapView> {
-    private final transient ContactLocationInteractor contactLocationInteractor;
-    private final transient RouteInteractor routeInteractor;
-    private final transient CompositeDisposable compositeDisposable;
+    private final ContactLocationInteractor contactLocationInteractor;
+    private final RouteInteractor routeInteractor;
+    private final CompositeDisposable compositeDisposable;
 
     public RouteMapPresenter(@NonNull ContactLocationInteractor contactLocationInteractor,
                              @NonNull RouteInteractor routeInteractor) {

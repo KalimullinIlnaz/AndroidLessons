@@ -48,25 +48,25 @@ import moxy.presenter.ProvidePresenter;
 public class ContactListFragment extends MvpAppCompatFragment implements
         ContactListView,
         ContactAdapter.OnContactListener {
-    private final static transient int OFFSET_DP = 6;
+    private final static int OFFSET_DP = 6;
 
     @Inject
     @NonNull
-    public transient Provider<ContactListPresenter> contactListPresenterProvider;
+    public Provider<ContactListPresenter> contactListPresenterProvider;
     @InjectPresenter
     @NonNull
     public ContactListPresenter contactListPresenter;
 
 
     @BindView(R2.id.contact_recycler_view)
-    transient RecyclerView recyclerView;
+    RecyclerView recyclerView;
     @BindView(R2.id.circular_progress_view)
-    transient CircularProgressView circularProgressView;
+    CircularProgressView circularProgressView;
 
-    private transient ContactAdapter contactAdapter;
-    private transient List<ContactShortInfo> contactDetailsInfoEntities;
+    private ContactAdapter contactAdapter;
+    private List<ContactShortInfo> contactDetailsInfoEntities;
 
-    private transient Unbinder unbinder;
+    private Unbinder unbinder;
 
     @ProvidePresenter
     @NonNull

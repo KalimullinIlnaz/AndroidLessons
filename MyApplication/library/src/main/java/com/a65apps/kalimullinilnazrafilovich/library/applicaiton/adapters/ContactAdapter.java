@@ -37,7 +37,7 @@ public class ContactAdapter extends ListAdapter<ContactShortInfo, ContactAdapter
                 }
             };
 
-    private final transient OnContactListener onContactListener;
+    private final OnContactListener onContactListener;
 
     public ContactAdapter(@NonNull OnContactListener onContactListener) {
         super(DIFF_CALLBACK);
@@ -66,11 +66,11 @@ public class ContactAdapter extends ListAdapter<ContactShortInfo, ContactAdapter
     }
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final transient OnContactListener onContactListener;
+        private final OnContactListener onContactListener;
         @BindView(R2.id.namePerson)
-        transient TextView name;
+        TextView name;
         @BindView(R2.id.telephoneNumberPerson)
-        transient TextView telephoneNumber;
+        TextView telephoneNumber;
 
         public ContactViewHolder(@NonNull View itemView,
                                  @NonNull OnContactListener onContactListener) {

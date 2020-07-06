@@ -22,9 +22,9 @@ import moxy.MvpAppCompatActivity;
 public class MainActivity extends MvpAppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
-    private transient boolean firstCreateMainActivity;
-    private transient String id;
-    private transient String details;
+    private boolean firstCreateMainActivity;
+    private String id;
+    private String details;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -22,9 +22,9 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 public class ContactLocationRepository implements LocationRepository {
-    private final transient AppDatabase database;
-    private final transient Context context;
-    private final transient ContactDetailsRepository contactDetailsContentResolverRepository;
+    private final AppDatabase database;
+    private final Context context;
+    private final ContactDetailsRepository contactDetailsContentResolverRepository;
 
     public ContactLocationRepository(@NonNull AppDatabase database,
                                      @NonNull Context context,

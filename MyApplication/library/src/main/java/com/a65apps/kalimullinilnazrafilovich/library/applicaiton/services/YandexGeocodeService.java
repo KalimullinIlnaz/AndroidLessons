@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class YandexGeocodeService {
     private static final String BASE_URL = "https://geocode-maps.yandex.ru/";
     private static YandexGeocodeService mInstance;
-    private final transient Retrofit mRetrofit;
+    private final Retrofit mRetrofit;
 
     private YandexGeocodeService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

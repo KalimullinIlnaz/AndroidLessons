@@ -7,8 +7,8 @@ checkstyle {
 }
 
 pmd {
-    consoleOutput = true
-    toolVersion = "6.21.0"
+    toolVersion = '6.8.0'
+    ruleSets = []
 }
 
 android {
@@ -57,15 +57,19 @@ task checkstyle(type: Checkstyle) {
 }
 
 task pmd(type: Pmd) {
-    source = fileTree('src/main/java/')
+    description 'Identifying potential problems mainly dead code, duplicated code, cyclomatic complexity and overcomplicated expressions'
+    group 'verification'
     ruleSetFiles = files("$project.rootDir/config/pmd/rules-pmd.xml")
-    ignoreFailures = false
+    source = fileTree('src/main/java')
+    include '**/*.java'
+    exclude '**/gen/**'
+
     reports {
         xml.enabled = false
         html.enabled = true
+        html.destination file("$project.buildDir/outputs/pmd/pmd.html")
     }
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

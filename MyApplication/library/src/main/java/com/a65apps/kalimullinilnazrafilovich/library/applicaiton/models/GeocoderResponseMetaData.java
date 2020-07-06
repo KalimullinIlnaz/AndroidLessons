@@ -6,7 +6,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GeocoderResponseMetaData {
-
     @SerializedName("Point")
     @Expose
     private Point point;
@@ -55,5 +54,4 @@ public class GeocoderResponseMetaData {
     public void setFound(@NonNull String found) {
         this.found = found;
     }
-
 }
