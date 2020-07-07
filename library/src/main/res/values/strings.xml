@@ -15,7 +15,7 @@
     <string name="text_notification">сегодня празднует день рождения</string>
     <string name="deny_permission_message">Пожалуйста предоставте разрешение на чтение контактов</string>
     <string name="google_maps_key">yy</string>
-    <string name="yandex_maps_key">uu</string>
+    <string name="yandex_maps_key">qq</string>
     <string name="title_toolbar_contact_details">Детали контактов</string>
     <string name="tittle_toolbar_contact_list">Список контактов</string>
     <string name="title_toolbar_map">Местоположение</string>

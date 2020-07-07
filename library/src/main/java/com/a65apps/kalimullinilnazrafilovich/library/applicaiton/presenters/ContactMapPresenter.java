@@ -52,7 +52,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 contactDetailsInteractor.loadDetailsContact(id)
                         .flatMap(contact -> contactLocationInteractor.
                                 createOrUpdateContactLocationByCoordinate(contact,
-                                        point.latitude, point.longitude))
+                                        point.longitude, point.latitude))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(

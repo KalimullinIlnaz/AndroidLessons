@@ -8,10 +8,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class GoogleRouteResponseDTO {
-
     @SerializedName("routes")
     @Expose
-    private transient List<Route> routes;
+    private List<Route> routes;
 
     @SerializedName("status")
     @Expose
@@ -31,6 +30,10 @@ public class GoogleRouteResponseDTO {
         return routes;
     }
 
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
+
     @NonNull
     public String getPoints() {
         try {
@@ -43,7 +46,7 @@ public class GoogleRouteResponseDTO {
     static class Route {
         @SerializedName("overview_polyline")
         @Expose
-        private transient OverviewPolyline overviewPolyline;
+        private OverviewPolyline overviewPolyline;
 
         @NonNull
         public OverviewPolyline getOverviewPolyline() {

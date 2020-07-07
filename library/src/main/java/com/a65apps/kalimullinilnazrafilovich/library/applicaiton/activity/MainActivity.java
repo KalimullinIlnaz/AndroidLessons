@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -21,6 +20,7 @@ import moxy.MvpAppCompatActivity;
 
 public class MainActivity extends MvpAppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private static final int MIN_VERSION_SDK = 23;
 
     private boolean firstCreateMainActivity;
     private String id;
@@ -34,7 +34,7 @@ public class MainActivity extends MvpAppCompatActivity {
         firstCreateMainActivity = savedInstanceState == null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -46,7 +46,6 @@ public class MainActivity extends MvpAppCompatActivity {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestPermission() {
         int permissionStatus = ContextCompat.checkSelfPermission(
                 this,
@@ -54,8 +53,10 @@ public class MainActivity extends MvpAppCompatActivity {
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
             openFragment();
         } else {
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                    PERMISSIONS_REQUEST_READ_CONTACTS);
+            if (Build.VERSION.SDK_INT >= MIN_VERSION_SDK) {
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                        PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
         }
     }
 

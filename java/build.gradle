@@ -8,6 +8,7 @@ checkstyle {
 
 pmd {
     toolVersion = '6.8.0'
+    ruleSets = []
 }
 
 repositories {

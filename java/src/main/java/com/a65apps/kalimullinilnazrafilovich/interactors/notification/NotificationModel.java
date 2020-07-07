@@ -12,10 +12,10 @@ public class NotificationModel implements NotificationInteractor {
     private static final int FEBRUARY_29 = 29;
     private static final int NEXT_LEAP_YEAR = 4;
 
-    private final transient NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-    private final transient CurrentTime currentTime;
-    private final transient GregorianCalendar birthdayGregorianCalendar;
+    private final CurrentTime currentTime;
+    private final GregorianCalendar birthdayGregorianCalendar;
 
     public NotificationModel(
             NotificationRepository notificationRepository,

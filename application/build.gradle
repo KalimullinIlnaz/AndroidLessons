@@ -81,7 +81,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //Decode route points
-    implementation 'com.google.maps.android:android-maps-utils:2.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:2.0.3'
 
     //Google Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

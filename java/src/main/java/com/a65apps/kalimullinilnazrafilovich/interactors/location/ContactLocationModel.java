@@ -8,7 +8,7 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 
 public class ContactLocationModel implements ContactLocationInteractor {
-    private final transient LocationRepository locationRepository;
+    private final LocationRepository locationRepository;
 
     public ContactLocationModel(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;

@@ -120,7 +120,11 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     //FullMapView
     @Override
     public void showMarkers(@NonNull List<Location> locations) {
-        mapWorkDelegate.setMarkers(locations);
+        if (locations.isEmpty()) {
+            Toast.makeText(getContext(), "Отсутствуют местоположения контактов", Toast.LENGTH_SHORT).show();
+        } else {
+            mapWorkDelegate.setMarkers(locations);
+        }
     }
 
     //FullMapView
