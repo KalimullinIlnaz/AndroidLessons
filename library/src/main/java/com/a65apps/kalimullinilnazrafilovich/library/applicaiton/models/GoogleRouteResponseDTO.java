@@ -30,7 +30,7 @@ public class GoogleRouteResponseDTO {
         return routes;
     }
 
-    public void setRoutes(List<Route> routes) {
+    public void setRoutes(@NonNull List<Route> routes) {
         this.routes = routes;
     }
 
