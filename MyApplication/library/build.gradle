@@ -66,7 +66,6 @@ task pmd(type: Pmd) {
     source = fileTree('src/main/java')
     include '**/*.java'
     exclude '**/gen/**'
-    ignoreFailures = false
 
     reports {
         xml.enabled = false
@@ -74,6 +73,7 @@ task pmd(type: Pmd) {
         html.destination file("$project.buildDir/outputs/pmd/pmd.html")
     }
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -87,11 +87,6 @@ dependencies {
     //JUnit
     testImplementation('junit:junit:4.13')
     testImplementation 'androidx.test.ext:junit:1.1.1'
-
-
-    //Glide
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     //Butter Knife
     implementation 'com.jakewharton:butterknife:10.2.1'

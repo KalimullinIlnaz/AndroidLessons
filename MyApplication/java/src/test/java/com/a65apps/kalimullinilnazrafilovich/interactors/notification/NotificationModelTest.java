@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+@SuppressWarnings("PMD")
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationModelTest {
     public static final int YEAR_1999 = 1999;

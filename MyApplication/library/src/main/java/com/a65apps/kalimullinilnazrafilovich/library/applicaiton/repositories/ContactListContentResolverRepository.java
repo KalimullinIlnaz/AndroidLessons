@@ -67,7 +67,7 @@ public class ContactListContentResolverRepository implements ContactListReposito
                 null, null);
         try {
             String telephoneNumber = "";
-            if (pCur != null){
+            if (pCur != null) {
                 pCur.moveToNext();
                 telephoneNumber = pCur.getString(
                         pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));

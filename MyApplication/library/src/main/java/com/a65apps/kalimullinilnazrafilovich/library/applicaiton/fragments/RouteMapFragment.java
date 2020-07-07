@@ -13,20 +13,16 @@ import androidx.annotation.Nullable;
 
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.delegate.route.MapWorkDelegate;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.MapRouteContainer;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.RouteMapPresenter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.RouteMapView;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,8 +35,6 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapView, OnMapReadyCallback {
-    private static final int ZOOM = 25;
-
     @Inject
     @NonNull
     public Provider<RouteMapPresenter> fullMapPresenterProvider;
@@ -48,10 +42,12 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     @NonNull
     public RouteMapPresenter routeMapPresenter;
 
-    private GoogleMap map;
+    private MapWorkDelegate mapWorkDelegate;
 
     private boolean fromMarker = false;
     private boolean toMarker = false;
+
+    private GoogleMap googleMap;
 
     private Point from;
     private Point to;
@@ -96,11 +92,11 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     //OnMapReadyCallback
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        map = googleMap;
+        mapWorkDelegate = new MapWorkDelegate(getActivity(), googleMap);
 
         routeMapPresenter.showMarkers();
 
-        map.setOnMarkerClickListener(marker -> {
+        googleMap.setOnMarkerClickListener(marker -> {
             if (!fromMarker && !toMarker) {
                 from = new Point(
                         marker.getPosition().latitude,
@@ -126,52 +122,19 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     //FullMapView
     @Override
     public void showMarkers(@NonNull List<Location> locations) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Location curLocation : locations) {
-            setMarker(new LatLng(curLocation.getPoint().getLatitude(),
-                    curLocation.getPoint().getLongitude()));
-            builder.include(new LatLng(curLocation.getPoint().getLatitude(),
-                    curLocation.getPoint().getLongitude()));
-        }
-        setCamOnMarkers(builder.build());
+        mapWorkDelegate.setMarkers(locations);
     }
 
     //FullMapView
     @Override
     public void showRoute(@NonNull List<LatLng> points) {
-        drawRoute(points);
+        mapWorkDelegate.drawRoute(points);
     }
 
     //FullMapView
     @Override
     public void showMessageNoRoute() {
         Toast.makeText(getContext(), R.string.no_route_message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void drawRoute(@NonNull List<LatLng> mPoints) {
-        PolylineOptions line = new PolylineOptions();
-        LatLngBounds.Builder latLngBuilder = new LatLngBounds.Builder();
-
-        for (int i = 0; i < mPoints.size(); i++) {
-            line.add(mPoints.get(i));
-            latLngBuilder.include(mPoints.get(i));
-        }
-
-        map.addPolyline(line);
-
-        LatLngBounds latLngBounds = latLngBuilder.build();
-
-        setCamOnMarkers(latLngBounds);
-    }
-
-    private void setMarker(@NonNull LatLng marker) {
-        map.addMarker(new MarkerOptions().position(marker));
-    }
-
-    private void setCamOnMarkers(@NonNull LatLngBounds bounds) {
-        int size = getResources().getDisplayMetrics().widthPixels;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, size, size, ZOOM);
-        map.moveCamera(cameraUpdate);
     }
 }
 
