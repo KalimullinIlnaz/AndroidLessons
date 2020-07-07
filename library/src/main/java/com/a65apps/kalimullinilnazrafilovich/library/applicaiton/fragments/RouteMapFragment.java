@@ -47,8 +47,6 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     private boolean fromMarker = false;
     private boolean toMarker = false;
 
-    private GoogleMap googleMap;
-
     private Point from;
     private Point to;
 
