@@ -20,8 +20,8 @@ before_install:
   - yes | sdkmanager "platforms;android-27"
 
 script:
-  - ./gradlew assembleDebug
-  - ./gradlew checkstyle
-  - ./gradlew lint
-  - ./gradlew pmd
-  - ./gradlew test
+  - gradlew assembleDebug
+  - gradlew checkstyle
+  - gradlew lint
+  - gradlew pmd
+  - gradlew test
