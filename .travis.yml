@@ -15,8 +15,8 @@ before_install:
   - chmod +x gradlew
 
 script:
-  - ./gradlew assembleDebug
   - ./gradlew checkstyle
   - ./gradlew lint
   - ./gradlew pmd
+  - ./gradlew build
   - ./gradlew test
