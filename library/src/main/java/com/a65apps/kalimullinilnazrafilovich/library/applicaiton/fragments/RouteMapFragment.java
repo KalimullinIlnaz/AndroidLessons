@@ -121,7 +121,7 @@ public class RouteMapFragment extends MvpAppCompatFragment implements RouteMapVi
     @Override
     public void showMarkers(@NonNull List<Location> locations) {
         if (locations.isEmpty()) {
-            Toast.makeText(getContext(), "Отсутствуют местоположения контактов", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.no_contact_locations, Toast.LENGTH_SHORT).show();
         } else {
             mapWorkDelegate.setMarkers(locations);
         }
