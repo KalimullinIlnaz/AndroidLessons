@@ -47,7 +47,10 @@ public class ContactListContentResolverRepository implements ContactListReposito
                     String name = cursor.getString(
                             cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-                    String telephoneNumber = readTelephoneNumbers(id);
+                    String telephoneNumber = "";
+                    if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                        telephoneNumber = readTelephoneNumbers(id);
+                    }
 
                     contactShortInfoList.add(new ContactShortInfo(id, name, telephoneNumber));
                 }

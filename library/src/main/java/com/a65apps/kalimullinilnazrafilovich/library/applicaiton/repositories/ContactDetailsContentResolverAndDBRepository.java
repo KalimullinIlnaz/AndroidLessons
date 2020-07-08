@@ -61,11 +61,15 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
 
                 String birthOfDay = readDataOfBirth(id);
 
-                List<String> telephoneNumbers = readTelephoneNumbers(id);
+                List<String> telephoneNumbers = new ArrayList<>();
                 List<String> emails = readEmails(id);
 
-                String firstTelephoneNumber = telephoneNumbers.get(0);
-                String secondTelephoneNumber = telephoneNumbers.size() > 1 ? telephoneNumbers.get(0) : "";
+                if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    telephoneNumbers = readTelephoneNumbers(id);
+                }
+
+                String firstTelephoneNumber = telephoneNumbers.isEmpty() ? "" : telephoneNumbers.get(0);
+                String secondTelephoneNumber = telephoneNumbers.size() > 1 ? telephoneNumbers.get(1) : "";
                 String firstEmail = !emails.isEmpty() ? emails.get(0) : "";
                 String secondEmail = emails.size() > 1 ? emails.get(1) : "";
 
