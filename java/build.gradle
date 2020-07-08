@@ -1,0 +1,58 @@
+apply plugin: 'java'
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+
+checkstyle {
+    toolVersion = '8.1'
+}
+
+pmd {
+    toolVersion = '6.8.0'
+    ruleSets = []
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //RxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.4"
+    
+    //JUnit
+    testImplementation('junit:junit:4.13')
+
+    //Mockito
+    testImplementation('org.mockito:mockito-core:3.3.3')
+}
+
+task checkstyle(type: Checkstyle) {
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    // empty classpath
+    classpath = files()
+}
+
+task pmd(type: Pmd) {
+    description 'Identifying potential problems mainly dead code, duplicated code, cyclomatic complexity and overcomplicated expressions'
+    group 'verification'
+    ruleSetFiles = files("${rootDir}/config/pmd/rules-pmd.xml")
+    source = fileTree('src/main/java')
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        html.destination file("$project.buildDir/outputs/pmd/pmd.html")
+    }
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
