@@ -201,6 +201,7 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
         try {
             gregorianCalendar.setTime(Objects.requireNonNull(df.parse(birthOfDay)));
         } catch (ParseException e) {
+            gregorianCalendar.setTimeInMillis(0);
             Log.e(this.getClass().getName(), e.toString());
         }
         return gregorianCalendar;

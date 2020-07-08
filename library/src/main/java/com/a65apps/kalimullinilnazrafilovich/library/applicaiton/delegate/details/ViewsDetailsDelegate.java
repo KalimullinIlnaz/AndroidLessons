@@ -56,10 +56,14 @@ public class ViewsDetailsDelegate {
 
     @NonNull
     private String parseDateToString(@NonNull GregorianCalendar gregorianCalendar) {
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        df.setCalendar(gregorianCalendar);
-        return df.format(gregorianCalendar.getTime());
+        if (gregorianCalendar.getTimeInMillis() == 0) {
+            return "";
+        } else {
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            df.setCalendar(gregorianCalendar);
+            return df.format(gregorianCalendar.getTime());
+        }
     }
 
     public void unBind() {
