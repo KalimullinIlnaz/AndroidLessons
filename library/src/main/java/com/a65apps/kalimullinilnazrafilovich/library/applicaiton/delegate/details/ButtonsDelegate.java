@@ -64,7 +64,7 @@ public class ButtonsDelegate implements CompoundButton.OnCheckedChangeListener {
     }
 
     private void openMapFragment() {
-        ContactMapFragment contactMapFragment = ContactMapFragment.newInstance(contactDetailsInfo.getId());
+        ContactMapFragment contactMapFragment = ContactMapFragment.newInstance(contactDetailsInfo.getContactShortInfo().getId());
         FragmentTransaction fragmentTransaction = Objects.requireNonNull(fragmentActivity).
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content, contactMapFragment).addToBackStack(null).commit();
@@ -72,7 +72,7 @@ public class ButtonsDelegate implements CompoundButton.OnCheckedChangeListener {
 
     private void setStatusToggleBtn(@NonNull ToggleButton toggleButton) {
         birthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo);
-        toggleButton.setChecked(birthdayNotification.isNotificationWorkStatusBoolean());
+        toggleButton.setChecked(birthdayNotification.getNotificationWorkStatus());
         toggleButton.setOnCheckedChangeListener(this);
     }
 

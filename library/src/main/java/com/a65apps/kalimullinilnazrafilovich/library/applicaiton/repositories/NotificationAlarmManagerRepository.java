@@ -55,7 +55,7 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
     @NonNull
     public BirthdayNotification getBirthdayNotificationEntity(@NonNull ContactDetailsInfo contactDetailsInfo,
                                                               @Nullable GregorianCalendar gregorianCalendar) {
-        boolean status = PendingIntent.getBroadcast(context, contactDetailsInfo.getId().hashCode(),
+        boolean status = PendingIntent.getBroadcast(context, contactDetailsInfo.getContactShortInfo().getId().hashCode(),
                 new Intent(BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null;
 
@@ -66,12 +66,12 @@ public class NotificationAlarmManagerRepository implements NotificationRepositor
     private PendingIntent createPendingIntentForContact(@NonNull ContactDetailsInfo contactDetailsInfo) {
         Intent intent = new Intent(BROAD_ACTION);
 
-        intent.putExtra("id", contactDetailsInfo.getId());
-        intent.putExtra("textReminder", contactDetailsInfo.getName()
+        intent.putExtra("id", contactDetailsInfo.getContactShortInfo().getId());
+        intent.putExtra("textReminder", contactDetailsInfo.getContactShortInfo().getName()
                 + " "
                 + context.getString(R.string.text_notification));
 
-        return PendingIntent.getBroadcast(context, contactDetailsInfo.getId().hashCode(), intent, 0);
+        return PendingIntent.getBroadcast(context, contactDetailsInfo.getContactShortInfo().getId().hashCode(), intent, 0);
     }
 
 

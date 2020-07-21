@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.core.Single;
+import kotlinx.coroutines.flow.Flow;
 
 public class ContactDetailsContentResolverAndDBRepository implements ContactDetailsRepository {
     private static final int INFO_EXISTS = 1;
@@ -41,7 +42,7 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
 
     @Override
     @NonNull
-    public Single<ContactDetailsInfo> getDetailsContact(@NonNull String id) {
+    public Flow<ContactDetailsInfo> getDetailsContact(@NonNull String id) {
         return Single.fromCallable(() -> getDataFromDB(getDetails(id)));
     }
 
@@ -170,18 +171,18 @@ public class ContactDetailsContentResolverAndDBRepository implements ContactDeta
     @NonNull
     private ContactDetailsInfo getDataFromDB(@NonNull ContactDetailsInfo contactDetailsInfo) {
         ContactShortInfo contactShortInfo = new ContactShortInfo(
-                contactDetailsInfo.getId(),
-                contactDetailsInfo.getName(),
-                contactDetailsInfo.getTelephoneNumber()
+                contactDetailsInfo.getContactShortInfo().getId(),
+                contactDetailsInfo.getContactShortInfo().getName(),
+                contactDetailsInfo.getContactShortInfo().getTelephoneNumber()
         );
 
-        if (database.locationDao().isExists(contactDetailsInfo.getId()) == INFO_EXISTS) {
+        if (database.locationDao().isExists(contactDetailsInfo.getContactShortInfo().getId()) == INFO_EXISTS) {
             Point point = new Point(
-                    database.locationDao().getById(contactDetailsInfo.getId()).getLatitude(),
-                    database.locationDao().getById(contactDetailsInfo.getId()).getLongitude());
+                    database.locationDao().getById(contactDetailsInfo.getContactShortInfo().getId()).getLatitude(),
+                    database.locationDao().getById(contactDetailsInfo.getContactShortInfo().getId()).getLongitude());
 
             Location location = new Location(contactDetailsInfo,
-                    database.locationDao().getById(contactDetailsInfo.getId()).getAddress(),
+                    database.locationDao().getById(contactDetailsInfo.getContactShortInfo().getId()).getAddress(),
                     point);
 
 

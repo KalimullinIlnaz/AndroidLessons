@@ -4,9 +4,6 @@ package com.a65apps.kalimullinilnazrafilovich.application.map;
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.application.scope.MapScope;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationModel;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;

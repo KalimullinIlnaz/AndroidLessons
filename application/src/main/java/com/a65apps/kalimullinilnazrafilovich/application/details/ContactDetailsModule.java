@@ -3,9 +3,6 @@ package com.a65apps.kalimullinilnazrafilovich.application.details;
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.application.scope.ContactDetailsScope;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactDetailsPresenter;
 

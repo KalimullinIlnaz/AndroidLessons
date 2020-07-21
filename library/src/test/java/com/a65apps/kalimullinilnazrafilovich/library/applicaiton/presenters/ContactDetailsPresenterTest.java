@@ -1,13 +1,6 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters;
 
-import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification;
-import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
-import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar;
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel;
-import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime;
 
 import org.junit.Assert;

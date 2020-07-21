@@ -43,10 +43,10 @@ public class ViewsDetailsDelegate {
 
     public void setViews(@NonNull ContactDetailsInfo contactDetailsInfo) {
         if (name != null) {
-            name.setText(contactDetailsInfo.getName());
+            name.setText(contactDetailsInfo.getContactShortInfo().getName());
             dataOfBirth.setText(parseDateToString(contactDetailsInfo.getDateOfBirth()));
             address.setText(contactDetailsInfo.getLocation().getAddress());
-            telephoneNumber.setText(contactDetailsInfo.getTelephoneNumber());
+            telephoneNumber.setText(contactDetailsInfo.getContactShortInfo().getTelephoneNumber());
             telephoneNumber2.setText(contactDetailsInfo.getTelephoneNumber2());
             email.setText(contactDetailsInfo.getEmail());
             email2.setText(contactDetailsInfo.getEmail2());

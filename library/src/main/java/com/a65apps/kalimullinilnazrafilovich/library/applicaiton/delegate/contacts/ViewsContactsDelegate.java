@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactListAdapter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ItemDecoration;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactDetailsFragment;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.RouteMapFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R2;

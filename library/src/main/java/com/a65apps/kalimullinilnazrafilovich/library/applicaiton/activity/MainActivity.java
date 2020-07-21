@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactDetailsFragment;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactListFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
