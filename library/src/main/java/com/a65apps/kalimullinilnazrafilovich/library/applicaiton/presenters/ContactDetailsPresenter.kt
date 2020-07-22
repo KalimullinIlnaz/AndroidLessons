@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import moxy.InjectViewState
-
 import moxy.MvpPresenter
-import java.lang.Exception
 import javax.inject.Inject
 
 @InjectViewState
@@ -30,7 +28,7 @@ class ContactDetailsPresenter @Inject constructor(
                         ?.flowOn(Dispatchers.IO)
                         ?.collect { contact ->
                             viewState?.showContactDetail(contact)
-                            Log.e(this.javaClass.simpleName,contact.contactShortInfo?.name)
+                            Log.e(this.javaClass.simpleName, contact.contactShortInfo?.name!!)
                             println(contact.contactShortInfo?.name)
                         }
             }

@@ -30,7 +30,6 @@ class ContactMapPresenter @Inject constructor(
                 contactDetailsInteractor.loadDetailsContact(id)
                         .flowOn(Dispatchers.IO)
                         .collect { contact ->
-                            run {
                                 if (contact.location?.address.equals("")) {
                                     viewState.showMapMarker(LatLng(0.0, 0.0))
                                 } else {
@@ -41,7 +40,6 @@ class ContactMapPresenter @Inject constructor(
                                             )
                                     )
                                 }
-                            }
                         }
             }
         } catch (e: Exception) {
@@ -65,9 +63,7 @@ class ContactMapPresenter @Inject constructor(
                             }
                         }
                         .collect{
-                            run {
                                 viewState.showMapMarker(point)
-                            }
                         }
             }
         } catch (e: Exception) {

@@ -186,10 +186,10 @@ class ContactDetailsContentResolverAndDBRepository(
 
 
     private fun stringToGregorianCalendar(birthOfDay: String?): GregorianCalendar {
-        val df = SimpleDateFormat("yyyy-MM-dd")
+        val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val gregorianCalendar = GregorianCalendar()
         try {
-            gregorianCalendar.time = df.parse(birthOfDay)
+            gregorianCalendar.time = df.parse(birthOfDay!!)!!
         } catch (e: ParseException) {
             gregorianCalendar.timeInMillis = 0
             Log.e(this.javaClass.name, e.toString())
@@ -197,7 +197,6 @@ class ContactDetailsContentResolverAndDBRepository(
 
         return gregorianCalendar
     }
-
 
     private fun createNewContact(contactShortInfo: ContactShortInfo?,
                                  contactDetailsInfoDetails: ContactDetailsInfo?,

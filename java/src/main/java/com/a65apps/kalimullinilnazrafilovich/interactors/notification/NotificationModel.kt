@@ -18,7 +18,7 @@ class NotificationModel(
 
     override fun onBirthdayNotification(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
         return if (birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
-            setBirthdayReminder(contactDetailsInfo)
+            setBirthdayReminderForLeapYear(contactDetailsInfo)
         } else {
             setBirthdayReminder(contactDetailsInfo)
         }
@@ -37,7 +37,7 @@ class NotificationModel(
 
         if (currentTime!!.now() > gregorianCalendar!!.time.time
                 && !(gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY
-                        && gregorianCalendar.get(Calendar.DATE) == FEBRUARY_29)) {
+                        && gregorianCalendar.get(Calendar.DAY_OF_MONTH) == FEBRUARY_29)) {
             gregorianCalendar.add(Calendar.YEAR, 1)
         }
 
@@ -48,8 +48,8 @@ class NotificationModel(
         val gregorianCalendar = createGregorianCalendarForContact(contactDetailsInfo)
 
         if (currentTime!!.now() > gregorianCalendar!!.time.time
-                && gregorianCalendar.get(Calendar.MONTH) == Calendar.FEBRUARY
-                && gregorianCalendar.get(Calendar.DATE) == FEBRUARY_29) {
+                && contactDetailsInfo?.dateOfBirth?.get(Calendar.MONTH) == Calendar.FEBRUARY
+                && contactDetailsInfo.dateOfBirth.get(Calendar.DAY_OF_MONTH) == FEBRUARY_29) {
             gregorianCalendar.add(Calendar.YEAR, NEXT_LEAP_YEAR)
         } else {
             gregorianCalendar.add(Calendar.YEAR, 1)
@@ -61,7 +61,7 @@ class NotificationModel(
     private fun createGregorianCalendarForContact(contactDetailsInfo: ContactDetailsInfo?): GregorianCalendar? {
         if (contactDetailsInfo?.dateOfBirth?.get(Calendar.DAY_OF_MONTH) == FEBRUARY_29) {
             birthdayGregorianCalendar?.set(GregorianCalendar.YEAR, birthdayGregorianCalendar.get(Calendar.YEAR))
-            while (birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
+            while (!birthdayGregorianCalendar.isLeapYear(birthdayGregorianCalendar.get(GregorianCalendar.YEAR))) {
                 birthdayGregorianCalendar?.add(Calendar.YEAR, 1)
             }
         } else {
