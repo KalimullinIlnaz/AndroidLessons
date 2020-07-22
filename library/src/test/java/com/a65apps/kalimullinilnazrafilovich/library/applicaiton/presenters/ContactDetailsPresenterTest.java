@@ -21,7 +21,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class ContactDetailsPresenterTest {
     public static final int YEAR_1999 = 1999;

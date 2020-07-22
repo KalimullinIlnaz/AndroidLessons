@@ -15,8 +15,22 @@ repositories {
     jcenter()
 }
 
+test {
+    useJUnitPlatform {
+        includeEngines 'spek2'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // assertion
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+
+    def spek_version = '2.0.12'
+    //spek2
+    testImplementation "org.spekframework.spek2:spek-dsl-jvm:$spek_version"
+    testRuntimeOnly "org.spekframework.spek2:spek-runner-junit5:$spek_version"
 
     //RxJava
     implementation "io.reactivex.rxjava3:rxjava:3.0.4"
@@ -27,7 +41,7 @@ dependencies {
     testImplementation('junit:junit:4.13')
 
     //Mockito
-    testImplementation('org.mockito:mockito-core:3.3.3')
+    testImplementation('org.mockito:mockito-core:3.4.4')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
