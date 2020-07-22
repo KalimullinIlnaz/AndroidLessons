@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactDetailsFragment;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactListFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
@@ -82,7 +83,7 @@ public class MainActivity extends MvpAppCompatActivity {
     }
 
     private void addFragmentContactDetail(@NonNull String id) {
-        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(id);
+        ContactDetailsFragment contactDetailsFragment = new ContactDetailsFragment().newInstance(id);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();

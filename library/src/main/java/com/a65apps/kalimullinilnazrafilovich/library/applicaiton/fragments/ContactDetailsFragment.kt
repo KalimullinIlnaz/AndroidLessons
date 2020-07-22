@@ -60,7 +60,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_contact_details, container, false)
-        activity?.title = R.string.title_toolbar_contact_details.toString()
+        activity?.title = getString(R.string.title_toolbar_contact_details)
 
         viewsDetailsDelegate = ViewsDetailsDelegate(view)
         buttonsDelegate = ButtonsDelegate(view, activity!!, contactDetailsPresenter)
@@ -69,7 +69,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
 
         id = arguments?.getString("id")
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

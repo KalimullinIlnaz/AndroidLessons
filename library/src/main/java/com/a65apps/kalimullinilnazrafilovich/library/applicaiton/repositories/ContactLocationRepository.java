@@ -9,7 +9,6 @@ import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo;
 import com.a65apps.kalimullinilnazrafilovich.entities.Location;
 import com.a65apps.kalimullinilnazrafilovich.entities.Point;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
-import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.mapper.YandexDTOMapper;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationOrm;

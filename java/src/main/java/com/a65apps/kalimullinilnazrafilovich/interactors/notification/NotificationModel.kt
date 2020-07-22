@@ -69,7 +69,7 @@ class NotificationModel(
         }
 
         birthdayGregorianCalendar.set(GregorianCalendar.DAY_OF_MONTH,
-                contactDetailsInfo!!.dateOfBirth.get(GregorianCalendar.DAY_OF_MONTH))
+                contactDetailsInfo?.dateOfBirth!!.get(GregorianCalendar.DAY_OF_MONTH))
         birthdayGregorianCalendar.set(GregorianCalendar.MONTH,
                 contactDetailsInfo.dateOfBirth.get(GregorianCalendar.MONTH))
 

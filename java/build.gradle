@@ -1,4 +1,3 @@
-apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
@@ -22,7 +21,7 @@ dependencies {
     //RxJava
     implementation "io.reactivex.rxjava3:rxjava:3.0.4"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8"
     
     //JUnit
     testImplementation('junit:junit:4.13')

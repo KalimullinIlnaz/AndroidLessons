@@ -6,10 +6,8 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsI
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactMapView;
 import com.google.android.gms.maps.model.LatLng;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
@@ -28,7 +26,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     }
 
     public void showMarker(@NonNull String id) {
-        compositeDisposable
+/*        compositeDisposable
                 .add(contactDetailsInteractor.loadDetailsContact(id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -44,11 +42,11 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                                                         contact.getLocation().getPoint().getLongitude()));
                                     }
                                 }, Throwable::printStackTrace)
-                );
+                );*/
     }
 
     public void getLocationMapClick(@NonNull String id, @NonNull LatLng point) {
-        compositeDisposable.add(
+/*        compositeDisposable.add(
                 contactDetailsInteractor.loadDetailsContact(id)
                         .flatMap(contact -> contactLocationInteractor.
                                 createOrUpdateContactLocationByCoordinate(contact,
@@ -59,7 +57,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                                 (address) -> getViewState().showMapMarker(point),
                                 Throwable::printStackTrace
                         )
-        );
+        );*/
     }
 
     @Override

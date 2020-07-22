@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListRepository;
-import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase;
@@ -13,7 +13,6 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.Co
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactListContentResolverRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.ContactLocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.GeocodeRouteRepository;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories.NotificationAlarmManagerRepository;
 
 import javax.inject.Singleton;
 

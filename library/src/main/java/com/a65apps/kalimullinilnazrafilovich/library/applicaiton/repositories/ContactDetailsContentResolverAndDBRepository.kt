@@ -10,6 +10,7 @@ import com.a65apps.kalimullinilnazrafilovich.entities.Point
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,29 +20,32 @@ class ContactDetailsContentResolverAndDBRepository(
         private val db: AppDatabase
 ) : ContactDetailsRepository {
     private val INFO_EXISTS = 1
-    private val EQUAL = "="
+    private val EQUAL = " = "
 
-    private val contentProvider = context.contentResolver
+    private val contentResolver = context.contentResolver
 
     override fun getDetailsContact(id: String?): Flow<ContactDetailsInfo> {
-        TODO("Not yet implemented")
+        return flow {
+            emit(getContactDetailsFromDB(getContactDetails(id = id)))
+        }
     }
 
-    private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo?): ContactDetailsInfo? {
+    private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo?): ContactDetailsInfo {
         val contactShortInfo = ContactShortInfo(
                 contactDetailsInfo?.contactShortInfo?.id,
                 contactDetailsInfo?.contactShortInfo?.name,
                 contactDetailsInfo?.contactShortInfo?.telephoneNumber
         )
-        if (db.locationDao().isExists(contactShortInfo.id) == INFO_EXISTS){
+
+        if (db.locationDao().isExists(contactShortInfo.id) == INFO_EXISTS) {
             val point = Point(
-                    db.locationDao().getById(contactShortInfo.id).latitude,
-                    db.locationDao().getById(contactShortInfo.id).longitude
+                    db.locationDao().getById(contactShortInfo.id)?.latitude,
+                    db.locationDao().getById(contactShortInfo.id)?.longitude
             )
 
             val location = Location(
                     contactDetailsInfo,
-                    db.locationDao().getById(contactShortInfo.id).address,
+                    db.locationDao().getById(contactShortInfo.id)?.address,
                     point
             )
 
@@ -67,7 +71,7 @@ class ContactDetailsContentResolverAndDBRepository(
     }
 
     private fun getContactDetails(id: String?): ContactDetailsInfo {
-        val cursor = contentProvider.query(
+        val cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
                 null,
                 ContactsContract.Contacts._ID + EQUAL + id,
@@ -85,13 +89,13 @@ class ContactDetailsContentResolverAndDBRepository(
             var telephoneNumbers = listOf<String>()
             val emails = readEmails(id)
 
-            if (cursor?.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0){
+            if (cursor?.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))!! > 0) {
                 telephoneNumbers = readTelephoneNumbers(id)
             }
 
             val firstTelephoneNumber = if (telephoneNumbers.isEmpty()) "" else telephoneNumbers[0]
             val secondTelephoneNumber = if (telephoneNumbers.size > 1) telephoneNumbers[1] else ""
-            val firstEmail = if (!emails.isEmpty()) emails[0] else ""
+            val firstEmail = if (emails.isNotEmpty()) emails[0] else ""
             val secondEmail = if (emails.size > 1) emails[1] else ""
 
             val contactShortInfo = ContactShortInfo(
@@ -113,20 +117,22 @@ class ContactDetailsContentResolverAndDBRepository(
     }
 
     private fun readTelephoneNumbers(id: String?): List<String> {
-        val telephoneNumberCursor = contentProvider.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        val telephoneNumberCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + EQUAL + id,
                 null,
                 null)
 
         telephoneNumberCursor.use {
-            val telephoneNumbersList = arrayListOf<String>()
+            val telephoneNumbersList = mutableListOf<String>()
             if (telephoneNumberCursor != null) {
-                while (telephoneNumberCursor.moveToNext()){
-                    telephoneNumbersList.toMutableList().add(
-                            telephoneNumberCursor.getColumnIndex(
-                                    ContactsContract.CommonDataKinds.Phone.NUMBER
-                            ).toString()
+                while (telephoneNumberCursor.moveToNext()) {
+                    telephoneNumbersList.add(
+                            telephoneNumberCursor.getString(
+                                    telephoneNumberCursor.getColumnIndex(
+                                            ContactsContract.CommonDataKinds.Phone.NUMBER
+                                    )
+                            )
                     )
                 }
             }
@@ -134,19 +140,18 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun readEmails(id: String?): List<String>{
-        val emailCursor = contentProvider.query(
+    private fun readEmails(id: String?): List<String> {
+        val emailCursor = contentResolver.query(
                 ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Email.CONTACT_ID + EQUAL + id,
                 null, null
         )
         emailCursor.use {
-            val emails = arrayListOf<String>()
+            val emails = mutableListOf<String>()
             if (emailCursor != null) {
-                while (emailCursor.moveToNext()){
-                    emails.toMutableList()
-                            .add(emailCursor.getString(
+                while (emailCursor.moveToNext()) {
+                    emails.add(emailCursor.getString(
                                     emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
                             ))
                 }
@@ -155,12 +160,12 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun readDateOfBirth(id: String?): String{
-        val birthDayCursor = contentProvider.query(
+    private fun readDateOfBirth(id: String?): String {
+        val birthDayCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Event.TYPE + EQUAL
-                        + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + "AND"
+                        + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " AND "
                         + ContactsContract.CommonDataKinds.Event.CONTACT_ID + EQUAL + id,
                 null,
                 null
@@ -180,28 +185,30 @@ class ContactDetailsContentResolverAndDBRepository(
     }
 
 
-    private fun stringToGregorianCalendar(birthOfDay: String?){
+    private fun stringToGregorianCalendar(birthOfDay: String?): GregorianCalendar {
         val df = SimpleDateFormat("yyyy-MM-dd")
         val gregorianCalendar = GregorianCalendar()
         try {
-            gregorianCalendar.time(df.parse(birthOfDay))
-        }catch (e: ParseException){
-            gregorianCalendar.timeInMillis(0)
+            gregorianCalendar.time = df.parse(birthOfDay)
+        } catch (e: ParseException) {
+            gregorianCalendar.timeInMillis = 0
             Log.e(this.javaClass.name, e.toString())
         }
+
+        return gregorianCalendar
     }
 
 
     private fun createNewContact(contactShortInfo: ContactShortInfo?,
                                  contactDetailsInfoDetails: ContactDetailsInfo?,
-                                 location: Location?): ContactDetailsInfo? {
+                                 location: Location): ContactDetailsInfo {
         return ContactDetailsInfo(
                 contactShortInfo,
-                contactDetailsInfoDetails.dateOfBirth,
-                contactDetailsInfoDetails.telephoneNumber2,
-                contactDetailsInfoDetails.email,
-                contactDetailsInfoDetails.email2,
-                contactDetailsInfoDetails.description,
+                contactDetailsInfoDetails?.dateOfBirth,
+                contactDetailsInfoDetails?.telephoneNumber2,
+                contactDetailsInfoDetails?.email,
+                contactDetailsInfoDetails?.email2,
+                contactDetailsInfoDetails?.description,
                 location)
     }
 }

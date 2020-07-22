@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ContactListAdapter;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.adapters.ItemDecoration;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactDetailsFragment;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.RouteMapFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R2;
@@ -80,7 +81,7 @@ public class ViewsContactsDelegate implements ContactListAdapter.OnContactListen
     @Override
     public void onContactClick(int position) {
         ContactDetailsFragment contactDetailsFragment =
-                ContactDetailsFragment.newInstance(contactShortInfoList.get(position).getId());
+                new ContactDetailsFragment().newInstance(contactShortInfoList.get(position).getId());
         FragmentManager fragmentManager = Objects.requireNonNull(fragmentActivity).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();
