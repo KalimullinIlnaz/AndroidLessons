@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.a65apps.kalimullinilnazrafilovich.application.scope.MapRouteScope;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationModel;
+import com.a65apps.kalimullinilnazrafilovich.interactors.location.LocationRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.GeocodeRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.route.RouteModel;

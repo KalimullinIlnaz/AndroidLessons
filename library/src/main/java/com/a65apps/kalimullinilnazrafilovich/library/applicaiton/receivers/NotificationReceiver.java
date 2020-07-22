@@ -93,6 +93,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void repeatAlarm(@NonNull String id) {
         PendingResult result = goAsync();
 
+
 /*        contactDetailsInteractor.loadDetailsContact(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

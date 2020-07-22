@@ -13,10 +13,7 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.YandexAd
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services.YandexGeocodeService
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R
 import io.reactivex.rxjava3.core.Single
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContactLocationRepository @Inject constructor(
@@ -25,32 +22,20 @@ class ContactLocationRepository @Inject constructor(
         private val contactDetailsRepository: ContactDetailsRepository?
 ) : LocationRepository {
 
-    override fun insertContactLocation(location: Location?, contactDetailsInfo: ContactDetailsInfo?) {
-        TODO("Not yet implemented")
+    override fun insertContactLocation(location: Location, contactDetailsInfo: ContactDetailsInfo) {
+        val locationOrm = LocationOrm(contactDetailsInfo, location)
+        db?.locationDao()?.insert(locationOrm)
     }
 
     override fun getAllContactLocations(): Flow<List<Location>>? {
         return flow {
-            db?.locationDao()?.getAll()?.flatMap { item ->
-                contactDetailsRepository?.getDetailsContact(item?.contactID)
-                        ?.map { contact ->
-                            Pair(item, contact)
-                        }
-                        .map { pair ->
-                            Location(
-                                    pair.second,
-                                    pair.first?.address,
-                                    Point(
-                                            pair.first?.latitude,
-                                            pair.first?.longitude
-                                    )
-                            )
-                        }
-            }
+            emit(db?.locationDao()?.getAll())
+        }.map {
+            toListLocation(it)
         }
     }
 
-    override fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo?, latitude: Double, longitude: Double): Single<Location> {
+    override fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo, latitude: Double, longitude: Double): Single<Location> {
         val coordinate = "$latitude,$longitude"
 
         return YandexGeocodeService.getInstance()
@@ -60,11 +45,32 @@ class ContactLocationRepository @Inject constructor(
                         context?.resources!!.getString(R.string.yandex_maps_key))
                 .map { responseDTO: YandexAddressResponseDTO? ->
                     YandexDTOMapper().transform(
-                            contactDetailsInfo!!,
+                            contactDetailsInfo,
                             responseDTO!!,
                             latitude,
                             longitude)
                 }
-                .doOnSuccess { location: Location? -> insertContactLocation(location, contactDetailsInfo) }
+                .doOnSuccess { location: Location -> insertContactLocation(location, contactDetailsInfo) }
+    }
+
+    private fun toListLocation(it: List<LocationOrm?>?): List<Location> {
+        val locationList = mutableListOf<Location>()
+        it?.forEach {
+            contactDetailsRepository?.getDetailsContact(it?.contactID)
+                    ?.map { contact ->
+                        {
+                            locationList.add(Location(
+                                    contact,
+                                    it?.address,
+                                    Point(
+                                            it?.latitude,
+                                            it?.latitude
+                                    )
+                            ))
+                        }
+                    }
+        }
+
+        return locationList
     }
 }

@@ -6,10 +6,10 @@ import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
 
 interface LocationRepository {
-    fun insertContactLocation(location: Location?, contactDetailsInfo: ContactDetailsInfo?)
+    fun insertContactLocation(location: Location, contactDetailsInfo: ContactDetailsInfo)
 
     fun getAllContactLocations(): Flow<List<Location>>?
 
-    fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo?,
-                                                  latitude: Double, longitude: Double): Single<Location?>?
+    fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo,
+                                                  latitude: Double, longitude: Double): Single<Location>
 }
