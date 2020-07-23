@@ -14,10 +14,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import moxy.InjectViewState
 import moxy.MvpPresenter
 import java.util.*
 import javax.inject.Inject
 
+@InjectViewState
 class RouteMapPresenter @Inject constructor(
         private val contactLocationInteractor: ContactLocationInteractor,
         private val routeInteractor: RouteInteractor

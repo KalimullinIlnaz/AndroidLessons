@@ -20,14 +20,13 @@ class ContactDetailsPresenter @Inject constructor(
         private val notificationInteractor: NotificationInteractor,
         private val contactDetailsInteractor: ContactDetailsInteractor)
     : MvpPresenter<ContactDetailsView>() {
-
     fun showDetails(id: String) {
         try {
             CoroutineScope(Dispatchers.Main).launch {
                 contactDetailsInteractor.loadDetailsContact(id)
                         .flowOn(Dispatchers.IO)
                         .collect { contact ->
-                            viewState?.showContactDetail(contact)
+                            viewState.showContactDetail(contact)
                         }
             }
         } catch (e: Exception) {

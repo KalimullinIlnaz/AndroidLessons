@@ -12,7 +12,6 @@ import org.spekframework.spek2.style.gherkin.Feature
 import java.util.*
 import kotlin.test.assertEquals
 
-
 object NotificationModelTest : Spek({
     val YEAR_1999 = 1999
     val YEAR_1990 = 1990
@@ -53,7 +52,7 @@ object NotificationModelTest : Spek({
             And("День рождения контакта 9 Сентября 1999 года") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
             }
-            And("Создание контакта с днем рождения 9-го сентября"){
+            And("Создание контакта с днем рождения 9-го сентября") {
                 contactDetailsInfo = ContactDetailsInfo(
                         contactShortInfo,
                         birthdayDate,
@@ -64,7 +63,7 @@ object NotificationModelTest : Spek({
                         null
                 )
             }
-            And("Создания напоминания на 9 сентября 2000 года"){
+            And("Создания напоминания на 9 сентября 2000 года") {
                 testTriggerDate = GregorianCalendar(YEAR_2000, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 expectedBirthdayNotification = BirthdayNotification(
                         contactDetailsInfo,
@@ -86,7 +85,7 @@ object NotificationModelTest : Spek({
                         birthdayCalendar
                 )
 
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
             Then("Напоминание успешно установлено на 2000 год на 8-е сентября") {
@@ -94,15 +93,15 @@ object NotificationModelTest : Spek({
             }
         }
 
-        Scenario("Удаление существующего напоминания"){
-            Given("Сегодня 9-е сентября 1990 года"){
+        Scenario("Удаление существующего напоминания") {
+            Given("Сегодня 9-е сентября 1990 года") {
                 currentDate = GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_9)
                 Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
             }
-            And("День рождения контакта 8-го сентября 1990 года"){
+            And("День рождения контакта 8-го сентября 1990 года") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
             }
-            And("Создание контакта с днем рождения 8-го сентября"){
+            And("Создание контакта с днем рождения 8-го сентября") {
                 contactDetailsInfo = ContactDetailsInfo(
                         contactShortInfo,
                         birthdayDate,
@@ -113,7 +112,7 @@ object NotificationModelTest : Spek({
                         null
                 )
             }
-            And("Создания напоминания cо статусом работы false"){
+            And("Создания напоминания cо статусом работы false") {
                 expectedBirthdayNotification = BirthdayNotification(
                         contactDetailsInfo,
                         false,
@@ -121,30 +120,30 @@ object NotificationModelTest : Spek({
                 Mockito.`when`(notificationRepository.removeBirthdayReminder(contactDetailsInfo))
                         .thenReturn(expectedBirthdayNotification)
             }
-            When("Удаляется напоминание"){
+            When("Удаляется напоминание") {
                 val notificationInteractor = NotificationModel(
                         notificationRepository,
                         currentTime,
                         birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.offBirthdayNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = notificationInteractor.offBirthdayNotification(contactDetailsInfo)
             }
 
-            Then("Происходит успешное удаление напоминания"){
+            Then("Происходит успешное удаление напоминания") {
                 assertEquals(expectedBirthdayNotification, actualBirthdayNotification)
             }
         }
 
-        Scenario("Установить напоминание на день рождения, которого не было в текущем году"){
-            Given("Сегодня 7-е августа 1999 года"){
+        Scenario("Установить напоминание на день рождения, которого не было в текущем году") {
+            Given("Сегодня 7-е августа 1999 года") {
                 currentDate = GregorianCalendar(YEAR_1999, Calendar.AUGUST, DAY_OF_MONTH_7)
                 Mockito.`when`(currentTime.now()).thenReturn(currentDate.time.time)
                 Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
             }
-            And("День рождения контакта 8-го сентября 1990 года"){
+            And("День рождения контакта 8-го сентября 1990 года") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
             }
-            And("Создание контакта"){
+            And("Создание контакта") {
                 contactDetailsInfo = ContactDetailsInfo(
                         contactShortInfo,
                         birthdayDate,
@@ -155,7 +154,7 @@ object NotificationModelTest : Spek({
                         null
                 )
             }
-            And("Создания напоминания"){
+            And("Создания напоминания") {
                 testTriggerDate = GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 expectedBirthdayNotification = BirthdayNotification(
                         contactDetailsInfo,
@@ -169,30 +168,30 @@ object NotificationModelTest : Spek({
                 )).thenReturn(expectedBirthdayNotification)
             }
 
-            When("Устанавливается напоминание"){
+            When("Устанавливается напоминание") {
                 val notificationInteractor = NotificationModel(
                         notificationRepository,
                         currentTime,
                         birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
-            Then("Напоминание успешно установлено на 8-е сентября 1999 года"){
+            Then("Напоминание успешно установлено на 8-е сентября 1999 года") {
                 assertEquals(expectedBirthdayNotification, actualBirthdayNotification)
             }
         }
 
-        Scenario("Установление напоминания для контакта родившегося 29-го февраля"){
-            Given("Сегодня 7-е марта 1999 года"){
+        Scenario("Установление напоминания для контакта родившегося 29-го февраля") {
+            Given("Сегодня 7-е марта 1999 года") {
                 currentDate = GregorianCalendar(YEAR_1999, Calendar.MARCH, DAY_OF_MONTH_7)
                 Mockito.`when`(currentTime.now()).thenReturn(currentDate.time.time)
                 Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
             }
-            And("День рождения контакта 29-го февраля 1992 года"){
+            And("День рождения контакта 29-го февраля 1992 года") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_29)
             }
-            And("Создание контакта"){
+            And("Создание контакта") {
                 contactDetailsInfo = ContactDetailsInfo(
                         contactShortInfo,
                         birthdayDate,
@@ -203,7 +202,7 @@ object NotificationModelTest : Spek({
                         null
                 )
             }
-            And("Создания напоминания"){
+            And("Создания напоминания") {
                 testTriggerDate = GregorianCalendar(YEAR_2000, Calendar.SEPTEMBER, DAY_OF_MONTH_29)
                 expectedBirthdayNotification = BirthdayNotification(
                         contactDetailsInfo,
@@ -217,30 +216,30 @@ object NotificationModelTest : Spek({
                 )).thenReturn(expectedBirthdayNotification)
             }
 
-            When("Устанавливается напоминание"){
+            When("Устанавливается напоминание") {
                 val notificationInteractor = NotificationModel(
                         notificationRepository,
                         currentTime,
                         birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
-            Then("Напоминание успешно установлено на 29-е сентября 2000 года"){
+            Then("Напоминание успешно установлено на 29-е сентября 2000 года") {
                 assertEquals(expectedBirthdayNotification, actualBirthdayNotification)
             }
         }
 
-        Scenario("Установить напоминание для контакта родившегося 29-го февраля в високосный год"){
-            Given("Сегодня 7-е марта 2000 года"){
+        Scenario("Установить напоминание для контакта родившегося 29-го февраля в високосный год") {
+            Given("Сегодня 7-е марта 2000 года") {
                 currentDate = GregorianCalendar(YEAR_2000, Calendar.MARCH, DAY_OF_MONTH_7)
                 Mockito.`when`(currentTime.now()).thenReturn(currentDate.time.time)
                 Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
             }
-            And("День рождения контакта 29-го февраля 1992 года"){
+            And("День рождения контакта 29-го февраля 1992 года") {
                 birthdayDate = GregorianCalendar(YEAR_1992, Calendar.FEBRUARY, DAY_OF_MONTH_29)
             }
-            And("Создание контакта"){
+            And("Создание контакта") {
                 contactDetailsInfo = ContactDetailsInfo(
                         contactShortInfo,
                         birthdayDate,
@@ -251,7 +250,7 @@ object NotificationModelTest : Spek({
                         null
                 )
             }
-            And("Создания напоминания"){
+            And("Создания напоминания") {
                 testTriggerDate = GregorianCalendar(YEAR_2004, Calendar.FEBRUARY, DAY_OF_MONTH_29)
                 expectedBirthdayNotification = BirthdayNotification(
                         contactDetailsInfo,
@@ -265,16 +264,16 @@ object NotificationModelTest : Spek({
                 )).thenReturn(expectedBirthdayNotification)
             }
 
-            When("Устанавливается напоминание"){
+            When("Устанавливается напоминание") {
                 val notificationInteractor = NotificationModel(
                         notificationRepository,
                         currentTime,
                         birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
-            Then("Напоминание успешно установлено на 29-е февраля 2004 года"){
+            Then("Напоминание успешно установлено на 29-е февраля 2004 года") {
                 assertEquals(expectedBirthdayNotification, actualBirthdayNotification)
             }
         }

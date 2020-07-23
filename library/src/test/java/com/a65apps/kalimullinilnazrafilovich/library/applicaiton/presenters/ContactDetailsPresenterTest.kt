@@ -81,7 +81,7 @@ object ContactDetailsPresenterTest1 : Spek({
                         contactDetailsInfo, testTriggerDate)).thenReturn(expectedBirthdayNotification)
             }
             When("Устанавливается напоминание") {
-                actualBirthdayNotification = contactDetailsPresenter.setNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = contactDetailsPresenter.setNotification(contactDetailsInfo)
             }
             Then("Напоминание установлено") {
                 assertEquals(
@@ -102,7 +102,7 @@ object ContactDetailsPresenterTest1 : Spek({
             }
 
             When("Удаляется напоминание") {
-                actualBirthdayNotification = contactDetailsPresenter.removeNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = contactDetailsPresenter.removeNotification(contactDetailsInfo)
             }
             Then("Напоминание удалено") {
                 assertEquals(
@@ -121,10 +121,11 @@ object ContactDetailsPresenterTest1 : Spek({
                         null
                 )
                 Mockito.`when`(notificationRepository.getBirthdayNotificationEntity(
-                        contactDetailsInfo, null)).thenReturn(expectedBirthdayNotification)            }
+                        contactDetailsInfo, null)).thenReturn(expectedBirthdayNotification)
+            }
 
             When("Получение статуса напоминания") {
-                actualBirthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo)!!
+                actualBirthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo)
             }
             Then("Статус получен") {
                 assertEquals(
