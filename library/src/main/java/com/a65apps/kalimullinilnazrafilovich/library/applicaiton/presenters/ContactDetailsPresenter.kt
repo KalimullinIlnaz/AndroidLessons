@@ -17,16 +17,16 @@ import javax.inject.Inject
 
 @InjectViewState
 class ContactDetailsPresenter @Inject constructor(
-        private val notificationInteractor: NotificationInteractor?,
-        private val contactDetailsInteractor: ContactDetailsInteractor?)
+        private val notificationInteractor: NotificationInteractor,
+        private val contactDetailsInteractor: ContactDetailsInteractor)
     : MvpPresenter<ContactDetailsView>() {
 
-    fun showDetails(id: String?) {
+    fun showDetails(id: String) {
         try {
             CoroutineScope(Dispatchers.Main).launch {
-                contactDetailsInteractor?.loadDetailsContact(id)
-                        ?.flowOn(Dispatchers.IO)
-                        ?.collect { contact ->
+                contactDetailsInteractor.loadDetailsContact(id)
+                        .flowOn(Dispatchers.IO)
+                        .collect { contact ->
                             viewState?.showContactDetail(contact)
                         }
             }
@@ -35,16 +35,16 @@ class ContactDetailsPresenter @Inject constructor(
         }
     }
 
-    fun setNotification(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
-        return notificationInteractor?.onBirthdayNotification(contactDetailsInfo)
+    fun setNotification(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
+        return notificationInteractor.onBirthdayNotification(contactDetailsInfo)
     }
 
-    fun removeNotification(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
-        return notificationInteractor?.offBirthdayNotification(contactDetailsInfo)
+    fun removeNotification(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
+        return notificationInteractor.offBirthdayNotification(contactDetailsInfo)
     }
 
-    fun getActualStateBirthdayNotification(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
-        return notificationInteractor?.getNotificationWorkStatus(contactDetailsInfo)
+    fun getActualStateBirthdayNotification(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
+        return notificationInteractor.getNotificationWorkStatus(contactDetailsInfo)
     }
 
 }

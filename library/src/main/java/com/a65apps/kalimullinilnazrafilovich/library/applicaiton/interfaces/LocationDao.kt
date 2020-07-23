@@ -9,14 +9,14 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.Location
 @Dao
 interface LocationDao {
     @Query("SELECT * FROM LocationOrm")
-    fun getAll(): List<LocationOrm?>
+    fun getAll(): List<LocationOrm>
 
     @Query("SELECT * FROM LocationOrm WHERE contact_id = :id")
-    fun getById(id: String?): LocationOrm?
+    fun getById(id: String): LocationOrm
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(location: LocationOrm?)
+    fun insert(location: LocationOrm)
 
     @Query("SELECT EXISTS(SELECT * FROM LocationOrm WHERE contact_id = :id)")
-    fun isExists(id: String?): Int
+    fun isExists(id: String): Int
 }

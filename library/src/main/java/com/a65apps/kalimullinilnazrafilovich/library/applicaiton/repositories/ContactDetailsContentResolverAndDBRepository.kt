@@ -24,28 +24,28 @@ class ContactDetailsContentResolverAndDBRepository(
 
     private val contentResolver = context.contentResolver
 
-    override fun getDetailsContact(id: String?): Flow<ContactDetailsInfo> {
+    override fun getDetailsContact(id: String): Flow<ContactDetailsInfo> {
         return flow {
             emit(getContactDetailsFromDB(getContactDetails(id = id)))
         }
     }
 
-    private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo?): ContactDetailsInfo {
+    private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo): ContactDetailsInfo {
         val contactShortInfo = ContactShortInfo(
-                contactDetailsInfo?.contactShortInfo?.id,
-                contactDetailsInfo?.contactShortInfo?.name,
-                contactDetailsInfo?.contactShortInfo?.telephoneNumber
+                contactDetailsInfo.contactShortInfo.id,
+                contactDetailsInfo.contactShortInfo.name,
+                contactDetailsInfo.contactShortInfo.telephoneNumber
         )
 
         if (db.locationDao().isExists(contactShortInfo.id) == INFO_EXISTS) {
             val point = Point(
-                    db.locationDao().getById(contactShortInfo.id)?.latitude,
-                    db.locationDao().getById(contactShortInfo.id)?.longitude
+                    db.locationDao().getById(contactShortInfo.id).latitude,
+                    db.locationDao().getById(contactShortInfo.id).longitude
             )
 
             val location = Location(
                     contactDetailsInfo,
-                    db.locationDao().getById(contactShortInfo.id)?.address,
+                    db.locationDao().getById(contactShortInfo.id).address,
                     point
             )
 
@@ -70,7 +70,7 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun getContactDetails(id: String?): ContactDetailsInfo {
+    private fun getContactDetails(id: String): ContactDetailsInfo {
         val cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
                 null,
@@ -100,7 +100,7 @@ class ContactDetailsContentResolverAndDBRepository(
 
             val contactShortInfo = ContactShortInfo(
                     id,
-                    name,
+                    name!!,
                     firstTelephoneNumber
             )
 
@@ -116,7 +116,7 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun readTelephoneNumbers(id: String?): List<String> {
+    private fun readTelephoneNumbers(id: String): List<String> {
         val telephoneNumberCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + EQUAL + id,
@@ -140,7 +140,7 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun readEmails(id: String?): List<String> {
+    private fun readEmails(id: String): List<String> {
         val emailCursor = contentResolver.query(
                 ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null,
@@ -160,7 +160,7 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun readDateOfBirth(id: String?): String {
+    private fun readDateOfBirth(id: String): String {
         val birthDayCursor = contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
                 null,
@@ -185,11 +185,11 @@ class ContactDetailsContentResolverAndDBRepository(
     }
 
 
-    private fun stringToGregorianCalendar(birthOfDay: String?): GregorianCalendar {
+    private fun stringToGregorianCalendar(birthOfDay: String): GregorianCalendar {
         val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val gregorianCalendar = GregorianCalendar()
         try {
-            gregorianCalendar.time = df.parse(birthOfDay!!)!!
+            gregorianCalendar.time = df.parse(birthOfDay)!!
         } catch (e: ParseException) {
             gregorianCalendar.timeInMillis = 0
             Log.e(this.javaClass.name, e.toString())
@@ -198,16 +198,16 @@ class ContactDetailsContentResolverAndDBRepository(
         return gregorianCalendar
     }
 
-    private fun createNewContact(contactShortInfo: ContactShortInfo?,
-                                 contactDetailsInfoDetails: ContactDetailsInfo?,
+    private fun createNewContact(contactShortInfo: ContactShortInfo,
+                                 contactDetailsInfoDetails: ContactDetailsInfo,
                                  location: Location): ContactDetailsInfo {
         return ContactDetailsInfo(
                 contactShortInfo,
-                contactDetailsInfoDetails?.dateOfBirth,
-                contactDetailsInfoDetails?.telephoneNumber2,
-                contactDetailsInfoDetails?.email,
-                contactDetailsInfoDetails?.email2,
-                contactDetailsInfoDetails?.description,
+                contactDetailsInfoDetails.dateOfBirth,
+                contactDetailsInfoDetails.telephoneNumber2,
+                contactDetailsInfoDetails.email,
+                contactDetailsInfoDetails.email2,
+                contactDetailsInfoDetails.description,
                 location)
     }
 }

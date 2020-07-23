@@ -5,13 +5,13 @@ import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import java.util.*
 
 interface NotificationRepository {
-    fun setBirthdayReminder(contactDetailsInfo: ContactDetailsInfo?,
-                            gregorianCalendar: GregorianCalendar?): BirthdayNotification?
+    fun setBirthdayReminder(contactDetailsInfo: ContactDetailsInfo,
+                            gregorianCalendar: GregorianCalendar): BirthdayNotification
 
-    fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification?
+    fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification
 
-    fun getBirthdayNotificationEntity(contactDetailsInfo: ContactDetailsInfo?,
-                                      gregorianCalendar: GregorianCalendar?): BirthdayNotification?
+    fun getBirthdayNotificationEntity(contactDetailsInfo: ContactDetailsInfo,
+                                      gregorianCalendar: GregorianCalendar?): BirthdayNotification
 
 
 }

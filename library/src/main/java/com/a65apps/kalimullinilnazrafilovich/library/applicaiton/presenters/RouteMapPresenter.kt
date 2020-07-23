@@ -58,7 +58,7 @@ class RouteMapPresenter @Inject constructor(
         } else {
             val latLngs = mutableListOf<LatLng>()
             for ((latitude, longitude) in points) {
-                latLngs.add(LatLng(latitude!!, longitude!!))
+                latLngs.add(LatLng(latitude, longitude))
             }
             latLngs
         }

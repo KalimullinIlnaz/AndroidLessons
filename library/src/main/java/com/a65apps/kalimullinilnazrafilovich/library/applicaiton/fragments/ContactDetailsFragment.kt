@@ -34,7 +34,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     private lateinit var viewsDetailsDelegate: ViewsDetailsDelegate
     private lateinit var buttonsDelegate: ButtonsDelegate
 
-    private var id: String? = null
+    private lateinit var id: String
 
     fun newInstance(id: String?): ContactDetailsFragment {
         val args = Bundle()
@@ -67,7 +67,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
 
         buttonsDelegate.clickButtons()
 
-        id = arguments?.getString("id")
+        id = arguments?.getString("id")!!
 
         return view
     }

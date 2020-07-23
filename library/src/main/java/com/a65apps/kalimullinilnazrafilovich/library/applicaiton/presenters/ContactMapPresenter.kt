@@ -33,8 +33,8 @@ class ContactMapPresenter @Inject constructor(
                                 } else {
                                     viewState.showMapMarker(
                                             LatLng(
-                                                    contact.location?.point?.latitude!!,
-                                                    contact.location?.point!!.longitude!!
+                                                    contact.location!!.point.latitude,
+                                                    contact.location!!.point.longitude
                                             )
                                     )
                                 }

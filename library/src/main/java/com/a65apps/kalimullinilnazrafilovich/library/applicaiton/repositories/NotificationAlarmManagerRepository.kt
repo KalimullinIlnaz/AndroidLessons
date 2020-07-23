@@ -18,17 +18,17 @@ class NotificationAlarmManagerRepository @Inject constructor(
 
     private var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    override fun setBirthdayReminder(contactDetailsInfo: ContactDetailsInfo?,
-                                     gregorianCalendar: GregorianCalendar?): BirthdayNotification? {
+    override fun setBirthdayReminder(contactDetailsInfo: ContactDetailsInfo,
+                                     gregorianCalendar: GregorianCalendar): BirthdayNotification {
         val alarmPendingIntent: PendingIntent = createPendingIntentForContact(contactDetailsInfo)
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar!!.timeInMillis, alarmPendingIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar.timeInMillis, alarmPendingIntent)
 
         return getBirthdayNotificationEntity(contactDetailsInfo, gregorianCalendar)
     }
 
-    override fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
-        val alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo!!)
+    override fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
+        val alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo)
 
         alarmManager.cancel(alarmPendingIntent)
         alarmPendingIntent.cancel()
@@ -36,9 +36,9 @@ class NotificationAlarmManagerRepository @Inject constructor(
         return getBirthdayNotificationEntity(contactDetailsInfo, null)
     }
 
-    override fun getBirthdayNotificationEntity(contactDetailsInfo: ContactDetailsInfo?,
-                                               gregorianCalendar: GregorianCalendar?): BirthdayNotification? {
-        val status = PendingIntent.getBroadcast(context, contactDetailsInfo?.contactShortInfo?.id.hashCode(),
+    override fun getBirthdayNotificationEntity(contactDetailsInfo: ContactDetailsInfo,
+                                               gregorianCalendar: GregorianCalendar?): BirthdayNotification {
+        val status = PendingIntent.getBroadcast(context, contactDetailsInfo.contactShortInfo.id.hashCode(),
                 Intent(BROAD_ACTION),
                 PendingIntent.FLAG_NO_CREATE) != null
 
@@ -48,9 +48,9 @@ class NotificationAlarmManagerRepository @Inject constructor(
     private fun createPendingIntentForContact(contactDetailsInfo: ContactDetailsInfo?): PendingIntent {
         val intent = Intent(BROAD_ACTION)
         intent.putExtra("id", contactDetailsInfo?.contactShortInfo!!.id)
-        intent.putExtra("textReminder", contactDetailsInfo.contactShortInfo!!.name
+        intent.putExtra("textReminder", contactDetailsInfo.contactShortInfo.name
                 + " "
                 + context.getString(R.string.text_notification))
-        return PendingIntent.getBroadcast(context, contactDetailsInfo.contactShortInfo!!.id.hashCode(), intent, 0)
+        return PendingIntent.getBroadcast(context, contactDetailsInfo.contactShortInfo.id.hashCode(), intent, 0)
     }
 }

@@ -48,7 +48,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun showNotification(
-            context: Context?,
+            context: Context,
             text: String?,
             id: String?
     ) {
@@ -63,7 +63,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val resultPendingIntent =
                 stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val notification = NotificationCompat.Builder(context!!, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_email)
                 .setContentTitle(context.getString(com.a65apps.kalimullinilnazrafilovich.myapplication.R.string.title_notification))
                 .setContentText(text)
@@ -89,7 +89,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val result = goAsync()
 
         CoroutineScope(Dispatchers.Main).launch {
-            contactDetailsInteractor.loadDetailsContact(id)
+            contactDetailsInteractor.loadDetailsContact(id!!)
                     .flowOn(Dispatchers.IO)
                     .collect {
                         notificationInteractor.onBirthdayNotification(it)

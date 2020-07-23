@@ -13,36 +13,41 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.YandexAd
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.services.YandexGeocodeService
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R
 import io.reactivex.rxjava3.core.Single
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ContactLocationRepository @Inject constructor(
-        private val db: AppDatabase?,
-        private val context: Context?,
-        private val contactDetailsRepository: ContactDetailsRepository?
+        private val db: AppDatabase,
+        private val context: Context,
+        private val contactDetailsRepository: ContactDetailsRepository
 ) : LocationRepository {
 
     override fun insertContactLocation(location: Location, contactDetailsInfo: ContactDetailsInfo) {
         val locationOrm = LocationOrm(contactDetailsInfo, location)
-        db?.locationDao()?.insert(locationOrm)
+        db.locationDao().insert(locationOrm)
     }
 
-    override fun getAllContactLocations(): Flow<List<Location>>? {
+    override fun getAllContactLocations(): Flow<List<Location>> {
         return flow {
-            emit(db?.locationDao()?.getAll())
+            emit(db.locationDao().getAll())
         }.map {
             toListLocation(it)
         }
     }
 
-    override fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo, latitude: Double, longitude: Double): Single<Location> {
+    override fun createOrUpdateContactLocationByCoordinate(
+            contactDetailsInfo: ContactDetailsInfo,
+            latitude: Double, longitude: Double
+    ): Single<Location> {
         val coordinate = "$latitude,$longitude"
 
         return YandexGeocodeService.getInstance()
                 .jsonApi
                 .getLocation(
                         coordinate,
-                        context?.resources!!.getString(R.string.yandex_maps_key))
+                        context.resources.getString(R.string.yandex_maps_key))
                 .map { responseDTO: YandexAddressResponseDTO? ->
                     YandexDTOMapper().transform(
                             contactDetailsInfo,
@@ -53,18 +58,18 @@ class ContactLocationRepository @Inject constructor(
                 .doOnSuccess { location: Location -> insertContactLocation(location, contactDetailsInfo) }
     }
 
-    private fun toListLocation(it: List<LocationOrm?>?): List<Location> {
+    private fun toListLocation(it: List<LocationOrm>): List<Location> {
         val locationList = mutableListOf<Location>()
-        it?.forEach {
-            contactDetailsRepository?.getDetailsContact(it?.contactID)
-                    ?.map { contact ->
+        it.forEach {
+            contactDetailsRepository.getDetailsContact(it.contactID)
+                    .map { contact ->
                         {
                             locationList.add(Location(
                                     contact,
-                                    it?.address,
+                                    it.address,
                                     Point(
-                                            it?.latitude,
-                                            it?.latitude
+                                            it.latitude,
+                                            it.latitude
                                     )
                             ))
                         }

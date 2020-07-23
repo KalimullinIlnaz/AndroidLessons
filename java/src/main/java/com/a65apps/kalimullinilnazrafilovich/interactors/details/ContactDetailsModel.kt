@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 class ContactDetailsModel(
         private val contactDetailsRepository: ContactDetailsRepository)
     : ContactDetailsInteractor {
-    override fun loadDetailsContact(id: String?): Flow<ContactDetailsInfo> {
+    override fun loadDetailsContact(id: String): Flow<ContactDetailsInfo> {
         return contactDetailsRepository.getDetailsContact(id)
     }
 }

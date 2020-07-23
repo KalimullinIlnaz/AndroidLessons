@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface LocationRepository {
     fun insertContactLocation(location: Location, contactDetailsInfo: ContactDetailsInfo)
 
-    fun getAllContactLocations(): Flow<List<Location>>?
+    fun getAllContactLocations(): Flow<List<Location>>
 
     fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo,
                                                   latitude: Double, longitude: Double): Single<Location>

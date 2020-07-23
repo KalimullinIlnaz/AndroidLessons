@@ -4,5 +4,5 @@ import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import kotlinx.coroutines.flow.Flow
 
 interface ContactDetailsRepository {
-    fun getDetailsContact(id: String?): Flow<ContactDetailsInfo>
+    fun getDetailsContact(id: String): Flow<ContactDetailsInfo>
 }
