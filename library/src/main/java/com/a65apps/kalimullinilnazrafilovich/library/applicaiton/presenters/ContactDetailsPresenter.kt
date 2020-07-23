@@ -38,7 +38,7 @@ class ContactDetailsPresenter @Inject constructor(
     }
 
     fun setNotification(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
-        return notificationInteractor?.offBirthdayNotification(contactDetailsInfo)
+        return notificationInteractor?.onBirthdayNotification(contactDetailsInfo)
     }
 
     fun removeNotification(contactDetailsInfo: ContactDetailsInfo?): BirthdayNotification? {
