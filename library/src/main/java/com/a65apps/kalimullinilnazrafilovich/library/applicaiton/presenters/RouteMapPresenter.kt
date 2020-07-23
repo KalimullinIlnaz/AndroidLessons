@@ -63,4 +63,9 @@ class RouteMapPresenter @Inject constructor(
             latLngs
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
 }

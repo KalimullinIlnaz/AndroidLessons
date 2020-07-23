@@ -22,8 +22,6 @@ class ContactMapPresenter @Inject constructor(
         private val contactLocationInteractor: ContactLocationInteractor,
         private val contactDetailsInteractor: ContactDetailsInteractor
 ) : MvpPresenter<ContactMapView>() {
-
-
     fun showMarker(id: String) {
         try {
             CoroutineScope(Dispatchers.Main).launch {

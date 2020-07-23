@@ -28,8 +28,6 @@ class ContactDetailsPresenter @Inject constructor(
                         ?.flowOn(Dispatchers.IO)
                         ?.collect { contact ->
                             viewState?.showContactDetail(contact)
-                            Log.e(this.javaClass.simpleName, contact.contactShortInfo?.name!!)
-                            println(contact.contactShortInfo?.name)
                         }
             }
         } catch (e: Exception) {
