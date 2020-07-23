@@ -8,6 +8,7 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -20,9 +21,11 @@ class ContactDetailsPresenter @Inject constructor(
         private val notificationInteractor: NotificationInteractor,
         private val contactDetailsInteractor: ContactDetailsInteractor)
     : MvpPresenter<ContactDetailsView>() {
+    private lateinit var jobLoadDetails: Job
+
     fun showDetails(id: String) {
         try {
-            CoroutineScope(Dispatchers.Main).launch {
+            jobLoadDetails = CoroutineScope(Dispatchers.Main).launch {
                 contactDetailsInteractor.loadDetailsContact(id)
                         .flowOn(Dispatchers.IO)
                         .collect { contact ->
@@ -46,4 +49,8 @@ class ContactDetailsPresenter @Inject constructor(
         return notificationInteractor.getNotificationWorkStatus(contactDetailsInfo)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        jobLoadDetails.cancel()
+    }
 }

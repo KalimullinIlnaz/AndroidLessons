@@ -15,14 +15,35 @@ repositories {
     jcenter()
 }
 
+configurations {
+    ktlint
+}
+
 test {
     useJUnitPlatform {
         includeEngines 'spek2'
     }
 }
 
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    ktlint "com.pinterest:ktlint:0.37.2"
 
     // assertion
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"

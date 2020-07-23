@@ -45,9 +45,9 @@ class NotificationAlarmManagerRepository @Inject constructor(
         return BirthdayNotification(contactDetailsInfo, status, gregorianCalendar)
     }
 
-    private fun createPendingIntentForContact(contactDetailsInfo: ContactDetailsInfo?): PendingIntent {
+    private fun createPendingIntentForContact(contactDetailsInfo: ContactDetailsInfo): PendingIntent {
         val intent = Intent(BROAD_ACTION)
-        intent.putExtra("id", contactDetailsInfo?.contactShortInfo!!.id)
+        intent.putExtra("id", contactDetailsInfo.contactShortInfo.id)
         intent.putExtra("textReminder", contactDetailsInfo.contactShortInfo.name
                 + " "
                 + context.getString(R.string.text_notification))

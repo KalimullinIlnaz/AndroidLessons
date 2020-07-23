@@ -25,6 +25,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import kotlin.jvm.JvmStatic;
 
 public class ViewsContactsDelegate implements ContactListAdapter.OnContactListener {
     private static final int OFFSET_DP = 6;
@@ -78,10 +79,11 @@ public class ViewsContactsDelegate implements ContactListAdapter.OnContactListen
         circularProgressView.setVisibility(View.GONE);
     }
 
+    @JvmStatic
     @Override
     public void onContactClick(int position) {
-        ContactDetailsFragment contactDetailsFragment =
-                new ContactDetailsFragment().newInstance(contactShortInfoList.get(position).getId());
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.
+                Companion.newInstance(contactShortInfoList.get(position).getId());
         FragmentManager fragmentManager = Objects.requireNonNull(fragmentActivity).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();

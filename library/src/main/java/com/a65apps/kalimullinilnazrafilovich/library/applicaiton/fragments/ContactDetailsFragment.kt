@@ -15,7 +15,6 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -27,21 +26,21 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     lateinit var contactDetailsPresenterProvider: Provider<ContactDetailsPresenter>
 
     @ProvidePresenter
-    fun providePresenter(): ContactDetailsPresenter {
-        return contactDetailsPresenterProvider.get()
-    }
+    fun providePresenter() = contactDetailsPresenterProvider.get()
 
     private lateinit var viewsDetailsDelegate: ViewsDetailsDelegate
     private lateinit var buttonsDelegate: ButtonsDelegate
 
     private lateinit var id: String
 
-    fun newInstance(id: String?): ContactDetailsFragment {
-        val args = Bundle()
-        args.putString("id", id)
-        val fragment = ContactDetailsFragment()
-        fragment.arguments = args
-        return fragment
+    companion object{
+        fun newInstance(id: String?): ContactDetailsFragment {
+            val args = Bundle()
+            args.putString("id", id)
+            val fragment = ContactDetailsFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     override fun onAttach(context: Context) {

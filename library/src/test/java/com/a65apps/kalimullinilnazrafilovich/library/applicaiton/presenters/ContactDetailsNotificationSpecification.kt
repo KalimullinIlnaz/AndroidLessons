@@ -5,6 +5,8 @@ import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel
+import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime
@@ -15,17 +17,17 @@ import org.spekframework.spek2.style.gherkin.Feature
 import java.util.*
 import kotlin.test.assertEquals
 
-object ContactDetailsPresenterTest1 : Spek({
-    val YEAR_1999 = 1999
-    val YEAR_1990 = 1990
+const val YEAR_1999 = 1999
+const val YEAR_1990 = 1990
 
-    val DAY_OF_MONTH_8 = 8
-    val DAY_OF_MONTH_9 = 9
+const val DAY_OF_MONTH_8 = 8
+const val DAY_OF_MONTH_9 = 9
 
+object ContactDetailsNotificationSpecification : Spek({
     val birthdayCalendar: BirthdayCalendar = mock()
     val currentTime: CurrentTime = mock()
     val notificationRepository: NotificationRepository = mock()
-    val contactDetailsInteractor: ContactDetailsInteractor = mock()
+    val contactDetailsRepository: ContactDetailsRepository = mock()
 
     lateinit var testTriggerDate: GregorianCalendar
     lateinit var contactDetailsInfo: ContactDetailsInfo
@@ -62,6 +64,10 @@ object ContactDetailsPresenterTest1 : Spek({
                 notificationRepository,
                 currentTime,
                 birthdayCalendar
+        )
+
+        val contactDetailsInteractor = ContactDetailsModel(
+                contactDetailsRepository
         )
 
         contactDetailsPresenter = ContactDetailsPresenter(
@@ -135,6 +141,5 @@ object ContactDetailsPresenterTest1 : Spek({
             }
         }
     }
-
 
 })

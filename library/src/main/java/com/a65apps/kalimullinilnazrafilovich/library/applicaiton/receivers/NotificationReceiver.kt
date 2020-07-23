@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor
@@ -88,13 +89,17 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun repeatAlarm(id: String?) {
         val result = goAsync()
 
-        CoroutineScope(Dispatchers.Main).launch {
-            contactDetailsInteractor.loadDetailsContact(id!!)
-                    .flowOn(Dispatchers.IO)
-                    .collect {
-                        notificationInteractor.onBirthdayNotification(it)
-                        result.finish()
-                    }
+        try {
+            CoroutineScope(Dispatchers.Main).launch {
+                contactDetailsInteractor.loadDetailsContact(id!!)
+                        .flowOn(Dispatchers.IO)
+                        .collect {
+                            notificationInteractor.onBirthdayNotification(it)
+                            result.finish()
+                        }
+            }
+        } catch (e: Exception) {
+            Log.e(this::class.simpleName, e.printStackTrace().toString())
         }
     }
 }
