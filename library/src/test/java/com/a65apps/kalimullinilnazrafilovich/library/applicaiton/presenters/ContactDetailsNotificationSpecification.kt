@@ -26,12 +26,9 @@ const val DAY_OF_MONTH_9 = 9
 object ContactDetailsNotificationSpecification : Spek({
     val birthdayCalendar: BirthdayCalendar = mock()
     val currentTime: CurrentTime = mock()
+
     val notificationRepository: NotificationRepository = mock()
     val contactDetailsRepository: ContactDetailsRepository = mock()
-
-    lateinit var testTriggerDate: GregorianCalendar
-    lateinit var contactDetailsInfo: ContactDetailsInfo
-    lateinit var contactDetailsPresenter: ContactDetailsPresenter
 
     lateinit var expectedBirthdayNotification: BirthdayNotification
     lateinit var actualBirthdayNotification: BirthdayNotification
@@ -45,9 +42,9 @@ object ContactDetailsNotificationSpecification : Spek({
     Feature("Тест презентера деталей контакта") {
         val currentDate = GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_9)
         val birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
-        testTriggerDate = GregorianCalendar(2000, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
+        val testTriggerDate = GregorianCalendar(2000, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
 
-        contactDetailsInfo = ContactDetailsInfo(
+        val contactDetailsInfo = ContactDetailsInfo(
             contactShortInfo,
             birthdayDate,
             "t2",
@@ -70,7 +67,7 @@ object ContactDetailsNotificationSpecification : Spek({
             contactDetailsRepository
         )
 
-        contactDetailsPresenter = ContactDetailsPresenter(
+        val contactDetailsPresenter = ContactDetailsPresenter(
             notificationInteractor,
             contactDetailsInteractor
         )

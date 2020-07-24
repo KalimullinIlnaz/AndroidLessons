@@ -60,7 +60,7 @@ class RouteMapPresenter @Inject constructor(
                             } else {
                                 viewState.showRoute(dots)
                             }
-                        }) { obj: Throwable -> obj.printStackTrace() }
+                        }) { e: Throwable -> e.printStackTrace() }
             )
     }
 
@@ -77,8 +77,8 @@ class RouteMapPresenter @Inject constructor(
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        cancel()
         compositeDisposable.dispose()
-        coroutineContext.cancel()
+        super.onDestroy()
     }
 }

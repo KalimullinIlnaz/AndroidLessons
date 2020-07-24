@@ -52,7 +52,7 @@ class ContactDetailsPresenter @Inject constructor(
     }
 
     override fun onDestroy() {
+        cancel()
         super.onDestroy()
-        coroutineContext.cancel()
     }
 }
