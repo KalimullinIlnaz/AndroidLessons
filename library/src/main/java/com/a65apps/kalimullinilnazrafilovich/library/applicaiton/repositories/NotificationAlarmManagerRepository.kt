@@ -8,49 +8,64 @@ import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R
-import java.util.*
+import java.util.GregorianCalendar
 import javax.inject.Inject
 
-class NotificationAlarmManagerRepository @Inject constructor(
-        private val context: Context
-) : NotificationRepository {
-    private val BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplication"
+private const val BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplication"
 
+class NotificationAlarmManagerRepository @Inject constructor(
+    private val context: Context
+) : NotificationRepository {
     private var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    override fun setBirthdayReminder(contactDetailsInfo: ContactDetailsInfo,
-                                     gregorianCalendar: GregorianCalendar): BirthdayNotification {
-        val alarmPendingIntent: PendingIntent = createPendingIntentForContact(contactDetailsInfo)
+    override fun setBirthdayReminder(
+        contactDetailsInfo: ContactDetailsInfo,
+        gregorianCalendar: GregorianCalendar
+    ) =
+        getBirthdayNotificationEntity(contactDetailsInfo, gregorianCalendar).apply {
+            alarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                gregorianCalendar.timeInMillis,
+                createPendingIntentForContact(contactDetailsInfo)
+            )
+        }
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar.timeInMillis, alarmPendingIntent)
+    override fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo) =
+        getBirthdayNotificationEntity(contactDetailsInfo, null).apply {
+            val alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo)
 
-        return getBirthdayNotificationEntity(contactDetailsInfo, gregorianCalendar)
-    }
+            alarmManager.cancel(alarmPendingIntent)
+            alarmPendingIntent.cancel()
+        }
 
-    override fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
-        val alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo)
-
-        alarmManager.cancel(alarmPendingIntent)
-        alarmPendingIntent.cancel()
-
-        return getBirthdayNotificationEntity(contactDetailsInfo, null)
-    }
-
-    override fun getBirthdayNotificationEntity(contactDetailsInfo: ContactDetailsInfo,
-                                               gregorianCalendar: GregorianCalendar?): BirthdayNotification {
-        val status = PendingIntent.getBroadcast(context, contactDetailsInfo.contactShortInfo.id.hashCode(),
+    override fun getBirthdayNotificationEntity(
+        contactDetailsInfo: ContactDetailsInfo,
+        gregorianCalendar: GregorianCalendar?
+    ) =
+        BirthdayNotification(
+            contactDetailsInfo,
+            PendingIntent.getBroadcast(
+                context,
+                contactDetailsInfo.contactShortInfo.id.hashCode(),
                 Intent(BROAD_ACTION),
-                PendingIntent.FLAG_NO_CREATE) != null
+                PendingIntent.FLAG_NO_CREATE
+            ) != null,
+            gregorianCalendar
+        )
 
-        return BirthdayNotification(contactDetailsInfo, status, gregorianCalendar)
-    }
-
-    private fun createPendingIntentForContact(contactDetailsInfo: ContactDetailsInfo): PendingIntent {
-        val intent = Intent(BROAD_ACTION)
-        intent.putExtra("id", contactDetailsInfo.contactShortInfo.id)
-        intent.putExtra("textReminder", contactDetailsInfo.contactShortInfo.name
-                + " "
-                + context.getString(R.string.text_notification))
-        return PendingIntent.getBroadcast(context, contactDetailsInfo.contactShortInfo.id.hashCode(), intent, 0)
-    }
+    private fun createPendingIntentForContact(contactDetailsInfo: ContactDetailsInfo) =
+        PendingIntent.getBroadcast(
+            context,
+            contactDetailsInfo.contactShortInfo.id.hashCode(),
+            Intent(BROAD_ACTION).apply {
+                putExtra("id", contactDetailsInfo.contactShortInfo.id)
+                putExtra(
+                    "textReminder",
+                    contactDetailsInfo.contactShortInfo.name +
+                        " " +
+                        context.getString(R.string.text_notification)
+                )
+            },
+            0
+        )
 }

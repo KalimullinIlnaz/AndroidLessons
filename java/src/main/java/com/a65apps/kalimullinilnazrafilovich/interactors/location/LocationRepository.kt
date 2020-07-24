@@ -10,6 +10,9 @@ interface LocationRepository {
 
     fun getAllContactLocations(): Flow<List<Location>>
 
-    fun createOrUpdateContactLocationByCoordinate(contactDetailsInfo: ContactDetailsInfo,
-                                                  latitude: Double, longitude: Double): Single<Location>
+    fun createOrUpdateContactLocationByCoordinate(
+        contactDetailsInfo: ContactDetailsInfo,
+        latitude: Double,
+        longitude: Double
+    ): Single<Location>
 }

@@ -9,7 +9,8 @@ import com.nhaarman.mockitokotlin2.mock
 import org.mockito.Mockito
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 import kotlin.test.assertEquals
 
 const val YEAR_1999 = 1999
@@ -29,9 +30,9 @@ object NotificationModelSpecification : Spek({
     val notificationRepository: NotificationRepository = mock()
 
     val contactShortInfo = ContactShortInfo(
-            "id",
-            "name",
-            "tel"
+        "id",
+        "name",
+        "tel"
     )
 
     lateinit var currentDate: GregorianCalendar
@@ -52,38 +53,40 @@ object NotificationModelSpecification : Spek({
             And("Есть контакт с датой рождения 8 сентября") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 contactDetailsInfo = ContactDetailsInfo(
-                        contactShortInfo,
-                        birthdayDate,
-                        "t2",
-                        "e1",
-                        "e2",
-                        "",
-                        null
+                    contactShortInfo,
+                    birthdayDate,
+                    "t2",
+                    "e1",
+                    "e2",
+                    "",
+                    null
                 )
             }
             And("Создания напоминания на 9 сентября 2000 года") {
                 testTriggerDate = GregorianCalendar(YEAR_2000, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        true,
-                        testTriggerDate
+                    contactDetailsInfo,
+                    true,
+                    testTriggerDate
                 )
 
-                Mockito.`when`(notificationRepository.setBirthdayReminder(
+                Mockito.`when`(
+                    notificationRepository.setBirthdayReminder(
                         contactDetailsInfo,
                         testTriggerDate
-                )).thenReturn(expectedBirthdayNotification)
-
+                    )
+                ).thenReturn(expectedBirthdayNotification)
             }
 
             When("Пользователь кликает на кнопку напоминания в детальной информации контакта") {
                 val notificationInteractor = NotificationModel(
-                        notificationRepository,
-                        currentTime,
-                        birthdayCalendar
+                    notificationRepository,
+                    currentTime,
+                    birthdayCalendar
                 )
 
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
             Then("Происходит успешное добавление напоминания на 2000 год 8 сентября") {
@@ -99,30 +102,32 @@ object NotificationModelSpecification : Spek({
             And("Есть контакт с датой рождения 8 сентября") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 contactDetailsInfo = ContactDetailsInfo(
-                        contactShortInfo,
-                        birthdayDate,
-                        "t2",
-                        "e1",
-                        "e2",
-                        "",
-                        null
+                    contactShortInfo,
+                    birthdayDate,
+                    "t2",
+                    "e1",
+                    "e2",
+                    "",
+                    null
                 )
             }
             And("Создания напоминания cо статусом работы false") {
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        false,
-                        null)
+                    contactDetailsInfo,
+                    false,
+                    null
+                )
                 Mockito.`when`(notificationRepository.removeBirthdayReminder(contactDetailsInfo))
-                        .thenReturn(expectedBirthdayNotification)
+                    .thenReturn(expectedBirthdayNotification)
             }
             When("Пользователь кликает на кнопку напоминания в детальной информации контакта") {
                 val notificationInteractor = NotificationModel(
-                        notificationRepository,
-                        currentTime,
-                        birthdayCalendar
+                    notificationRepository,
+                    currentTime,
+                    birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.offBirthdayNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    notificationInteractor.offBirthdayNotification(contactDetailsInfo)
             }
 
             Then("Происходит успешное удаление напоминания") {
@@ -139,36 +144,39 @@ object NotificationModelSpecification : Spek({
             And("Есть контакт с датой рождения 8 сентября") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 contactDetailsInfo = ContactDetailsInfo(
-                        contactShortInfo,
-                        birthdayDate,
-                        "t2",
-                        "e1",
-                        "e2",
-                        "",
-                        null
+                    contactShortInfo,
+                    birthdayDate,
+                    "t2",
+                    "e1",
+                    "e2",
+                    "",
+                    null
                 )
             }
             And("Создание напоминания") {
                 testTriggerDate = GregorianCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        true,
-                        testTriggerDate
+                    contactDetailsInfo,
+                    true,
+                    testTriggerDate
                 )
 
-                Mockito.`when`(notificationRepository.setBirthdayReminder(
+                Mockito.`when`(
+                    notificationRepository.setBirthdayReminder(
                         contactDetailsInfo,
                         testTriggerDate
-                )).thenReturn(expectedBirthdayNotification)
+                    )
+                ).thenReturn(expectedBirthdayNotification)
             }
 
             When("Пользователь кликает на кнопку напоминания в детальной информации контакта") {
                 val notificationInteractor = NotificationModel(
-                        notificationRepository,
-                        currentTime,
-                        birthdayCalendar
+                    notificationRepository,
+                    currentTime,
+                    birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
             Then("Происходит успешное добавление напоминания на 1999 год 8 сентября") {
@@ -185,36 +193,39 @@ object NotificationModelSpecification : Spek({
             And("Есть контакт с датой рождения 29 февраля") {
                 birthdayDate = GregorianCalendar(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_29)
                 contactDetailsInfo = ContactDetailsInfo(
-                        contactShortInfo,
-                        birthdayDate,
-                        "t2",
-                        "e1",
-                        "e2",
-                        "",
-                        null
+                    contactShortInfo,
+                    birthdayDate,
+                    "t2",
+                    "e1",
+                    "e2",
+                    "",
+                    null
                 )
             }
             And("Создание напоминания") {
                 testTriggerDate = GregorianCalendar(YEAR_2000, Calendar.SEPTEMBER, DAY_OF_MONTH_29)
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        true,
-                        testTriggerDate
+                    contactDetailsInfo,
+                    true,
+                    testTriggerDate
                 )
 
-                Mockito.`when`(notificationRepository.setBirthdayReminder(
+                Mockito.`when`(
+                    notificationRepository.setBirthdayReminder(
                         contactDetailsInfo,
                         testTriggerDate
-                )).thenReturn(expectedBirthdayNotification)
+                    )
+                ).thenReturn(expectedBirthdayNotification)
             }
 
             When("Пользователь кликает на кнопку напоминания в детальной информации контакта") {
                 val notificationInteractor = NotificationModel(
-                        notificationRepository,
-                        currentTime,
-                        birthdayCalendar
+                    notificationRepository,
+                    currentTime,
+                    birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
             Then("Происходит успешное добавление напоминания на 2000 год 29 февраля") {
@@ -231,36 +242,39 @@ object NotificationModelSpecification : Spek({
             And("Есть контакт с датой рождения 29 февраля") {
                 birthdayDate = GregorianCalendar(YEAR_1992, Calendar.FEBRUARY, DAY_OF_MONTH_29)
                 contactDetailsInfo = ContactDetailsInfo(
-                        contactShortInfo,
-                        birthdayDate,
-                        "t2",
-                        "e1",
-                        "e2",
-                        "",
-                        null
+                    contactShortInfo,
+                    birthdayDate,
+                    "t2",
+                    "e1",
+                    "e2",
+                    "",
+                    null
                 )
             }
             And("Создание напоминания") {
                 testTriggerDate = GregorianCalendar(YEAR_2004, Calendar.FEBRUARY, DAY_OF_MONTH_29)
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        true,
-                        testTriggerDate
+                    contactDetailsInfo,
+                    true,
+                    testTriggerDate
                 )
 
-                Mockito.`when`(notificationRepository.setBirthdayReminder(
+                Mockito.`when`(
+                    notificationRepository.setBirthdayReminder(
                         contactDetailsInfo,
                         testTriggerDate
-                )).thenReturn(expectedBirthdayNotification)
+                    )
+                ).thenReturn(expectedBirthdayNotification)
             }
 
             When("Пользователь кликает на кнопку напоминания в детальной информации контакта") {
                 val notificationInteractor = NotificationModel(
-                        notificationRepository,
-                        currentTime,
-                        birthdayCalendar
+                    notificationRepository,
+                    currentTime,
+                    birthdayCalendar
                 )
-                actualBirthdayNotification = notificationInteractor.onBirthdayNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    notificationInteractor.onBirthdayNotification(contactDetailsInfo)
             }
 
             Then("Происходит успешное добавление напоминания на 2004 год 29 февраля") {

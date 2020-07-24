@@ -26,14 +26,14 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     lateinit var contactDetailsPresenterProvider: Provider<ContactDetailsPresenter>
 
     @ProvidePresenter
-    fun providePresenter() = contactDetailsPresenterProvider.get()
+    fun providePresenter(): ContactDetailsPresenter? = contactDetailsPresenterProvider.get()
 
     private lateinit var viewsDetailsDelegate: ViewsDetailsDelegate
     private lateinit var buttonsDelegate: ButtonsDelegate
 
     private lateinit var id: String
 
-    companion object{
+    companion object {
         fun newInstance(id: String?): ContactDetailsFragment {
             val args = Bundle()
             args.putString("id", id)
@@ -55,9 +55,11 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         super.onAttach(context)
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_contact_details, container, false)
         activity?.title = getString(R.string.title_toolbar_contact_details)
 

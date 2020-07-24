@@ -4,7 +4,6 @@ import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo
 import com.a65apps.kalimullinilnazrafilovich.interactors.calendar.BirthdayCalendar
-import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel
@@ -14,7 +13,8 @@ import com.nhaarman.mockitokotlin2.mock
 import org.mockito.Mockito
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 import kotlin.test.assertEquals
 
 const val YEAR_1999 = 1999
@@ -37,9 +37,9 @@ object ContactDetailsNotificationSpecification : Spek({
     lateinit var actualBirthdayNotification: BirthdayNotification
 
     val contactShortInfo = ContactShortInfo(
-            "id",
-            "name",
-            "t1"
+        "id",
+        "name",
+        "t1"
     )
 
     Feature("Тест презентера деталей контакта") {
@@ -48,51 +48,54 @@ object ContactDetailsNotificationSpecification : Spek({
         testTriggerDate = GregorianCalendar(2000, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
 
         contactDetailsInfo = ContactDetailsInfo(
-                contactShortInfo,
-                birthdayDate,
-                "t2",
-                "e1",
-                "e2",
-                "",
-                null
+            contactShortInfo,
+            birthdayDate,
+            "t2",
+            "e1",
+            "e2",
+            "",
+            null
         )
 
         Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
         Mockito.`when`(currentTime.now()).thenReturn(currentDate.time.time)
 
         val notificationInteractor = NotificationModel(
-                notificationRepository,
-                currentTime,
-                birthdayCalendar
+            notificationRepository,
+            currentTime,
+            birthdayCalendar
         )
 
         val contactDetailsInteractor = ContactDetailsModel(
-                contactDetailsRepository
+            contactDetailsRepository
         )
 
         contactDetailsPresenter = ContactDetailsPresenter(
-                notificationInteractor,
-                contactDetailsInteractor
+            notificationInteractor,
+            contactDetailsInteractor
         )
-
 
         Scenario("Установка напоминания") {
             Given("Сущность напоминания") {
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        true,
-                        testTriggerDate
+                    contactDetailsInfo,
+                    true,
+                    testTriggerDate
                 )
-                Mockito.`when`(notificationRepository.setBirthdayReminder(
-                        contactDetailsInfo, testTriggerDate)).thenReturn(expectedBirthdayNotification)
+                Mockito.`when`(
+                    notificationRepository.setBirthdayReminder(
+                        contactDetailsInfo, testTriggerDate
+                    )
+                ).thenReturn(expectedBirthdayNotification)
             }
             When("Устанавливается напоминание") {
-                actualBirthdayNotification = contactDetailsPresenter.setNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    contactDetailsPresenter.setNotification(contactDetailsInfo)
             }
             Then("Напоминание установлено") {
                 assertEquals(
-                        expectedBirthdayNotification,
-                        actualBirthdayNotification
+                    expectedBirthdayNotification,
+                    actualBirthdayNotification
                 )
             }
         }
@@ -100,46 +103,50 @@ object ContactDetailsNotificationSpecification : Spek({
         Scenario("Удаление напоминания") {
             Given("Сущность напоминания") {
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        false,
-                        null
+                    contactDetailsInfo,
+                    false,
+                    null
                 )
-                Mockito.`when`(notificationRepository.removeBirthdayReminder(contactDetailsInfo)).thenReturn(expectedBirthdayNotification)
+                Mockito.`when`(notificationRepository.removeBirthdayReminder(contactDetailsInfo))
+                    .thenReturn(expectedBirthdayNotification)
             }
 
             When("Удаляется напоминание") {
-                actualBirthdayNotification = contactDetailsPresenter.removeNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    contactDetailsPresenter.removeNotification(contactDetailsInfo)
             }
             Then("Напоминание удалено") {
                 assertEquals(
-                        expectedBirthdayNotification,
-                        actualBirthdayNotification
+                    expectedBirthdayNotification,
+                    actualBirthdayNotification
                 )
             }
         }
-
 
         Scenario("Получение статуса напоминания") {
             Given("Сущность напоминания") {
                 expectedBirthdayNotification = BirthdayNotification(
-                        contactDetailsInfo,
-                        false,
-                        null
+                    contactDetailsInfo,
+                    false,
+                    null
                 )
-                Mockito.`when`(notificationRepository.getBirthdayNotificationEntity(
-                        contactDetailsInfo, null)).thenReturn(expectedBirthdayNotification)
+                Mockito.`when`(
+                    notificationRepository.getBirthdayNotificationEntity(
+                        contactDetailsInfo, null
+                    )
+                ).thenReturn(expectedBirthdayNotification)
             }
 
             When("Получение статуса напоминания") {
-                actualBirthdayNotification = contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo)
+                actualBirthdayNotification =
+                    contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo)
             }
             Then("Статус получен") {
                 assertEquals(
-                        expectedBirthdayNotification,
-                        actualBirthdayNotification
+                    expectedBirthdayNotification,
+                    actualBirthdayNotification
                 )
             }
         }
     }
-
 })

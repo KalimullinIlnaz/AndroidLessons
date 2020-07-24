@@ -6,6 +6,6 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.interfaces.Loca
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.models.LocationOrm
 
 @Database(entities = [LocationOrm::class], version = 1, exportSchema = false)
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
 }

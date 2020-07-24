@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "io.gitlab.arturbosch.detekt" version "1.10.0"
+}
+
 allprojects {
     repositories {
         google()
@@ -21,6 +25,31 @@ allprojects {
     }
 }
 
+repositories {
+    jcenter()
+}
+
+tasks.detekt.jvmTarget = "1.8"
+
+detekt {
+    input = files("$projectDir")
+    config = files("$project.projectDir/config/detekt/detekt.yml")
+    reports {
+        xml {
+            enabled = true
+            destination = file("$project.projectDir/detekt-report.xml")
+        }
+        html {
+            enabled = true
+            destination = file("$project.projectDir/detekt-report.html")
+        }
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+dependencies {
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.10.0"
 }

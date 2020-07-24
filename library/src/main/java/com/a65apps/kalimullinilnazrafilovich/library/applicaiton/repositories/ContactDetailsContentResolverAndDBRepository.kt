@@ -13,15 +13,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.GregorianCalendar
+import java.util.Locale
+
+private const val INFO_EXISTS = 1
+private const val EQUAL = " = "
 
 class ContactDetailsContentResolverAndDBRepository(
-        context: Context,
-        private val db: AppDatabase
+    context: Context,
+    private val db: AppDatabase
 ) : ContactDetailsRepository {
-    private val INFO_EXISTS = 1
-    private val EQUAL = " = "
-
     private val contentResolver = context.contentResolver
 
     override fun getDetailsContact(id: String): Flow<ContactDetailsInfo> {
@@ -32,57 +33,58 @@ class ContactDetailsContentResolverAndDBRepository(
 
     private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo): ContactDetailsInfo {
         val contactShortInfo = ContactShortInfo(
-                contactDetailsInfo.contactShortInfo.id,
-                contactDetailsInfo.contactShortInfo.name,
-                contactDetailsInfo.contactShortInfo.telephoneNumber
+            contactDetailsInfo.contactShortInfo.id,
+            contactDetailsInfo.contactShortInfo.name,
+            contactDetailsInfo.contactShortInfo.telephoneNumber
         )
 
         if (db.locationDao().isExists(contactShortInfo.id) == INFO_EXISTS) {
             val point = Point(
-                    db.locationDao().getById(contactShortInfo.id).latitude,
-                    db.locationDao().getById(contactShortInfo.id).longitude
+                db.locationDao().getById(contactShortInfo.id).latitude,
+                db.locationDao().getById(contactShortInfo.id).longitude
             )
 
             val location = Location(
-                    contactDetailsInfo,
-                    db.locationDao().getById(contactShortInfo.id).address,
-                    point
+                contactDetailsInfo,
+                db.locationDao().getById(contactShortInfo.id).address,
+                point
             )
 
             return createNewContact(
-                    contactShortInfo,
-                    contactDetailsInfo,
-                    location
+                contactShortInfo,
+                contactDetailsInfo,
+                location
             )
         } else {
             val point = Point(0.0, 0.0)
             val location = Location(
-                    contactDetailsInfo,
-                    "",
-                    point
+                contactDetailsInfo,
+                "",
+                point
             )
 
             return createNewContact(
-                    contactShortInfo,
-                    contactDetailsInfo,
-                    location
+                contactShortInfo,
+                contactDetailsInfo,
+                location
             )
         }
     }
 
     private fun getContactDetails(id: String): ContactDetailsInfo {
         val cursor = contentResolver.query(
-                ContactsContract.Contacts.CONTENT_URI,
-                null,
-                ContactsContract.Contacts._ID + EQUAL + id,
-                null,
-                null
+            ContactsContract.Contacts.CONTENT_URI,
+            null,
+            ContactsContract.Contacts._ID + EQUAL + id,
+            null,
+            null
         )
 
         cursor.use {
             cursor?.moveToNext()
 
-            val name = cursor?.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+            val name =
+                cursor?.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
 
             val birthOfDay = readDateOfBirth(id)
 
@@ -99,40 +101,42 @@ class ContactDetailsContentResolverAndDBRepository(
             val secondEmail = if (emails.size > 1) emails[1] else ""
 
             val contactShortInfo = ContactShortInfo(
-                    id,
-                    name!!,
-                    firstTelephoneNumber
+                id,
+                name!!,
+                firstTelephoneNumber
             )
 
             return ContactDetailsInfo(
-                    contactShortInfo,
-                    stringToGregorianCalendar(birthOfDay),
-                    secondTelephoneNumber,
-                    firstEmail,
-                    secondEmail,
-                    "",
-                    null
+                contactShortInfo,
+                stringToGregorianCalendar(birthOfDay),
+                secondTelephoneNumber,
+                firstEmail,
+                secondEmail,
+                "",
+                null
             )
         }
     }
 
     private fun readTelephoneNumbers(id: String): List<String> {
-        val telephoneNumberCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null,
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + EQUAL + id,
-                null,
-                null)
+        val telephoneNumberCursor = contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + EQUAL + id,
+            null,
+            null
+        )
 
         telephoneNumberCursor.use {
             val telephoneNumbersList = mutableListOf<String>()
             if (telephoneNumberCursor != null) {
                 while (telephoneNumberCursor.moveToNext()) {
                     telephoneNumbersList.add(
-                            telephoneNumberCursor.getString(
-                                    telephoneNumberCursor.getColumnIndex(
-                                            ContactsContract.CommonDataKinds.Phone.NUMBER
-                                    )
+                        telephoneNumberCursor.getString(
+                            telephoneNumberCursor.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER
                             )
+                        )
                     )
                 }
             }
@@ -142,18 +146,20 @@ class ContactDetailsContentResolverAndDBRepository(
 
     private fun readEmails(id: String): List<String> {
         val emailCursor = contentResolver.query(
-                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                null,
-                ContactsContract.CommonDataKinds.Email.CONTACT_ID + EQUAL + id,
-                null, null
+            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+            null,
+            ContactsContract.CommonDataKinds.Email.CONTACT_ID + EQUAL + id,
+            null, null
         )
         emailCursor.use {
             val emails = mutableListOf<String>()
             if (emailCursor != null) {
                 while (emailCursor.moveToNext()) {
-                    emails.add(emailCursor.getString(
-                                    emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
-                            ))
+                    emails.add(
+                        emailCursor.getString(
+                            emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
+                        )
+                    )
                 }
             }
             return emails
@@ -162,13 +168,13 @@ class ContactDetailsContentResolverAndDBRepository(
 
     private fun readDateOfBirth(id: String): String {
         val birthDayCursor = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                ContactsContract.CommonDataKinds.Event.TYPE + EQUAL
-                        + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " AND "
-                        + ContactsContract.CommonDataKinds.Event.CONTACT_ID + EQUAL + id,
-                null,
-                null
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            ContactsContract.CommonDataKinds.Event.TYPE + EQUAL +
+                ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " AND " +
+                ContactsContract.CommonDataKinds.Event.CONTACT_ID + EQUAL + id,
+            null,
+            null
         )
 
         birthDayCursor.use {
@@ -176,14 +182,13 @@ class ContactDetailsContentResolverAndDBRepository(
             if (birthDayCursor != null) {
                 while (birthDayCursor.moveToNext()) {
                     birthOfDay = birthDayCursor.getString(
-                            birthDayCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)
+                        birthDayCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)
                     )
                 }
             }
             return birthOfDay
         }
     }
-
 
     private fun stringToGregorianCalendar(birthOfDay: String): GregorianCalendar {
         val df = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -198,16 +203,17 @@ class ContactDetailsContentResolverAndDBRepository(
         return gregorianCalendar
     }
 
-    private fun createNewContact(contactShortInfo: ContactShortInfo,
-                                 contactDetailsInfoDetails: ContactDetailsInfo,
-                                 location: Location): ContactDetailsInfo {
-        return ContactDetailsInfo(
-                contactShortInfo,
-                contactDetailsInfoDetails.dateOfBirth,
-                contactDetailsInfoDetails.telephoneNumber2,
-                contactDetailsInfoDetails.email,
-                contactDetailsInfoDetails.email2,
-                contactDetailsInfoDetails.description,
-                location)
-    }
+    private fun createNewContact(
+        contactShortInfo: ContactShortInfo,
+        contactDetailsInfoDetails: ContactDetailsInfo,
+        location: Location
+    ) = ContactDetailsInfo(
+        contactShortInfo,
+        contactDetailsInfoDetails.dateOfBirth,
+        contactDetailsInfoDetails.telephoneNumber2,
+        contactDetailsInfoDetails.email,
+        contactDetailsInfoDetails.email2,
+        contactDetailsInfoDetails.description,
+        location
+    )
 }

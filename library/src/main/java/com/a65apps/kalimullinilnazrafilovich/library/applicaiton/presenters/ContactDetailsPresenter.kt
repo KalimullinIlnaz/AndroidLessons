@@ -8,29 +8,31 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class ContactDetailsPresenter @Inject constructor(
-        private val notificationInteractor: NotificationInteractor,
-        private val contactDetailsInteractor: ContactDetailsInteractor)
-    : MvpPresenter<ContactDetailsView>() {
-    private lateinit var jobLoadDetails: Job
+    private val notificationInteractor: NotificationInteractor,
+    private val contactDetailsInteractor: ContactDetailsInteractor
+) : MvpPresenter<ContactDetailsView>(), CoroutineScope {
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
 
     fun showDetails(id: String) {
         try {
-            jobLoadDetails = CoroutineScope(Dispatchers.Main).launch {
+            launch {
                 contactDetailsInteractor.loadDetailsContact(id)
-                        .flowOn(Dispatchers.IO)
-                        .collect { contact ->
-                            viewState.showContactDetail(contact)
-                        }
+                    .flowOn(Dispatchers.IO)
+                    .collect { contact ->
+                        viewState.showContactDetail(contact)
+                    }
             }
         } catch (e: Exception) {
             Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
@@ -51,6 +53,6 @@ class ContactDetailsPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        jobLoadDetails.cancel()
+        coroutineContext.cancel()
     }
 }

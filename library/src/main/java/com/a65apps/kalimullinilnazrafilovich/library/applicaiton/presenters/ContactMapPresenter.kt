@@ -7,7 +7,8 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactMa
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -15,56 +16,57 @@ import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
 class ContactMapPresenter @Inject constructor(
-        private val contactLocationInteractor: ContactLocationInteractor,
-        private val contactDetailsInteractor: ContactDetailsInteractor
-) : MvpPresenter<ContactMapView>() {
-    private lateinit var jobMarkers: Job
-    private lateinit var jobLocation: Job
+    private val contactLocationInteractor: ContactLocationInteractor,
+    private val contactDetailsInteractor: ContactDetailsInteractor
+) : MvpPresenter<ContactMapView>(), CoroutineScope {
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
 
     fun showMarker(id: String) {
         try {
-            jobMarkers = CoroutineScope(Dispatchers.Main).launch {
+            launch {
                 contactDetailsInteractor.loadDetailsContact(id)
-                        .flowOn(Dispatchers.IO)
-                        .collect { contact ->
-                            if (contact.location?.address.equals("")) {
+                    .flowOn(Dispatchers.IO)
+                    .collect { contact ->
+                        contact.location?.let {
+                            if (it.address == "") {
                                 viewState.showMapMarker(LatLng(0.0, 0.0))
                             } else {
                                 viewState.showMapMarker(
-                                        LatLng(
-                                                contact.location!!.point.latitude,
-                                                contact.location!!.point.longitude
-                                            )
+                                    LatLng(
+                                        it.point.latitude,
+                                        it.point.longitude
                                     )
-                                }
+                                )
+                            }
                         }
+                    }
             }
         } catch (e: Exception) {
             Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
         }
-
     }
 
     fun getLocationMapClick(id: String, point: LatLng) {
         try {
-            jobLocation = CoroutineScope(Dispatchers.Main).launch {
+            launch {
                 contactDetailsInteractor.loadDetailsContact(id)
-                        .flowOn(Dispatchers.IO)
-                        .map {
-                            {
-                                contactLocationInteractor.createOrUpdateContactLocationByCoordinate(
-                                        it,
-                                        point.latitude,
-                                        point.longitude
-                                )
-                            }
+                    .flowOn(Dispatchers.IO)
+                    .map {
+                        {
+                            contactLocationInteractor.createOrUpdateContactLocationByCoordinate(
+                                it,
+                                point.latitude,
+                                point.longitude
+                            )
                         }
-                        .collect {
-                            viewState.showMapMarker(point)
-                        }
+                    }
+                    .collect {
+                        viewState.showMapMarker(point)
+                    }
             }
         } catch (e: Exception) {
             Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
@@ -73,7 +75,6 @@ class ContactMapPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        jobMarkers.cancel()
-        jobLocation.cancel()
+        coroutineContext.cancel()
     }
 }

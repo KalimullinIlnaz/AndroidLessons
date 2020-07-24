@@ -22,9 +22,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NotificationReceiver : BroadcastReceiver() {
-    private val CHANNEL_ID = "BirthDay"
+private const val CHANNEL_ID = "BirthDay"
 
+class NotificationReceiver : BroadcastReceiver() {
     @Inject
     lateinit var notificationInteractor: NotificationInteractor
 
@@ -39,7 +39,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val app = context.applicationContext as HasAppContainer
 
         val birthdayNotificationComponent: BirthdayNotificationContainer =
-                app.appContainer().plusBirthdayNotificationContainer()
+            app.appContainer().plusBirthdayNotificationContainer()
         birthdayNotificationComponent.inject(this)
 
         val id = intent?.getStringExtra("id")
@@ -49,9 +49,9 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     private fun showNotification(
-            context: Context,
-            text: String?,
-            id: String?
+        context: Context,
+        text: String?,
+        id: String?
     ) {
         val resultIntent = Intent(context, MainActivity::class.java)
 
@@ -62,23 +62,28 @@ class NotificationReceiver : BroadcastReceiver() {
         stackBuilder.addNextIntent(resultIntent)
 
         val resultPendingIntent =
-                stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
+            stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_email)
-                .setContentTitle(context.getString(com.a65apps.kalimullinilnazrafilovich.myapplication.R.string.title_notification))
-                .setContentText(text)
-                .setChannelId(CHANNEL_ID)
-                .setContentIntent(resultPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
+            .setSmallIcon(android.R.drawable.ic_dialog_email)
+            .setContentTitle(
+                context.getString(
+                    com.a65apps.kalimullinilnazrafilovich.myapplication.R.string.title_notification
+                )
+            )
+            .setContentText(text)
+            .setChannelId(CHANNEL_ID)
+            .setContentIntent(resultPendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
 
         val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                    CHANNEL_ID, "channelBirthDay", NotificationManager.IMPORTANCE_DEFAULT)
+                CHANNEL_ID, "channelBirthDay", NotificationManager.IMPORTANCE_DEFAULT
+            )
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(1, notification.build())
@@ -88,15 +93,14 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun repeatAlarm(id: String?) {
         val result = goAsync()
-
         try {
             CoroutineScope(Dispatchers.Main).launch {
                 contactDetailsInteractor.loadDetailsContact(id!!)
-                        .flowOn(Dispatchers.IO)
-                        .collect {
-                            notificationInteractor.onBirthdayNotification(it)
-                            result.finish()
-                        }
+                    .flowOn(Dispatchers.IO)
+                    .collect {
+                        notificationInteractor.onBirthdayNotification(it)
+                        result.finish()
+                    }
             }
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.printStackTrace().toString())
