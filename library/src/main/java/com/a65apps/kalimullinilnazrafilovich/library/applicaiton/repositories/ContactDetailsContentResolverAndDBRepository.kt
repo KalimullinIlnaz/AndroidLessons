@@ -9,7 +9,6 @@ import com.a65apps.kalimullinilnazrafilovich.entities.Location
 import com.a65apps.kalimullinilnazrafilovich.entities.Point
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.db.AppDatabase
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -25,10 +24,8 @@ class ContactDetailsContentResolverAndDBRepository(
 ) : ContactDetailsRepository {
     private val contentResolver = context.contentResolver
 
-    override fun getDetailsContact(id: String): Flow<ContactDetailsInfo> {
-        return flow {
-            emit(getContactDetailsFromDB(getContactDetails(id = id)))
-        }
+    override fun getDetailsContact(id: String) = flow {
+        emit(getContactDetailsFromDB(getContactDetails(id = id)))
     }
 
     private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo): ContactDetailsInfo {
