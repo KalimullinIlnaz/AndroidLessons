@@ -27,7 +27,7 @@ class ContactDetailsContentResolverAndDBRepository(
     override fun getDetailsContact(id: String) = flow {
         emit(getContactDetailsFromDB(getContactDetails(id = id)))
     }
-    
+
     private fun getContactDetailsFromDB(contactDetailsInfo: ContactDetailsInfo): ContactDetailsInfo {
         val contactShortInfo = ContactShortInfo(
             contactDetailsInfo.contactShortInfo.id,

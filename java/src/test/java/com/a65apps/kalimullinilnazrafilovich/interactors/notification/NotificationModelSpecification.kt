@@ -99,7 +99,6 @@ object NotificationModelSpecification : Spek({
                 notificationInteractor.offBirthdayNotification(contactDetailsInfo)
         }
 
-
         Scenario("Установить напоминание на следующий год") {
             Given(" Текущий год - 1999(не високосный) 9 сентября") {
                 setCurrentDate(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_9)
@@ -154,7 +153,6 @@ object NotificationModelSpecification : Spek({
             And("Создание напоминания") {
                 setExpectedNotification(YEAR_1999, Calendar.SEPTEMBER, DAY_OF_MONTH_8)
             }
-
             When("Пользователь кликает на кнопку напоминания в детальной информации контакта") {
                 setNotificationInteractor()
                 setActualBirthdayNotificationOn()
@@ -170,7 +168,6 @@ object NotificationModelSpecification : Spek({
             }
             And("Есть контакт с датой рождения 29 февраля") {
                 setContactEntity(YEAR_1990, Calendar.SEPTEMBER, DAY_OF_MONTH_29)
-
             }
             And("Создание напоминания") {
                 setExpectedNotification(YEAR_2000, Calendar.SEPTEMBER, DAY_OF_MONTH_29)
