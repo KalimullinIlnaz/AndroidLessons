@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.repositories
 
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
@@ -69,7 +71,7 @@ class ContactDetailsContentResolverAndDBRepository(
     }
 
     private fun getContactDetails(id: String): ContactDetailsInfo {
-        val cursor = contentResolver.query(
+        val cursor = createCursor(
             ContactsContract.Contacts.CONTENT_URI,
             null,
             ContactsContract.Contacts._ID + EQUAL + id,
@@ -86,10 +88,26 @@ class ContactDetailsContentResolverAndDBRepository(
             val birthOfDay = readDateOfBirth(id)
 
             var telephoneNumbers = listOf<String>()
-            val emails = readEmails(id)
+
+            val emails = readEmails(
+                createCursor(
+                    ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                    null,
+                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + EQUAL + id,
+                    null, null
+                )
+            )
 
             if (cursor?.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))!! > 0) {
-                telephoneNumbers = readTelephoneNumbers(id)
+                telephoneNumbers = readTelephoneNumbers(
+                    createCursor(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + EQUAL + id,
+                        null,
+                        null
+                    )
+                )
             }
 
             val firstTelephoneNumber = if (telephoneNumbers.isEmpty()) "" else telephoneNumbers[0]
@@ -115,53 +133,33 @@ class ContactDetailsContentResolverAndDBRepository(
         }
     }
 
-    private fun readTelephoneNumbers(id: String): List<String> {
-        val telephoneNumberCursor = contentResolver.query(
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            null,
-            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + EQUAL + id,
-            null,
-            null
-        )
-
-        telephoneNumberCursor.use {
-            val telephoneNumbersList = mutableListOf<String>()
-            if (telephoneNumberCursor != null) {
-                while (telephoneNumberCursor.moveToNext()) {
-                    telephoneNumbersList.add(
-                        telephoneNumberCursor.getString(
-                            telephoneNumberCursor.getColumnIndex(
+    private fun readTelephoneNumbers(cursor: Cursor?) =
+        mutableListOf<String>().apply {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    add(
+                        cursor.getString(
+                            cursor.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER
                             )
                         )
                     )
                 }
             }
-            return telephoneNumbersList
         }
-    }
 
-    private fun readEmails(id: String): List<String> {
-        val emailCursor = contentResolver.query(
-            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-            null,
-            ContactsContract.CommonDataKinds.Email.CONTACT_ID + EQUAL + id,
-            null, null
-        )
-        emailCursor.use {
-            val emails = mutableListOf<String>()
-            if (emailCursor != null) {
-                while (emailCursor.moveToNext()) {
-                    emails.add(
-                        emailCursor.getString(
-                            emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
+    private fun readEmails(cursor: Cursor?) =
+        mutableListOf<String>().apply {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    add(
+                        cursor.getString(
+                            cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)
                         )
                     )
                 }
             }
-            return emails
         }
-    }
 
     private fun readDateOfBirth(id: String): String {
         val birthDayCursor = contentResolver.query(
@@ -213,4 +211,19 @@ class ContactDetailsContentResolverAndDBRepository(
         contactDetailsInfoDetails.description,
         location
     )
+
+    private fun createCursor(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ) = contentResolver.query(
+        uri,
+        projection,
+        selection,
+        selectionArgs,
+        sortOrder
+    )
 }
+
