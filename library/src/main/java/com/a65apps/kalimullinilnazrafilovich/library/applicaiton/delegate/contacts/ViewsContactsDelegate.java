@@ -83,7 +83,7 @@ public class ViewsContactsDelegate implements ContactListAdapter.OnContactListen
     @Override
     public void onContactClick(int position) {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.
-                Companion.newInstance(contactShortInfoList.get(position).getId());
+                newInstance(contactShortInfoList.get(position).getId());
         FragmentManager fragmentManager = Objects.requireNonNull(fragmentActivity).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();

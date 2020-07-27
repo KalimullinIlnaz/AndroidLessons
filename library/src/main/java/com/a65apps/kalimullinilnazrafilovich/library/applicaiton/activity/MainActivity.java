@@ -16,7 +16,6 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.Conta
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactListFragment;
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R;
 
-import kotlin.jvm.JvmStatic;
 import moxy.MvpAppCompatActivity;
 
 public class MainActivity extends MvpAppCompatActivity {
@@ -82,9 +81,8 @@ public class MainActivity extends MvpAppCompatActivity {
         fragmentTransaction.add(R.id.content, contactListFragment).commit();
     }
 
-    @JvmStatic
     private void addFragmentContactDetail(@NonNull String id) {
-        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.Companion.newInstance(id);
+        ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.newInstance(id);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, contactDetailsFragment).addToBackStack(null).commit();

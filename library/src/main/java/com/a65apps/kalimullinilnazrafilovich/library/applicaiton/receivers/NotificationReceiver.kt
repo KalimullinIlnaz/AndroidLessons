@@ -31,10 +31,26 @@ class NotificationReceiver : BroadcastReceiver() {
     @Inject
     lateinit var contactDetailsInteractor: ContactDetailsInteractor
 
+    private lateinit var context: Context
+
+    private val resultIntent by lazy {
+        Intent(context, MainActivity::class.java)
+    }
+
+    private val stackBuilder by lazy {
+        TaskStackBuilder.create(context)
+    }
+
+    private val notificationManager by lazy {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context?.applicationContext !is HasAppContainer) {
             throw IllegalStateException()
         }
+
+        this.context = context
 
         val app = context.applicationContext as HasAppContainer
 
@@ -45,26 +61,39 @@ class NotificationReceiver : BroadcastReceiver() {
         val id = intent?.getStringExtra("id")
         val textReminder = intent?.getStringExtra("textReminder")
 
-        showNotification(context, textReminder, id)
+        showNotification(textReminder, id)
     }
 
     private fun showNotification(
-        context: Context,
         text: String?,
         id: String?
     ) {
-        val resultIntent = Intent(context, MainActivity::class.java)
-
         resultIntent.putExtra("contactDetail", "details")
         resultIntent.putExtra("id", id)
 
-        val stackBuilder = TaskStackBuilder.create(context)
         stackBuilder.addNextIntent(resultIntent)
 
         val resultPendingIntent =
             stackBuilder.getPendingIntent(id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        checkSdkVersion()
+
+        notificationManager.notify(1, createNotification(text, resultPendingIntent).build())
+
+        repeatAlarm(id)
+    }
+
+    private fun checkSdkVersion() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID, "channelBirthDay", NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun createNotification(text: String?, resultPendingIntent: PendingIntent) =
+        NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_email)
             .setContentTitle(
                 context.getString(
@@ -76,20 +105,6 @@ class NotificationReceiver : BroadcastReceiver() {
             .setContentIntent(resultPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID, "channelBirthDay", NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-        notificationManager.notify(1, notification.build())
-
-        repeatAlarm(id)
-    }
 
     private fun repeatAlarm(id: String?) {
         val result = goAsync()
@@ -104,6 +119,7 @@ class NotificationReceiver : BroadcastReceiver() {
             }
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.printStackTrace().toString())
+            result.finish()
         }
     }
 }

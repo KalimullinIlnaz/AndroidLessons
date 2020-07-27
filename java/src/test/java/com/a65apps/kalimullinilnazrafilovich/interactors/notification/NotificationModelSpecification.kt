@@ -24,6 +24,7 @@ const val DAY_OF_MONTH_8 = 8
 const val DAY_OF_MONTH_9 = 9
 const val DAY_OF_MONTH_29 = 29
 
+@Suppress("LargeClass")
 object NotificationModelSpecification : Spek({
     val currentTime: CurrentTime = mock()
     val birthdayCalendar: BirthdayCalendar = mock()
@@ -42,7 +43,7 @@ object NotificationModelSpecification : Spek({
     lateinit var contactDetailsInfo: ContactDetailsInfo
     lateinit var notificationInteractor: NotificationInteractor
 
-    Feature("Успешное добавление напоминания") {
+    Feature("Напоминание о дне рождения контакта") {
         lateinit var expectedBirthdayNotification: BirthdayNotification
         lateinit var actualBirthdayNotification: BirthdayNotification
 

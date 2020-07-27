@@ -28,7 +28,7 @@ console-reports:
      - 'ProjectStatisticsReport'
      - 'ComplexityReport'
      - 'NotificationReport'
-  #  - 'FindingsReport'
+     - 'FindingsReport'
      - 'FileBasedFindingsReport'
 
 comments:
@@ -77,17 +77,13 @@ complexity:
     ignoredLabels: []
   LargeClass:
     active: true
-    threshold: 600
+    threshold: 150
   LongMethod:
     active: true
-    threshold: 60
+    threshold: 25
   LongParameterList:
     active: true
     functionThreshold: 6
-    constructorThreshold: 7
-    ignoreDefaultParameters: false
-    ignoreDataClasses: true
-    ignoreAnnotated: []
   MethodOverloading:
     active: false
     threshold: 6

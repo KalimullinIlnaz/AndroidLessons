@@ -16,26 +16,29 @@ private const val BROAD_ACTION = "com.a65apps.kalimullinilnazrafilovich.myapplic
 class NotificationAlarmManagerRepository @Inject constructor(
     private val context: Context
 ) : NotificationRepository {
-    private var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override fun setBirthdayReminder(
         contactDetailsInfo: ContactDetailsInfo,
         gregorianCalendar: GregorianCalendar
-    ) =
-        getBirthdayNotificationEntity(contactDetailsInfo, gregorianCalendar).apply {
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                gregorianCalendar.timeInMillis,
-                createPendingIntentForContact(contactDetailsInfo)
-            )
-        }
+    ) = run {
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            gregorianCalendar.timeInMillis,
+            createPendingIntentForContact(contactDetailsInfo)
+        )
+
+        getBirthdayNotificationEntity(contactDetailsInfo, gregorianCalendar)
+    }
 
     override fun removeBirthdayReminder(contactDetailsInfo: ContactDetailsInfo) =
-        getBirthdayNotificationEntity(contactDetailsInfo, null).apply {
+        run {
             val alarmPendingIntent = createPendingIntentForContact(contactDetailsInfo)
 
             alarmManager.cancel(alarmPendingIntent)
             alarmPendingIntent.cancel()
+
+            getBirthdayNotificationEntity(contactDetailsInfo, null)
         }
 
     override fun getBirthdayNotificationEntity(

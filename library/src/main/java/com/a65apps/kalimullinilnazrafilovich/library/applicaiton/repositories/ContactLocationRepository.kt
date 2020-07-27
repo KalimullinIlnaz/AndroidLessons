@@ -54,13 +54,12 @@ class ContactLocationRepository @Inject constructor(
         }
         .doOnSuccess { location: Location -> insertContactLocation(location, contactDetailsInfo) }
 
-    private fun toListLocation(it: List<LocationOrm>): List<Location> {
-        val locationList = mutableListOf<Location>()
-        it.forEach {
-            contactDetailsRepository.getDetailsContact(it.contactID)
-                .map { contact ->
+    private fun toListLocation(it: List<LocationOrm>) =
+        mutableListOf<Location>().apply {
+            it.map {
+                contactDetailsRepository.getDetailsContact(it.contactID).map { contact ->
                     {
-                        locationList.add(
+                        add(
                             Location(
                                 contact,
                                 it.address,
@@ -72,7 +71,6 @@ class ContactLocationRepository @Inject constructor(
                         )
                     }
                 }
+            }
         }
-        return locationList
-    }
 }

@@ -1,6 +1,8 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters
 
 import android.util.Log
+import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
+import com.a65apps.kalimullinilnazrafilovich.entities.Location
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsInteractor
 import com.a65apps.kalimullinilnazrafilovich.interactors.location.ContactLocationInteractor
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactMapView
@@ -32,16 +34,7 @@ class ContactMapPresenter @Inject constructor(
                     .flowOn(Dispatchers.IO)
                     .collect { contact ->
                         contact.location?.let {
-                            if (it.address == "") {
-                                viewState.showMapMarker(LatLng(0.0, 0.0))
-                            } else {
-                                viewState.showMapMarker(
-                                    LatLng(
-                                        it.point.latitude,
-                                        it.point.longitude
-                                    )
-                                )
-                            }
+                            callViewState(it)
                         }
                     }
             }
@@ -50,19 +43,25 @@ class ContactMapPresenter @Inject constructor(
         }
     }
 
+    private fun callViewState(location: Location) =
+        if (location.address == "") {
+            viewState.showMapMarker(LatLng(0.0, 0.0))
+        } else {
+            viewState.showMapMarker(
+                LatLng(
+                    location.point.latitude,
+                    location.point.longitude
+                )
+            )
+        }
+
     fun getLocationMapClick(id: String, point: LatLng) {
         try {
             launch {
                 contactDetailsInteractor.loadDetailsContact(id)
                     .flowOn(Dispatchers.IO)
                     .map {
-                        {
-                            contactLocationInteractor.createOrUpdateContactLocationByCoordinate(
-                                it,
-                                point.latitude,
-                                point.longitude
-                            )
-                        }
+                        createOrUpdateLocation(it, point)
                     }
                     .collect {
                         viewState.showMapMarker(point)
@@ -72,6 +71,13 @@ class ContactMapPresenter @Inject constructor(
             Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
         }
     }
+
+    private fun createOrUpdateLocation(contactDetailsInfo: ContactDetailsInfo, point: LatLng) =
+        contactLocationInteractor.createOrUpdateContactLocationByCoordinate(
+            contactDetailsInfo,
+            point.latitude,
+            point.longitude
+        )
 
     override fun onDestroy() {
         cancel()

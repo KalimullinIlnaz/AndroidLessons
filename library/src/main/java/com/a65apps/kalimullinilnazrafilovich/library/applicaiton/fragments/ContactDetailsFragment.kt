@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.delegate.details.ButtonsDelegate
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.delegate.details.ViewsDetailsDelegate
@@ -31,15 +32,17 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     private lateinit var viewsDetailsDelegate: ViewsDetailsDelegate
     private lateinit var buttonsDelegate: ButtonsDelegate
 
-    private lateinit var id: String
+    private val id by lazy {
+        requireArguments().getString("id")
+            ?: throw IllegalArgumentException("ContactDetailsFragment required 'id' argument")
+    }
 
     companion object {
-        fun newInstance(id: String?): ContactDetailsFragment {
-            val args = Bundle()
-            args.putString("id", id)
-            val fragment = ContactDetailsFragment()
-            fragment.arguments = args
-            return fragment
+        @JvmStatic
+        fun newInstance(id: String?) = ContactDetailsFragment().apply {
+            arguments = bundleOf(
+                "id" to id
+            )
         }
     }
 
@@ -64,11 +67,9 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         activity?.title = getString(R.string.title_toolbar_contact_details)
 
         viewsDetailsDelegate = ViewsDetailsDelegate(view)
-        buttonsDelegate = ButtonsDelegate(view, activity!!, contactDetailsPresenter)
+        buttonsDelegate = ButtonsDelegate(view, requireActivity(), contactDetailsPresenter)
 
         buttonsDelegate.clickButtons()
-
-        id = arguments?.getString("id")!!
 
         return view
     }
