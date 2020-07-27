@@ -61,7 +61,6 @@ object ContactDetailsNotificationSpecification : Spek({
 
     lateinit var contactDetailsPresenter: ContactDetailsPresenter
 
-
     fun mockCurrentTimeAndBirthdayCalendar() {
         Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
         Mockito.`when`(currentTime.now()).thenReturn(currentDate.time.time)
