@@ -83,7 +83,6 @@ object ContactDetailsNotificationSpecification : Spek({
         )
     }
 
-
     Feature("Я как пользователь хочу устанавливать и удалять уведомления о дне рождения контакта") {
         Scenario("Установка напоминания") {
             Given("Сущность напоминания") {

@@ -135,10 +135,13 @@ class ContactDetailsContentResolverAndDBRepository(
 
     private fun readDateOfBirth(cursor: Cursor?) = run {
         cursor.use {
-            cursor?.moveToFirst()
-            val birthOfDay = it?.getString(
-                it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)
-            )
+            var birthOfDay = ""
+            while (cursor != null && cursor.moveToNext()) {
+                birthOfDay = cursor.getString(
+                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)
+                )
+                convertDateToCalendar(birthOfDay)
+            }
             convertDateToCalendar(birthOfDay)
         }
     }
