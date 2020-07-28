@@ -6,28 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.delegate.details.ButtonsDelegate
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.delegate.details.ViewsDetailsDelegate
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.HasAppContainer
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactDetailsPresenter
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.views.ContactDetailsView
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.viewModels.ContactDetailsViewModel
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.viewModels.factory.ContactDetailsFactory
 import com.a65apps.kalimullinilnazrafilovich.myapplication.R
-import moxy.MvpAppCompatFragment
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Provider
 
-class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
-    @InjectPresenter
-    lateinit var contactDetailsPresenter: ContactDetailsPresenter
-
+class ContactDetailsFragment : Fragment() {
     @Inject
-    lateinit var contactDetailsPresenterProvider: Provider<ContactDetailsPresenter>
-
-    @ProvidePresenter
-    fun providePresenter(): ContactDetailsPresenter? = contactDetailsPresenterProvider.get()
+    lateinit var viewModelFactory: ContactDetailsFactory
+    private lateinit var viewModel: ContactDetailsViewModel
 
     private lateinit var viewsDetailsDelegate: ViewsDetailsDelegate
     private lateinit var buttonsDelegate: ButtonsDelegate
@@ -58,6 +53,12 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(ContactDetailsViewModel::class.java)
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,7 +68,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         activity?.title = getString(R.string.title_toolbar_contact_details)
 
         viewsDetailsDelegate = ViewsDetailsDelegate(view)
-        buttonsDelegate = ButtonsDelegate(view, requireActivity(), contactDetailsPresenter)
+        buttonsDelegate = ButtonsDelegate(view, requireActivity(), viewModel)
 
         buttonsDelegate.clickButtons()
 
@@ -76,17 +77,18 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contactDetailsPresenter.showDetails(id)
-    }
-
-    override fun showContactDetail(contactDetailsInfo: ContactDetailsInfo) {
-        viewsDetailsDelegate.setViews(contactDetailsInfo)
-        buttonsDelegate.setStatusButtons(contactDetailsInfo)
+        val details: LiveData<ContactDetailsInfo> = viewModel.getContactDetails(id)
+        details.observe(
+            viewLifecycleOwner,
+            Observer { contact ->
+                viewsDetailsDelegate.setViews(contact)
+                buttonsDelegate.setStatusButtons(contact, viewLifecycleOwner)
+            })
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         viewsDetailsDelegate.unBind()
         buttonsDelegate.unBind()
+        super.onDestroyView()
     }
 }

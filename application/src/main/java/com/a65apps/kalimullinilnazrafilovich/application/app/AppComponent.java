@@ -20,7 +20,6 @@ import dagger.Component;
         RepositoryModule.class,
         TimeModule.class})
 public interface AppComponent extends AppContainer {
-
     @NonNull
     ContactsListComponent plusContactListContainer();
 

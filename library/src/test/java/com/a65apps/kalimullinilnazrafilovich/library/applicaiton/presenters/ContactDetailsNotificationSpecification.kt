@@ -11,6 +11,7 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.viewModels.ContactDetailsViewModel
 import com.nhaarman.mockitokotlin2.mock
 import org.mockito.Mockito
 import org.spekframework.spek2.Spek
@@ -59,7 +60,7 @@ object ContactDetailsNotificationSpecification : Spek({
 
     lateinit var contactDetailsInteractor: ContactDetailsInteractor
 
-    lateinit var contactDetailsPresenter: ContactDetailsPresenter
+    lateinit var contactDetailsViewModel: ContactDetailsViewModel
 
     fun mockCurrentTimeAndBirthdayCalendar() {
         Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
@@ -77,7 +78,7 @@ object ContactDetailsNotificationSpecification : Spek({
             contactDetailsRepository
         )
 
-        contactDetailsPresenter = ContactDetailsPresenter(
+        contactDetailsViewModel = ContactDetailsViewModel(
             notificationInteractor,
             contactDetailsInteractor
         )
@@ -100,9 +101,8 @@ object ContactDetailsNotificationSpecification : Spek({
                 ).thenReturn(expectedBirthdayNotification)
             }
             When("Устанавливается напоминание") {
-
                 actualBirthdayNotification =
-                    contactDetailsPresenter.setNotification(contactDetailsInfo)
+                    contactDetailsViewModel.setBirthdayNotification(contactDetailsInfo)
             }
             Then("Напоминание установлено") {
                 assertEquals(
@@ -127,7 +127,7 @@ object ContactDetailsNotificationSpecification : Spek({
 
             When("Удаляется напоминание") {
                 actualBirthdayNotification =
-                    contactDetailsPresenter.removeNotification(contactDetailsInfo)
+                    contactDetailsViewModel.removeBirthdayNotification(contactDetailsInfo)
             }
             Then("Напоминание удалено") {
                 assertEquals(
@@ -154,7 +154,7 @@ object ContactDetailsNotificationSpecification : Spek({
 
             When("Получение статуса напоминания") {
                 actualBirthdayNotification =
-                    contactDetailsPresenter.getActualStateBirthdayNotification(contactDetailsInfo)
+                    contactDetailsViewModel.getBirthdayNotification(contactDetailsInfo)
             }
             Then("Статус получен") {
                 assertEquals(

@@ -7,14 +7,13 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsI
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsModel;
 import com.a65apps.kalimullinilnazrafilovich.interactors.details.ContactDetailsRepository;
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationInteractor;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactDetailsPresenter;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.viewModels.factory.ContactDetailsFactory;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class ContactDetailsModule {
-
     @Provides
     @ContactDetailsScope
     @NonNull
@@ -26,10 +25,9 @@ public class ContactDetailsModule {
     @Provides
     @ContactDetailsScope
     @NonNull
-    public ContactDetailsPresenter provideContactDetailsPresenter(
+    public ContactDetailsFactory provideContactDetailsFactory(
             @NonNull NotificationInteractor notificationInteractor,
             @NonNull ContactDetailsInteractor contactDetailsInteractor) {
-        return new ContactDetailsPresenter(notificationInteractor, contactDetailsInteractor);
+        return new ContactDetailsFactory(notificationInteractor, contactDetailsInteractor);
     }
 }
-

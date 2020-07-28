@@ -1,6 +1,5 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.delegate.details;
 
-import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +11,7 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R2;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +45,7 @@ public class ViewsDetailsDelegate {
         if (name != null) {
             name.setText(contactDetailsInfo.getContactShortInfo().getName());
             dataOfBirth.setText(parseDateToString(contactDetailsInfo.getDateOfBirth()));
-            address.setText(contactDetailsInfo.getLocation().getAddress());
+            address.setText(Objects.requireNonNull(contactDetailsInfo.getLocation()).getAddress());
             telephoneNumber.setText(contactDetailsInfo.getContactShortInfo().getTelephoneNumber());
             telephoneNumber2.setText(contactDetailsInfo.getTelephoneNumber2());
             email.setText(contactDetailsInfo.getEmail());
@@ -59,7 +59,6 @@ public class ViewsDetailsDelegate {
         if (gregorianCalendar.getTimeInMillis() == 0) {
             return "";
         } else {
-            @SuppressLint("SimpleDateFormat")
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             df.setCalendar(gregorianCalendar);
             return df.format(gregorianCalendar.getTime());
