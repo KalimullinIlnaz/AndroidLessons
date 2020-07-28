@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
 public class GeocoderResponseMetaData {
     @SerializedName("Point")
     @Expose
-    private Point point;
+    private PointDTO pointDTO;
     @SerializedName("request")
 
     @NonNull
-    public Point getPoint() {
-        return point;
+    public PointDTO getPointDTO() {
+        return pointDTO;
     }
 
-    public void setPoint(@NonNull Point point) {
-        this.point = point;
+    public void setPointDTO(@NonNull PointDTO pointDTO) {
+        this.pointDTO = pointDTO;
     }
 }

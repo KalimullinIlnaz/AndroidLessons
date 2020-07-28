@@ -34,7 +34,6 @@ public class MainActivity extends MvpAppCompatActivity {
         firstCreateMainActivity = savedInstanceState == null;
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();

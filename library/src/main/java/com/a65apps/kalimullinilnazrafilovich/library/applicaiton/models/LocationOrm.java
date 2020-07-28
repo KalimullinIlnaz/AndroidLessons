@@ -24,7 +24,7 @@ public class LocationOrm {
 
     public LocationOrm(@NonNull ContactDetailsInfo contactDetailsInfo,
                        @NonNull Location location) {
-        this.contactID = contactDetailsInfo.getId();
+        this.contactID = contactDetailsInfo.getContactShortInfo().getId();
         this.address = location.getAddress();
         this.latitude = location.getPoint().getLatitude();
         this.longitude = location.getPoint().getLongitude();

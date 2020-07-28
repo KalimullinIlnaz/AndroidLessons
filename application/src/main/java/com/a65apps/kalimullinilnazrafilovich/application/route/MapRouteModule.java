@@ -20,7 +20,7 @@ public class MapRouteModule {
     @Provides
     @MapRouteScope
     @NonNull
-    public RouteMapPresenter provideFullMapPresenter(
+    public RouteMapPresenter provideRouteMapPresenter(
             @NonNull ContactLocationInteractor contactLocationModel,
             @NonNull RouteInteractor routeModel) {
         return new RouteMapPresenter(contactLocationModel, routeModel);
