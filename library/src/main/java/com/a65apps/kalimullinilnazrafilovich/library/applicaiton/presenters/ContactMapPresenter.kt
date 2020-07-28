@@ -60,6 +60,7 @@ class ContactMapPresenter @Inject constructor(
             launch {
                 contactDetailsInteractor.loadDetailsContact(id)
                     .flowOn(Dispatchers.IO)
+
                     .map {
                         createOrUpdateLocation(it, point)
                     }

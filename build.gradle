@@ -17,6 +17,10 @@ plugins {
     id "io.gitlab.arturbosch.detekt" version "1.10.0"
 }
 
+configurations {
+    ktlint
+}
+
 allprojects {
     repositories {
         google()
@@ -46,10 +50,31 @@ detekt {
     }
 }
 
+configurations {
+    ktlint
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
+
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
 dependencies {
     detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.10.0"
+
+    ktlint "com.pinterest:ktlint:0.37.2"
 }

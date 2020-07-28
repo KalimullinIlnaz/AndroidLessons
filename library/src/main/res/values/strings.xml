@@ -3,7 +3,7 @@
     <string name="Text">Контакты</string>
     <string name="name">name</string>
     <string name="address">address</string>
-    <string name="telephone_number">telephoneNumber</string>
+    <string name="telephone_number">telephoneNumber</string>T
     <string name="second_telephone_number">second_telephone_number</string>
     <string name="first_email">firstEmail</string>
     <string name="second_email">second_email</string>

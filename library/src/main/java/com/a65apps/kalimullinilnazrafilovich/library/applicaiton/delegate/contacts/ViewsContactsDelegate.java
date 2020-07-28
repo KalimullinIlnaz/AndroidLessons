@@ -25,7 +25,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import kotlin.jvm.JvmStatic;
 
 public class ViewsContactsDelegate implements ContactListAdapter.OnContactListener {
     private static final int OFFSET_DP = 6;
@@ -79,7 +78,6 @@ public class ViewsContactsDelegate implements ContactListAdapter.OnContactListen
         circularProgressView.setVisibility(View.GONE);
     }
 
-    @JvmStatic
     @Override
     public void onContactClick(int position) {
         ContactDetailsFragment contactDetailsFragment = ContactDetailsFragment.

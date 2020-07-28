@@ -44,10 +44,10 @@ class ContactLocationRepository @Inject constructor(
             "$latitude,$longitude",
             context.resources.getString(R.string.yandex_maps_key)
         )
-        .map { responseDTO: YandexAddressResponseDTO? ->
+        .map { responseDTO: YandexAddressResponseDTO ->
             YandexDTOMapper().transform(
                 contactDetailsInfo,
-                responseDTO!!,
+                responseDTO,
                 latitude,
                 longitude
             )

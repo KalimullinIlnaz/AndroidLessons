@@ -12,23 +12,21 @@ class DbRepositoryDelegate {
     fun getDetailsFromDb(
         db: AppDatabase,
         contactDetailsInfo: ContactDetailsInfo
-    ) = run {
-        if (db.locationDao().isExists(contactDetailsInfo.contactShortInfo.id) == INFO_EXISTS) {
-            createNewContact(
-                contactDetailsInfo,
-                Location(
-                    contactDetailsInfo = contactDetailsInfo,
-                    address = db.locationDao()
-                        .getById(contactDetailsInfo.contactShortInfo.id).address,
-                    point = Point(
-                        db.locationDao().getById(contactDetailsInfo.contactShortInfo.id).latitude,
-                        db.locationDao().getById(contactDetailsInfo.contactShortInfo.id).longitude
-                    )
+    ) = if (db.locationDao().isExists(contactDetailsInfo.contactShortInfo.id) == INFO_EXISTS) {
+        createNewContact(
+            contactDetailsInfo,
+            Location(
+                contactDetailsInfo = contactDetailsInfo,
+                address = db.locationDao()
+                    .getById(contactDetailsInfo.contactShortInfo.id).address,
+                point = Point(
+                    db.locationDao().getById(contactDetailsInfo.contactShortInfo.id).latitude,
+                    db.locationDao().getById(contactDetailsInfo.contactShortInfo.id).longitude
                 )
             )
-        } else {
-            createContactWithoutLocation(contactDetailsInfo)
-        }
+        )
+    } else {
+        createContactWithoutLocation(contactDetailsInfo)
     }
 
     private fun createContactWithoutLocation(

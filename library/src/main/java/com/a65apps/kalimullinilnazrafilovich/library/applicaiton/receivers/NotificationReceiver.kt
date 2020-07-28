@@ -61,12 +61,14 @@ class NotificationReceiver : BroadcastReceiver() {
         val id = intent?.getStringExtra("id")
         val textReminder = intent?.getStringExtra("textReminder")
 
-        showNotification(textReminder, id)
+        id?.let {
+            showNotification(textReminder, id)
+        }
     }
 
     private fun showNotification(
         text: String?,
-        id: String?
+        id: String
     ) {
         resultIntent.putExtra("contactDetail", "details")
         resultIntent.putExtra("id", id)
@@ -106,11 +108,11 @@ class NotificationReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
 
-    private fun repeatAlarm(id: String?) {
+    private fun repeatAlarm(id: String) {
         val result = goAsync()
         try {
             CoroutineScope(Dispatchers.Main).launch {
-                contactDetailsInteractor.loadDetailsContact(id!!)
+                contactDetailsInteractor.loadDetailsContact(id)
                     .flowOn(Dispatchers.IO)
                     .collect {
                         notificationInteractor.onBirthdayNotification(it)
