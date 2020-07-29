@@ -48,32 +48,29 @@ class ContactDetailsViewModel @Inject constructor(
         Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
     }
 
-    fun setBirthdayNotification(contactDetailsInfo: ContactDetailsInfo) = run {
-        setReminder(contactDetailsInfo)
-        birthdayNotification
-    }
+    fun setBirthdayNotification(contactDetailsInfo: ContactDetailsInfo) =
+        birthdayNotification.apply {
+            value = setReminder(contactDetailsInfo)
+        }
 
-    private fun setReminder(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
-        return notificationInteractor.onBirthdayNotification(contactDetailsInfo)
-    }
+    private fun setReminder(contactDetailsInfo: ContactDetailsInfo) =
+        notificationInteractor.onBirthdayNotification(contactDetailsInfo)
 
-    fun removeBirthdayNotification(contactDetailsInfo: ContactDetailsInfo) = run {
-        removeReminder(contactDetailsInfo)
-        birthdayNotification
-    }
+    fun removeBirthdayNotification(contactDetailsInfo: ContactDetailsInfo) =
+        birthdayNotification.apply {
+            value = removeReminder(contactDetailsInfo)
+        }
 
-    private fun removeReminder(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
-        return notificationInteractor.offBirthdayNotification(contactDetailsInfo)
-    }
+    private fun removeReminder(contactDetailsInfo: ContactDetailsInfo) =
+        notificationInteractor.offBirthdayNotification(contactDetailsInfo)
 
-    fun getBirthdayNotification(contactDetailsInfo: ContactDetailsInfo) = run {
-        getStatusReminder(contactDetailsInfo)
-        birthdayNotification
-    }
+    fun getBirthdayNotification(contactDetailsInfo: ContactDetailsInfo) =
+        birthdayNotification.apply {
+            value = getStatusReminder(contactDetailsInfo)
+        }
 
-    private fun getStatusReminder(contactDetailsInfo: ContactDetailsInfo): BirthdayNotification {
-        return notificationInteractor.getNotificationWorkStatus(contactDetailsInfo)
-    }
+    private fun getStatusReminder(contactDetailsInfo: ContactDetailsInfo) =
+        notificationInteractor.getNotificationWorkStatus(contactDetailsInfo)
 
     override fun onCleared() {
         cancel()
