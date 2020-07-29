@@ -1,5 +1,7 @@
 package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters
 
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import com.a65apps.kalimullinilnazrafilovich.entities.BirthdayNotification
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactDetailsInfo
 import com.a65apps.kalimullinilnazrafilovich.entities.ContactShortInfo
@@ -27,6 +29,24 @@ const val DAY_OF_MONTH_8 = 8
 const val DAY_OF_MONTH_9 = 9
 
 object ContactDetailsNotificationSpecification : Spek({
+    beforeEachTest {
+        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+            override fun executeOnDiskIO(runnable: Runnable) {
+                runnable.run()
+            }
+
+            override fun isMainThread(): Boolean {
+                return true
+            }
+
+            override fun postToMainThread(runnable: Runnable) {
+                runnable.run()
+            }
+        })
+    }
+
+    afterEachTest { ArchTaskExecutor.getInstance().setDelegate(null) }
+
     val birthdayCalendar: BirthdayCalendar = mock()
     val currentTime: CurrentTime = mock()
 

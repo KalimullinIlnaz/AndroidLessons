@@ -102,6 +102,8 @@ dependencies {
 
     implementation project(path: ':java')
 
+    testImplementation 'android.arch.core:core-testing:1.1.1'
+
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     implementation "androidx.core:core-ktx:1.3.1"
