@@ -123,8 +123,8 @@ dependencies {
 
     //Mockito
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation "org.mockito:mockito-core:3.4.4"
-    androidTestImplementation 'org.mockito:mockito-android:3.4.4'
+    testImplementation "org.mockito:mockito-core:3.4.6"
+    androidTestImplementation 'org.mockito:mockito-android:3.4.6'
 
     //JUnit
     testImplementation('junit:junit:4.13')

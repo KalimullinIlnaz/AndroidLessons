@@ -4,6 +4,5 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 interface MyDispatchers {
     fun main(): CoroutineDispatcher
-    
     fun io(): CoroutineDispatcher
 }
