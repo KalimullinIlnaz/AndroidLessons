@@ -13,12 +13,10 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.TestDispatchers
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.details.ContactDetailsViewModel
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.mockito.Mockito
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -50,7 +48,7 @@ object ContactDetailsNotificationSpecification : Spek({
 
     afterEachTest { ArchTaskExecutor.getInstance().setDelegate(null) }
 
-    val testCoroutineDispatchers = TestDispatchers(TestCoroutineDispatcher())
+    val testCoroutineDispatchers = TestDispatchers()
 
     val birthdayCalendar: BirthdayCalendar = mock()
     val currentTime: CurrentTime = mock()
