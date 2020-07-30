@@ -7,11 +7,18 @@ public interface AppContainer {
     @NonNull
     ContactsListContainer plusContactListContainer();
 
-    @NonNull ContactDetailsContainer plusContactDetailsContainer();
+    @NonNull
+    ContactDetailsContainer plusContactDetailsContainer();
 
-    @NonNull ContactMapContainer plusContactMapContainer();
+    @NonNull
+    ContactMapContainer plusContactMapContainer();
 
-    @NonNull MapRouteContainer plusMapRouteContainer();
+    @NonNull
+    MapRouteContainer plusMapRouteContainer();
 
-    @NonNull BirthdayNotificationContainer plusBirthdayNotificationContainer();
+    @NonNull
+    BirthdayNotificationContainer plusBirthdayNotificationContainer();
+
+    @NonNull
+    ViewModelComponentFactory viewModelComponentFactory();
 }

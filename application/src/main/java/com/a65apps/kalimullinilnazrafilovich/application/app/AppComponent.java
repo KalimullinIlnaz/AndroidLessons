@@ -7,6 +7,7 @@ import com.a65apps.kalimullinilnazrafilovich.application.details.ContactDetailsC
 import com.a65apps.kalimullinilnazrafilovich.application.map.ContactMapComponent;
 import com.a65apps.kalimullinilnazrafilovich.application.notification.BirthdayNotificationComponent;
 import com.a65apps.kalimullinilnazrafilovich.application.route.MapRouteComponent;
+import com.a65apps.kalimullinilnazrafilovich.application.viewModels.ViewModelComponent;
 import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces.AppContainer;
 
 import javax.inject.Singleton;
@@ -18,7 +19,8 @@ import dagger.Component;
         AppModule.class,
         DataBaseModule.class,
         RepositoryModule.class,
-        TimeModule.class})
+        TimeModule.class,
+        DispatchersModule.class})
 public interface AppComponent extends AppContainer {
     @NonNull
     ContactsListComponent plusContactListContainer();
@@ -34,4 +36,7 @@ public interface AppComponent extends AppContainer {
 
     @NonNull
     BirthdayNotificationComponent plusBirthdayNotificationContainer();
+
+    @NonNull
+    ViewModelComponent.Factory viewModelComponentFactory();
 }

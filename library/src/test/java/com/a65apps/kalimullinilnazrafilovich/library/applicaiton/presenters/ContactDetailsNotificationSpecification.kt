@@ -13,9 +13,12 @@ import com.a65apps.kalimullinilnazrafilovich.interactors.notification.Notificati
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationModel
 import com.a65apps.kalimullinilnazrafilovich.interactors.notification.NotificationRepository
 import com.a65apps.kalimullinilnazrafilovich.interactors.time.CurrentTime
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.viewModels.ContactDetailsViewModel
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.TestDispatchers
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.details.ContactDetailsViewModel
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.mockito.Mockito
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -46,6 +49,8 @@ object ContactDetailsNotificationSpecification : Spek({
     }
 
     afterEachTest { ArchTaskExecutor.getInstance().setDelegate(null) }
+
+    val testCoroutineDispatchers = TestDispatchers(TestCoroutineDispatcher())
 
     val birthdayCalendar: BirthdayCalendar = mock()
     val currentTime: CurrentTime = mock()
@@ -84,6 +89,9 @@ object ContactDetailsNotificationSpecification : Spek({
     fun mockCurrentTimeAndBirthdayCalendar() {
         Mockito.`when`(birthdayCalendar.birthdayCalendar).thenReturn(currentDate)
         Mockito.`when`(currentTime.now()).thenReturn(currentDate.time.time)
+
+        Mockito.`when`(contactDetailsRepository.getDetailsContact("id"))
+            .thenReturn(flowOf(contactDetailsInfo))
     }
 
     fun initInteractors() {
@@ -97,17 +105,19 @@ object ContactDetailsNotificationSpecification : Spek({
             contactDetailsRepository
         )
 
-        contactDetailsViewModel = ContactDetailsViewModel(
-            notificationInteractor,
-            contactDetailsInteractor
-        )
+        contactDetailsViewModel =
+            ContactDetailsViewModel(
+                testCoroutineDispatchers,
+                notificationInteractor,
+                contactDetailsInteractor,
+                "id"
+            )
+        contactDetailsViewModel.getContactDetails()
     }
 
     Feature("Я как пользователь хочу устанавливать и удалять уведомления о дне рождения контакта") {
         Scenario("Установка напоминания") {
             Given("Сущность напоминания") {
-                mockCurrentTimeAndBirthdayCalendar()
-                initInteractors()
                 expectedBirthdayNotification = BirthdayNotification(
                     contactDetailsInfo,
                     true,
@@ -115,12 +125,16 @@ object ContactDetailsNotificationSpecification : Spek({
                 )
                 Mockito.`when`(
                     notificationRepository.setBirthdayReminder(
-                        contactDetailsInfo, testTriggerDate
+                        contactDetailsInfo,
+                        testTriggerDate
                     )
                 ).thenReturn(expectedBirthdayNotification)
+
+                mockCurrentTimeAndBirthdayCalendar()
+                initInteractors()
             }
             When("Устанавливается напоминание") {
-                contactDetailsViewModel.setBirthdayNotification(contactDetailsInfo)
+                contactDetailsViewModel.setBirthdayNotification()
             }
             Then("Напоминание установлено") {
                 verify(notificationRepository).setBirthdayReminder(
@@ -132,8 +146,6 @@ object ContactDetailsNotificationSpecification : Spek({
 
         Scenario("Удаление напоминания") {
             Given("Сущность напоминания") {
-                mockCurrentTimeAndBirthdayCalendar()
-                initInteractors()
                 expectedBirthdayNotification = BirthdayNotification(
                     contactDetailsInfo,
                     false,
@@ -141,10 +153,13 @@ object ContactDetailsNotificationSpecification : Spek({
                 )
                 Mockito.`when`(notificationRepository.removeBirthdayReminder(contactDetailsInfo))
                     .thenReturn(expectedBirthdayNotification)
+
+                mockCurrentTimeAndBirthdayCalendar()
+                initInteractors()
             }
 
             When("Удаляется напоминание") {
-                contactDetailsViewModel.removeBirthdayNotification(contactDetailsInfo)
+                contactDetailsViewModel.removeBirthdayNotification()
             }
             Then("Напоминание удалено") {
                 verify(notificationRepository).removeBirthdayReminder(contactDetailsInfo)
@@ -153,7 +168,6 @@ object ContactDetailsNotificationSpecification : Spek({
 
         Scenario("Получение статуса напоминания") {
             Given("Сущность напоминания") {
-                mockCurrentTimeAndBirthdayCalendar()
                 expectedBirthdayNotification = BirthdayNotification(
                     contactDetailsInfo,
                     false,
@@ -164,10 +178,12 @@ object ContactDetailsNotificationSpecification : Spek({
                         contactDetailsInfo, null
                     )
                 ).thenReturn(expectedBirthdayNotification)
-            }
 
+                mockCurrentTimeAndBirthdayCalendar()
+                initInteractors()
+            }
             When("Получение статуса напоминания") {
-                contactDetailsViewModel.getBirthdayNotification(contactDetailsInfo)
+                contactDetailsViewModel.getBirthdayNotification()
             }
             Then("Статус получен") {
                 verify(notificationRepository).getBirthdayNotificationEntity(

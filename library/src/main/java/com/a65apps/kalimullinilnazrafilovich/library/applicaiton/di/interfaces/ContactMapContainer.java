@@ -2,7 +2,7 @@ package com.a65apps.kalimullinilnazrafilovich.library.applicaiton.di.interfaces;
 
 import androidx.annotation.NonNull;
 
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.fragments.ContactMapFragment;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.location.ContactMapFragment;
 
 
 public interface ContactMapContainer {

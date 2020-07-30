@@ -14,7 +14,6 @@ import dagger.Provides;
 
 @Module
 public class BirthdayNotificationModule {
-
     @Provides
     @NonNull
     public NotificationInteractor provideNotificationInteractor(@NonNull NotificationRepository notificationRepository,
