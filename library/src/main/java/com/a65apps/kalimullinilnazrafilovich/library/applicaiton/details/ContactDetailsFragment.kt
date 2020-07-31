@@ -18,7 +18,7 @@ import com.a65apps.kalimullinilnazrafilovich.myapplication.R
 class ContactDetailsFragment : Fragment() {
     private lateinit var appContainer: AppContainer
 
-    private lateinit var viewsDetailsDelegate: ViewsDetailsDelegate
+    private lateinit var viewContactDetailsDelegate: ViewContactDetailsDelegate
     private lateinit var buttonsDelegate: ButtonsDelegate
 
     private val id by lazy(LazyThreadSafetyMode.NONE) {
@@ -68,35 +68,36 @@ class ContactDetailsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_contact_details, container, false)
         activity?.title = getString(R.string.title_toolbar_contact_details)
 
-        viewsDetailsDelegate =
-            ViewsDetailsDelegate(
-                view
-            )
+        viewContactDetailsDelegate = ViewContactDetailsDelegate(
+            view,
+            viewModel,
+            this
+        )
+
         buttonsDelegate =
             ButtonsDelegate(
                 view,
                 requireActivity(),
                 viewModel
             )
-
         buttonsDelegate.clickButtons()
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val details: LiveData<ContactDetailsInfo> = viewModel.getContactDetails()
         details.observe(
             viewLifecycleOwner,
             Observer { contact ->
-                viewsDetailsDelegate.setViews(contact)
+                viewContactDetailsDelegate.setViews(contact)
                 buttonsDelegate.setStatusButtons(contact, viewLifecycleOwner)
             })
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {
-        viewsDetailsDelegate.unBind()
+        viewContactDetailsDelegate.unBind()
         buttonsDelegate.unBind()
         super.onDestroyView()
     }

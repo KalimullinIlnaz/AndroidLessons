@@ -3,8 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ContactListFragment"
     android:orientation="vertical">
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/circular_progress_view_details"
+        android:layout_width="@dimen/loaded_size"
+        android:layout_height="@dimen/loaded_size"
+        app:cpv_color="@color/colorPrimary"
+        android:visibility="visible"
+        android:layout_gravity="center"
+        app:cpv_animAutostart="true"
+        app:cpv_indeterminate="true">
+    </com.github.rahatarmanahmed.cpv.CircularProgressView>
 
     <LinearLayout
         android:layout_width="match_parent"

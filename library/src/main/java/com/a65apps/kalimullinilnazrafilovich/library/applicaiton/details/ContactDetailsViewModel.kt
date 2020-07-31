@@ -12,6 +12,7 @@ import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.MyDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -35,10 +36,15 @@ class ContactDetailsViewModel @Inject constructor(
         MutableLiveData<BirthdayNotification>()
     }
 
-    fun getContactDetails(): LiveData<ContactDetailsInfo> = run {
-        loadDetails()
-        contact
+    private val loadingStatus by lazy {
+        MutableLiveData<Boolean>()
     }
+
+    init {
+        loadDetails()
+    }
+
+    fun getContactDetails(): LiveData<ContactDetailsInfo> = contact
 
     private fun loadDetails() = try {
         launch {
@@ -46,11 +52,15 @@ class ContactDetailsViewModel @Inject constructor(
                 .flowOn(dispatchers.io())
                 .collect { contactDetails ->
                     contact.value = contactDetails
+                    loadingStatus.value = false
                 }
         }
     } catch (e: Exception) {
+        loadingStatus.value = false
         Log.e(this.javaClass.simpleName, e.printStackTrace().toString())
     }
+
+    fun getLoadStatus() = loadingStatus
 
     fun setBirthdayNotification() =
         notification.apply {
@@ -59,7 +69,7 @@ class ContactDetailsViewModel @Inject constructor(
 
     private fun setReminder(contactDetailsInfo: ContactDetailsInfo?) =
         contactDetailsInfo?.let {
-            notificationInteractor.onBirthdayNotification(contactDetailsInfo)
+            notificationInteractor.onBirthdayNotification(it)
         }
 
     fun removeBirthdayNotification() =
@@ -69,7 +79,7 @@ class ContactDetailsViewModel @Inject constructor(
 
     private fun removeReminder(contactDetailsInfo: ContactDetailsInfo?) =
         contactDetailsInfo?.let {
-            notificationInteractor.offBirthdayNotification(contactDetailsInfo)
+            notificationInteractor.offBirthdayNotification(it)
         }
 
     fun getBirthdayNotification() =
@@ -79,7 +89,7 @@ class ContactDetailsViewModel @Inject constructor(
 
     private fun getStatusReminder(contactDetailsInfo: ContactDetailsInfo?) =
         contactDetailsInfo?.let {
-            notificationInteractor.getNotificationWorkStatus(contactDetailsInfo)
+            notificationInteractor.getNotificationWorkStatus(it)
         }
 
     override fun onCleared() {

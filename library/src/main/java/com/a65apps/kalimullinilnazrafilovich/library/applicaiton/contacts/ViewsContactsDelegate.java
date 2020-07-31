@@ -34,7 +34,7 @@ public class ViewsContactsDelegate implements ContactListAdapter.OnContactListen
 
     @BindView(R2.id.contact_list_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R2.id.circular_progress_view)
+    @BindView(R2.id.circular_progress_view_list)
     CircularProgressView circularProgressView;
 
     private ContactListAdapter contactListAdapter;
