@@ -3,11 +3,10 @@ package com.a65apps.kalimullinilnazrafilovich.application.contacts;
 
 import androidx.annotation.NonNull;
 
-import com.a65apps.kalimullinilnazrafilovich.application.scope.ContactsListScope;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListInteractor;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListModel;
 import com.a65apps.kalimullinilnazrafilovich.interactors.contacts.ContactListRepository;
-import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.presenters.ContactListPresenter;
+import com.a65apps.kalimullinilnazrafilovich.library.applicaiton.contacts.ContactListPresenter;
 
 import dagger.Module;
 import dagger.Provides;

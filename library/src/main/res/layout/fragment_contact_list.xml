@@ -9,7 +9,7 @@
     tools:context=".activity.MainActivity">
 
     <com.github.rahatarmanahmed.cpv.CircularProgressView
-        android:id="@+id/circular_progress_view"
+        android:id="@+id/circular_progress_view_list"
         android:layout_width="@dimen/loaded_size"
         android:layout_height="@dimen/loaded_size"
         app:cpv_color="@color/colorPrimary"
