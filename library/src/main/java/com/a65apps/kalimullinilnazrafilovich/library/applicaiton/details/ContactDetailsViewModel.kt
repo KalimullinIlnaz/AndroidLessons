@@ -47,6 +47,7 @@ class ContactDetailsViewModel @Inject constructor(
 
     private fun loadDetails() = try {
         launch {
+            loadingStatus.value = true
             contactDetailsInteractor.loadDetailsContact(id)
                 .flowOn(dispatchers.io())
                 .collect { contactDetails ->

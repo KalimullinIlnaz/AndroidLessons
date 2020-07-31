@@ -52,7 +52,11 @@ class ViewContactDetailsDelegate(
         loadStatus.observe(
             lifecycleOwner,
             Observer {
-                circularProgressView.visibility = View.GONE
+                if (loadStatus.value == false) {
+                    circularProgressView.visibility = View.GONE
+                } else {
+                    circularProgressView.visibility = View.VISIBLE
+                }
             }
         )
     }

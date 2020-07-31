@@ -12,7 +12,7 @@
         android:layout_width="@dimen/loaded_size"
         android:layout_height="@dimen/loaded_size"
         app:cpv_color="@color/colorPrimary"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_gravity="center"
         app:cpv_animAutostart="true"
         app:cpv_indeterminate="true">
